@@ -10,6 +10,8 @@ const Item = z.object({
   description: z.string().default(""),
   quantity: z.number().nonnegative(),
   unitPrice: z.number().nonnegative(),
+  // АВР only: единица измерения (шт, услуга, час…). Ignored for invoices.
+  unit: z.string().optional(),
 });
 
 const CreateSchema = z.object({
@@ -22,6 +24,9 @@ const CreateSchema = z.object({
     address: z.string().optional().nullable(),
   }),
   items: z.array(Item).min(1),
+  bankProfileId: z.uuid().nullable().optional(),
+  // АВР only: «Договор (контракт)» reference, e.g. "№ 12 от 01.06.2026".
+  contract: z.string().optional().nullable(),
 });
 
 export type CreateDocumentInput = z.infer<typeof CreateSchema>;
@@ -43,8 +48,32 @@ export async function createDocument(
   const parsed = CreateSchema.safeParse(input);
   if (!parsed.success) return { error: "Проверьте поля документа" };
   const { type, date, client, items } = parsed.data;
+  // Contract reference only applies to АВР; drop it for invoices.
+  const contract = type === "avr" ? parsed.data.contract?.trim() || null : null;
 
   const supabase = await createClient();
+
+  // The bank requisites this document is issued with. Chosen profile must
+  // belong to the company; otherwise fall back to the primary one.
+  let bankProfileId: string | null = null;
+  if (parsed.data.bankProfileId) {
+    const { data: bp } = await supabase
+      .from("bank_profiles")
+      .select("id")
+      .eq("id", parsed.data.bankProfileId)
+      .eq("company_id", company.id)
+      .maybeSingle();
+    if (!bp) return { error: "Выбранные банковские реквизиты не найдены" };
+    bankProfileId = bp.id;
+  } else {
+    const { data: bp } = await supabase
+      .from("bank_profiles")
+      .select("id")
+      .eq("company_id", company.id)
+      .eq("is_primary", true)
+      .maybeSingle();
+    bankProfileId = bp?.id ?? null;
+  }
 
   // Save / reuse the client.
   const { data: cp, error: cpError } = await supabase
@@ -92,6 +121,8 @@ export async function createDocument(
       total_amount: totalAmount,
       status: mode === "send" ? "sent" : "draft",
       share_token: shareToken(),
+      bank_profile_id: bankProfileId,
+      contract,
     })
     .select("id")
     .single();

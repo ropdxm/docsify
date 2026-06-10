@@ -72,7 +72,13 @@ export default async function DashboardPage({
             <span className="font-semibold tracking-tight">Быстрые деньги</span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
-            <span className="hidden text-muted sm:inline">{company.name}</span>
+            <Link
+              href="/profile"
+              className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
+            >
+              <span className="hidden sm:inline">{company.name}</span>
+              <span className="sm:hidden">Профиль</span>
+            </Link>
             <form action={logout}>
               <button className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink">
                 Выйти

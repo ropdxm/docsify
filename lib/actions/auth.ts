@@ -5,39 +5,24 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireUser } from "@/lib/dal";
+import { Requisites, BankRequisites, fieldErrorsOf } from "@/lib/schemas";
 
 export type AuthState =
   | { error?: string; fieldErrors?: Record<string, string[]> }
   | undefined;
-
-const Requisites = z.object({
-  bin: z.string().regex(/^\d{12}$/, "БИН/ИИН: ровно 12 цифр"),
-  name: z.string().min(2, "Укажите название компании"),
-  director: z.string().optional(),
-  address: z.string().optional(),
-});
 
 const SignupSchema = z
   .object({
     email: z.string().email("Введите корректный email"),
     password: z.string().min(8, "Пароль минимум 8 символов"),
   })
-  .and(Requisites);
+  .and(Requisites)
+  .and(BankRequisites);
 
 const LoginSchema = z.object({
   email: z.string().email("Введите корректный email"),
   password: z.string().min(1, "Введите пароль"),
 });
-
-// Build field errors from issues directly — robust across zod versions.
-function fieldErrorsOf(error: z.ZodError): Record<string, string[]> {
-  const out: Record<string, string[]> = {};
-  for (const issue of error.issues) {
-    const key = issue.path[0];
-    if (typeof key === "string") (out[key] ??= []).push(issue.message);
-  }
-  return out;
-}
 
 function ru(message: string): string {
   if (/already registered|already exists/i.test(message))
@@ -55,7 +40,8 @@ export async function signup(
   if (!parsed.success) {
     return { fieldErrors: fieldErrorsOf(parsed.error) };
   }
-  const { email, password, bin, name, director, address } = parsed.data;
+  const { email, password, bin, name, director, address, iik, bank_name, bik, kbe, knp } =
+    parsed.data;
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({ email, password });
@@ -67,17 +53,39 @@ export async function signup(
   // Provision the company with the service role so it works regardless of
   // whether email confirmation is on.
   const admin = createAdminClient();
-  const { error: companyError } = await admin.from("companies").insert({
-    owner_id: userId,
-    bin,
-    name,
-    director: director || null,
-    address: address || null,
-  });
+  const { data: companyRow, error: companyError } = await admin
+    .from("companies")
+    .insert({
+      owner_id: userId,
+      bin,
+      name,
+      director: director || null,
+      address: address || null,
+    })
+    .select("id")
+    .single();
   if (companyError && companyError.code !== "23505") {
     return {
       error: `Аккаунт создан, но реквизиты не сохранились: ${companyError.message}`,
     };
+  }
+
+  // The first bank profile becomes the primary one used on documents.
+  if (companyRow) {
+    const { error: bankError } = await admin.from("bank_profiles").insert({
+      company_id: companyRow.id,
+      iik,
+      bank_name,
+      bik,
+      kbe,
+      knp: knp || null,
+      is_primary: true,
+    });
+    if (bankError && bankError.code !== "23505") {
+      return {
+        error: `Аккаунт создан, но банковские реквизиты не сохранились: ${bankError.message}`,
+      };
+    }
   }
 
   // If confirmation is disabled a session already exists; otherwise sign in.
@@ -121,18 +129,41 @@ export async function createCompany(
   formData: FormData
 ): Promise<AuthState> {
   const user = await requireUser();
-  const parsed = Requisites.safeParse(Object.fromEntries(formData));
+  const parsed = Requisites.and(BankRequisites).safeParse(
+    Object.fromEntries(formData)
+  );
   if (!parsed.success) {
     return { fieldErrors: fieldErrorsOf(parsed.error) };
   }
+  const { bin, name, director, address, iik, bank_name, bik, kbe, knp } =
+    parsed.data;
   const supabase = await createClient();
-  const { error } = await supabase.from("companies").insert({
-    owner_id: user.id,
-    bin: parsed.data.bin,
-    name: parsed.data.name,
-    director: parsed.data.director || null,
-    address: parsed.data.address || null,
-  });
+  const { data: companyRow, error } = await supabase
+    .from("companies")
+    .insert({
+      owner_id: user.id,
+      bin,
+      name,
+      director: director || null,
+      address: address || null,
+    })
+    .select("id")
+    .single();
   if (error && error.code !== "23505") return { error: error.message };
+
+  if (companyRow) {
+    const { error: bankError } = await supabase.from("bank_profiles").insert({
+      company_id: companyRow.id,
+      iik,
+      bank_name,
+      bik,
+      kbe,
+      knp: knp || null,
+      is_primary: true,
+    });
+    if (bankError && bankError.code !== "23505") {
+      return { error: `Банковские реквизиты не сохранились: ${bankError.message}` };
+    }
+  }
   redirect("/dashboard");
 }

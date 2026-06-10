@@ -1,4 +1,6 @@
 import { renderInvoiceXlsx, type XlsxDoc } from "@/lib/xlsx/invoice";
+import { renderAvrXlsx } from "@/lib/xlsx/avr";
+import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -34,7 +36,12 @@ export async function GET(
   }
   if (!allowed) return new Response("Нет доступа", { status: 403 });
 
-  const buffer = await renderInvoiceXlsx(doc as unknown as XlsxDoc);
+  const bank = await bankForDocument(admin, doc);
+  const payload = { ...doc, bank } as unknown as XlsxDoc;
+  const buffer =
+    doc.type === "avr"
+      ? await renderAvrXlsx(payload)
+      : await renderInvoiceXlsx(payload);
 
   // Store the filled form (best-effort).
   const filePath = `${doc.company_id}/${doc.id}.xlsx`;

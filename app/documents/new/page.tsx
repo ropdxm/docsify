@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireCompany } from "@/lib/dal";
+import { requireCompany, getBankProfiles } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import { DocumentForm, type SavedClient } from "./document-form";
 
@@ -14,6 +14,14 @@ export default async function NewDocumentPage() {
     .eq("company_id", company.id)
     .order("name");
   const clients = (data ?? []) as SavedClient[];
+
+  const bankProfiles = (await getBankProfiles(company.id)).map((p) => ({
+    id: p.id,
+    label: p.label,
+    bank_name: p.bank_name,
+    iik: p.iik,
+    is_primary: p.is_primary,
+  }));
 
   return (
     <div className="min-h-full">
@@ -49,6 +57,7 @@ export default async function NewDocumentPage() {
         <DocumentForm
           company={{ name: company.name, bin: company.bin }}
           clients={clients}
+          bankProfiles={bankProfiles}
         />
       </main>
     </div>

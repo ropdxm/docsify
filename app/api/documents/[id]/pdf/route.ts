@@ -1,6 +1,7 @@
 import React from "react";
 import { renderToBuffer, type DocumentProps } from "@react-pdf/renderer";
 import { InvoiceDocument, type PdfDoc } from "@/lib/pdf/invoice";
+import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,8 +34,10 @@ export async function GET(
   }
   if (!allowed) return new Response("Нет доступа", { status: 403 });
 
+  const bank = await bankForDocument(admin, doc);
+
   const element = React.createElement(InvoiceDocument, {
-    doc: doc as unknown as PdfDoc,
+    doc: { ...doc, bank } as unknown as PdfDoc,
   }) as unknown as React.ReactElement<DocumentProps>;
   const buffer = await renderToBuffer(element);
 

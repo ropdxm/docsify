@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { formatDateRu, formatTenge, num } from "@/lib/format";
 import { createDocument } from "@/lib/actions/documents";
+import { useBinLookup } from "@/components/use-bin-lookup";
 
 /* ------------------------------------------------------------------ types -- */
 
@@ -13,6 +14,7 @@ type LineItem = {
   description: string;
   qty: string;
   price: string;
+  unit: string; // АВР only: единица измерения
 };
 
 type Client = {
@@ -28,6 +30,14 @@ export type SavedClient = {
   name: string;
   director: string | null;
   address: string | null;
+};
+
+export type BankOption = {
+  id: string;
+  label: string;
+  bank_name: string;
+  iik: string;
+  is_primary: boolean;
 };
 
 /* ------------------------------------------------------- per-type wording -- */
@@ -67,7 +77,7 @@ function rowTotal(item: LineItem): number {
 
 let _seq = 1;
 function newItem(): LineItem {
-  return { id: `item-${++_seq}`, description: "", qty: "1", price: "" };
+  return { id: `item-${++_seq}`, description: "", qty: "1", price: "", unit: "" };
 }
 
 /* ================================================================== form == */
@@ -75,17 +85,27 @@ function newItem(): LineItem {
 export function DocumentForm({
   company,
   clients,
+  bankProfiles,
 }: {
   company: { name: string; bin: string };
   clients: SavedClient[];
+  bankProfiles: BankOption[];
 }) {
   const [docType, setDocType] = useState<DocType>("invoice");
   const [date, setDate] = useState<Date>(() => new Date());
   const [client, setClient] = useState<Client | null>(null);
+  // The primary profile is preselected; any other can be picked per document.
+  const [bankProfileId, setBankProfileId] = useState<string | null>(
+    () =>
+      bankProfiles.find((p) => p.is_primary)?.id ?? bankProfiles[0]?.id ?? null
+  );
 
   const [items, setItems] = useState<LineItem[]>([
-    { id: "item-1", description: "", qty: "1", price: "" },
+    { id: "item-1", description: "", qty: "1", price: "", unit: "" },
   ]);
+  // АВР only: «Договор (контракт)» reference printed on the act.
+  const [contract, setContract] = useState("");
+  const isAvr = docType === "avr";
 
   const copy = COPY[docType];
   const number = `${copy.prefix}-${date.getFullYear()}-001`;
@@ -108,6 +128,7 @@ export function DocumentForm({
         description: it.description,
         quantity: num(it.qty),
         unitPrice: num(it.price),
+        unit: isAvr ? it.unit.trim() || undefined : undefined,
       }))
       .filter((it) => it.quantity > 0 && it.unitPrice > 0);
     if (built.length === 0) {
@@ -127,6 +148,8 @@ export function DocumentForm({
             address: client.address,
           },
           items: built,
+          bankProfileId,
+          contract: isAvr ? contract.trim() || undefined : undefined,
         },
         mode
       );
@@ -178,6 +201,32 @@ export function DocumentForm({
           <ClientField clients={clients} client={client} onSelect={setClient} />
         </section>
 
+        {/* ---- bank requisites (invoice) / contract reference (АВР) ---- */}
+        {isAvr ? (
+          <section className="border-b border-line-soft p-5 sm:p-7">
+            <SectionLabel>Договор (контракт)</SectionLabel>
+            <input
+              value={contract}
+              onChange={(e) => setContract(e.target.value)}
+              placeholder="№ и дата договора, напр. № 12 от 01.06.2026"
+              className={cn(fieldCls, "max-w-md")}
+              aria-label="Договор (контракт)"
+            />
+            <p className="mt-1.5 text-xs text-faint">
+              Необязательно — печатается в шапке акта.
+            </p>
+          </section>
+        ) : (
+          <section className="border-b border-line-soft p-5 sm:p-7">
+            <SectionLabel>Реквизиты для оплаты</SectionLabel>
+            <BankProfilePicker
+              profiles={bankProfiles}
+              value={bankProfileId}
+              onChange={setBankProfileId}
+            />
+          </section>
+        )}
+
         {/* ---- line items ---- */}
         <section className="p-5 sm:p-7">
           <SectionLabel>{copy.itemsTitle}</SectionLabel>
@@ -188,6 +237,7 @@ export function DocumentForm({
                 key={item.id}
                 item={item}
                 placeholder={copy.itemPlaceholder}
+                showUnit={isAvr}
                 canRemove={items.length > 1}
                 onChange={(patch) => updateItem(item.id, patch)}
                 onRemove={() => removeItem(item.id)}
@@ -252,6 +302,57 @@ export function DocumentForm({
         </div>
       </div>
     </form>
+  );
+}
+
+/* ===================================================== bank profile picker == */
+
+function BankProfilePicker({
+  profiles,
+  value,
+  onChange,
+}: {
+  profiles: BankOption[];
+  value: string | null;
+  onChange: (id: string) => void;
+}) {
+  if (profiles.length === 0) {
+    return (
+      <p className="text-sm text-faint">
+        Банковские реквизиты не заполнены — счёт выйдет без блока для оплаты.{" "}
+        <a
+          href="/profile"
+          className="font-medium text-tenge-ink hover:underline"
+        >
+          Добавить в профиле
+        </a>
+      </p>
+    );
+  }
+
+  const selected = profiles.find((p) => p.id === value) ?? profiles[0];
+
+  return (
+    <div className="max-w-md space-y-2">
+      {profiles.length > 1 && (
+        <select
+          value={selected.id}
+          onChange={(e) => onChange(e.target.value)}
+          className={fieldCls}
+          aria-label="Банковские реквизиты"
+        >
+          {profiles.map((p) => (
+            <option key={p.id} value={p.id}>
+              {(p.label || p.bank_name) + (p.is_primary ? " — основной" : "")}
+            </option>
+          ))}
+        </select>
+      )}
+      <div className="rounded-card border border-line-soft px-3.5 py-2.5 text-sm">
+        <div className="font-medium">{selected.bank_name}</div>
+        <div className="mt-0.5 font-mono text-xs text-faint">{selected.iik}</div>
+      </div>
+    </div>
   );
 }
 
@@ -397,28 +498,54 @@ function NewClient({
   const [director, setDirector] = useState("");
   const [address, setAddress] = useState("");
 
+  // 12 digits typed → look the client up in the KGD registry, fill the name.
+  const { state: lookup, onBinChange } = useBinLookup(setName);
+  const verified = lookup.status === "found" && name === lookup.name;
+
   const valid = name.trim().length > 0 && /^\d{12}$/.test(bin);
 
   return (
     <div className="rounded-card border border-line bg-sheet p-4">
       <div className="space-y-3">
         <div>
-          <label className="mb-1 block text-xs text-faint">Название</label>
+          <label className="mb-1 block text-xs text-faint">БИН / ИИН</label>
+          <input
+            value={bin}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "").slice(0, 12);
+              setBin(v);
+              onBinChange(v);
+            }}
+            inputMode="numeric"
+            placeholder="12 цифр — найдём в реестре КГД"
+            className={cn(fieldCls, "font-mono tracking-wider")}
+          />
+          {lookup.status === "loading" && (
+            <p className="mt-1 text-xs text-faint">Ищем в реестре КГД…</p>
+          )}
+          {lookup.status === "notfound" && (
+            <p className="mt-1 text-xs text-danger">{lookup.error}</p>
+          )}
+          {lookup.status === "found" && lookup.liquidated && (
+            <p className="mt-1 text-xs text-danger">
+              По данным КГД налогоплательщик снят с учёта (ликвидирован).
+            </p>
+          )}
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-faint">
+            Название
+            {verified && (
+              <span className="ml-2 inline-flex items-center gap-1 rounded-pill bg-tenge-tint px-1.5 py-0.5 text-[11px] font-medium text-tenge-ink">
+                ✓ Реестр КГД
+              </span>
+            )}
+          </label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="ТОО «...» или ИП"
             className={fieldCls}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs text-faint">БИН / ИИН</label>
-          <input
-            value={bin}
-            onChange={(e) => setBin(e.target.value.replace(/\D/g, "").slice(0, 12))}
-            inputMode="numeric"
-            placeholder="12 цифр"
-            className={cn(fieldCls, "font-mono tracking-wider")}
           />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -545,12 +672,14 @@ function Segmented({
 function ItemCard({
   item,
   placeholder,
+  showUnit,
   canRemove,
   onChange,
   onRemove,
 }: {
   item: LineItem;
   placeholder: string;
+  showUnit: boolean;
   canRemove: boolean;
   onChange: (patch: Partial<LineItem>) => void;
   onRemove: () => void;
@@ -586,6 +715,15 @@ function ItemCard({
             className={cn(fieldCls, "w-16 text-center tabular-nums")}
             aria-label="Количество"
           />
+          {showUnit && (
+            <input
+              value={item.unit}
+              onChange={(e) => onChange({ unit: e.target.value })}
+              placeholder="ед. изм."
+              className={cn(fieldCls, "w-24 text-center")}
+              aria-label="Единица измерения"
+            />
+          )}
           <span className="text-faint">×</span>
           <div className="relative">
             <input

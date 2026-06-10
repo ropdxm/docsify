@@ -1,10 +1,16 @@
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { bankForDocument } from "@/lib/bank";
 import { formatTenge, formatDateRu } from "@/lib/format";
 import { STATUS } from "@/lib/status";
 import { cn } from "@/lib/ui";
 
-type Item = { description: string; quantity: number; unitPrice: number };
+type Item = {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  unit?: string | null;
+};
 
 export default async function SharePage({
   params,
@@ -28,6 +34,7 @@ export default async function SharePage({
   const st = STATUS[doc.status] ?? STATUS.draft;
   const company = doc.company;
   const cp = doc.counterparty;
+  const bank = await bankForDocument(admin, doc);
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
@@ -54,6 +61,9 @@ export default async function SharePage({
           <p className="mt-1 text-sm text-muted">
             от {formatDateRu(new Date(doc.date))}
           </p>
+          {!isInvoice && doc.contract ? (
+            <p className="text-sm text-muted">Договор: {doc.contract}</p>
+          ) : null}
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <Party
@@ -69,6 +79,22 @@ export default async function SharePage({
               address={cp?.address}
             />
           </div>
+
+          {bank && (
+            <div className="mt-4 rounded-card border border-tenge/25 bg-tenge-tint/40 p-3">
+              <div className="text-xs uppercase tracking-wider text-faint">
+                Реквизиты для оплаты
+              </div>
+              <div className="mt-1 font-medium">{bank.bank_name}</div>
+              <div className="font-mono text-sm text-muted">
+                ИИК: {bank.iik}
+              </div>
+              <div className="text-sm text-muted">
+                БИК: {bank.bik} · Кбе: {bank.kbe}
+                {bank.knp ? ` · КНП: ${bank.knp}` : ""}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="p-5 sm:p-7">
@@ -80,7 +106,8 @@ export default async function SharePage({
               >
                 <span className="min-w-0 flex-1">{it.description || "—"}</span>
                 <span className="text-faint tabular-nums">
-                  {it.quantity} × {formatTenge(it.unitPrice)}
+                  {it.quantity}
+                  {it.unit ? ` ${it.unit}` : ""} × {formatTenge(it.unitPrice)}
                 </span>
                 <span className="w-28 text-right font-medium tabular-nums">
                   {formatTenge(it.quantity * it.unitPrice)}

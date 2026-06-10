@@ -8,19 +8,33 @@ const TEMPLATE = path.join(
   "schet_na_oplatu_AkshatyrPHYTO.xlsx"
 );
 
+export type XlsxBank = {
+  iik: string;
+  bank_name: string;
+  bik: string;
+  kbe: string;
+  knp?: string | null;
+};
+
 export type XlsxDoc = {
   type: "invoice" | "avr";
   number: string;
   date: string;
-  items: Array<{ description: string; quantity: number; unitPrice: number }>;
+  items: Array<{
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    /** АВР only: единица измерения (шт, услуга, час…). */
+    unit?: string | null;
+  }>;
   total_amount: number;
+  /** АВР only: «Договор (контракт)» reference. */
+  contract?: string | null;
   company: {
     name: string;
     bin: string;
     director?: string | null;
     address?: string | null;
-    bank_account?: string | null;
-    bank_name?: string | null;
   };
   counterparty: {
     name: string;
@@ -28,18 +42,21 @@ export type XlsxDoc = {
     director?: string | null;
     address?: string | null;
   } | null;
+  /** Реквизиты блока «Платежное поручение»; null — блок остаётся пустым. */
+  bank: XlsxBank | null;
 };
 
 const ITEM_ROW = 27; // first item row in the template
 
-function partyLine(
+// Name / БИН / address each on their own line, per the official form layout.
+function partyLines(
   name: string,
   bin: string,
   address?: string | null
-): string {
-  return [name, `БИН/ИИН ${bin}`, address ? `Юр. адрес: ${address}` : null]
-    .filter(Boolean)
-    .join("  ");
+): string[] {
+  return [name, `БИН/ИИН ${bin}`, address ? `Юр. адрес: ${address}` : null].filter(
+    (s): s is string => Boolean(s)
+  );
 }
 
 function currentMergeRanges(ws: ExcelJS.Worksheet): string[] {
@@ -115,19 +132,35 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
 
   ws.getCell("B16").value = `${heading} № ${doc.number} от ${formatDateRu(new Date(doc.date))}`;
 
-  // Beneficiary / bank block (supplier).
+  // Beneficiary / bank block (supplier): ИИК, Кбе, банк, БИК, КНП.
   ws.getCell("B10").value = c.name;
-  ws.getCell("V10").value = c.bank_account ?? "";
-  ws.getCell("AF10").value = "";
-  ws.getCell("B13").value = c.bank_name ?? "";
-  ws.getCell("V13").value = "";
-  ws.getCell("AD13").value = "";
+  ws.getCell("V10").value = doc.bank?.iik ?? "";
+  ws.getCell("AF10").value = doc.bank?.kbe ?? "";
+  ws.getCell("B13").value = doc.bank?.bank_name ?? "";
+  ws.getCell("V13").value = doc.bank?.bik ?? "";
+  ws.getCell("AD13").value = doc.bank?.knp ?? "";
 
-  // Parties.
-  ws.getCell("F20").value = partyLine(c.name, c.bin, c.address);
-  ws.getCell("F22").value = doc.counterparty
-    ? partyLine(doc.counterparty.name, doc.counterparty.bin, doc.counterparty.address)
-    : "";
+  // Parties — multiline cells (name / БИН / address), so the rows grow.
+  const setParty = (row: number, lines: string[]) => {
+    const cell = ws.getCell(`F${row}`);
+    cell.value = lines.join("\n");
+    cell.alignment = { ...cell.alignment, wrapText: true, vertical: "top" };
+    ws.getRow(row).height = Math.max(15, 15 * lines.length);
+    // The label ("Поставщик:") stays glued to the first line.
+    const labelCell = ws.getCell(`B${row}`);
+    labelCell.alignment = { ...labelCell.alignment, vertical: "top" };
+  };
+  setParty(20, partyLines(c.name, c.bin, c.address));
+  setParty(
+    22,
+    doc.counterparty
+      ? partyLines(
+          doc.counterparty.name,
+          doc.counterparty.bin,
+          doc.counterparty.address
+        )
+      : [""]
+  );
 
   // Items.
   for (let i = 0; i < n; i++) {

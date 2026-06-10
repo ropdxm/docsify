@@ -15,6 +15,19 @@ export type Company = {
   created_at: string;
 };
 
+export type BankProfile = {
+  id: string;
+  company_id: string;
+  label: string;
+  iik: string;
+  bank_name: string;
+  bik: string;
+  kbe: string;
+  knp: string | null;
+  is_primary: boolean;
+  created_at: string;
+};
+
 /** The current user, or null. Memoized per request render. */
 export const getUser = cache(async () => {
   const supabase = await createClient();
@@ -51,3 +64,17 @@ export const requireCompany = cache(async (): Promise<Company> => {
   if (!company) redirect("/onboarding");
   return company;
 });
+
+/** The company's bank requisite profiles, primary first. */
+export const getBankProfiles = cache(
+  async (companyId: string): Promise<BankProfile[]> => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("bank_profiles")
+      .select("*")
+      .eq("company_id", companyId)
+      .order("is_primary", { ascending: false })
+      .order("created_at", { ascending: true });
+    return (data ?? []) as BankProfile[];
+  }
+);

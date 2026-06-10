@@ -23,19 +23,33 @@ Font.register({
 });
 Font.registerHyphenationCallback((word) => [word]); // don't hyphenate
 
+export type PdfBank = {
+  iik: string;
+  bank_name: string;
+  bik: string;
+  kbe: string;
+  knp?: string | null;
+};
+
 export type PdfDoc = {
   type: "invoice" | "avr";
   number: string;
   date: string;
-  items: Array<{ description: string; quantity: number; unitPrice: number }>;
+  items: Array<{
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    /** АВР only: единица измерения (шт, услуга, час…). */
+    unit?: string | null;
+  }>;
   total_amount: number;
+  /** АВР only: «Договор (контракт)» reference. */
+  contract?: string | null;
   company: {
     name: string;
     bin: string;
     director?: string | null;
     address?: string | null;
-    bank_account?: string | null;
-    bank_name?: string | null;
   };
   counterparty: {
     name: string;
@@ -43,6 +57,8 @@ export type PdfDoc = {
     director?: string | null;
     address?: string | null;
   } | null;
+  /** Реквизиты для оплаты (ИИК, банк, БИК, Кбе, КНП); null — без блока. */
+  bank: PdfBank | null;
 };
 
 const ink = "#211d17";
@@ -150,7 +166,7 @@ function Party({
   bin: string;
   director?: string | null;
   address?: string | null;
-  bank?: string | null;
+  bank?: PdfBank | null;
 }) {
   return (
     <View style={s.party}>
@@ -159,7 +175,16 @@ function Party({
       <Text style={s.meta}>БИН/ИИН: {bin}</Text>
       {address ? <Text style={s.meta}>{address}</Text> : null}
       {director ? <Text style={s.meta}>Рук.: {director}</Text> : null}
-      {bank ? <Text style={s.meta}>{bank}</Text> : null}
+      {bank ? (
+        <>
+          <Text style={s.meta}>{bank.bank_name}</Text>
+          <Text style={s.meta}>ИИК: {bank.iik}</Text>
+          <Text style={s.meta}>
+            БИК: {bank.bik} · Кбе: {bank.kbe}
+            {bank.knp ? ` · КНП: ${bank.knp}` : ""}
+          </Text>
+        </>
+      ) : null}
     </View>
   );
 }
@@ -169,10 +194,6 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
   const heading = isInvoice ? "Счёт на оплату" : "Акт выполненных работ";
   const company = doc.company;
   const cp = doc.counterparty;
-  const bank =
-    company.bank_name || company.bank_account
-      ? `${company.bank_name ?? ""} ${company.bank_account ?? ""}`.trim()
-      : null;
 
   return (
     <Document>
@@ -181,6 +202,9 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
           {heading} № {doc.number}
         </Text>
         <Text style={s.sub}>от {formatDateRu(new Date(doc.date))}</Text>
+        {!isInvoice && doc.contract ? (
+          <Text style={s.sub}>Договор: {doc.contract}</Text>
+        ) : null}
 
         <View style={s.parties}>
           <Party
@@ -189,7 +213,7 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
             bin={company.bin}
             director={company.director}
             address={company.address}
-            bank={bank}
+            bank={doc.bank}
           />
           <Party
             label={isInvoice ? "Покупатель" : "Заказчик"}
@@ -212,7 +236,10 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
           <View key={i} style={s.row} wrap={false}>
             <Text style={s.cNum}>{i + 1}</Text>
             <Text style={s.cDesc}>{it.description || "—"}</Text>
-            <Text style={s.cQty}>{it.quantity}</Text>
+            <Text style={s.cQty}>
+              {it.quantity}
+              {it.unit ? ` ${it.unit}` : ""}
+            </Text>
             <Text style={s.cPrice}>{formatTenge(it.unitPrice)}</Text>
             <Text style={s.cSum}>{formatTenge(it.quantity * it.unitPrice)}</Text>
           </View>
