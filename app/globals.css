@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+/*
+  Быстрые деньги — design tokens.
+  World: an official KZ payment document, but warm and reassuring instead of
+  bureaucratic. Surfaces are warm paper; the brand colour is "tenge" — the
+  turquoise of Kazakhstani banknotes, the money these owners are chasing.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces — warm paper, the document world */
+  --paper: #f3efe7; /* page canvas — warm paper */
+  --sheet: #fffefb; /* the document sheet / cards — warm white */
+  --sunken: #ece7db; /* inset inputs (you type INTO them) */
+  --raised: #ffffff; /* popovers, dropdowns — one step up */
+
+  /* Ink — warm near-blacks, four-level hierarchy */
+  --ink: #211d17; /* primary text — warm espresso */
+  --muted: #5b5346; /* secondary — supporting text */
+  --faint: #8a8173; /* tertiary — metadata, labels */
+  --ghost: #b7ae9e; /* placeholder / disabled */
+
+  /* Lines — warm hairlines, low opacity so they whisper */
+  --line: rgba(33, 29, 23, 0.1);
+  --line-soft: rgba(33, 29, 23, 0.06);
+  --line-strong: rgba(33, 29, 23, 0.18);
+
+  /* Tenge teal — the brand IS the colour of the money */
+  --tenge: #0e9686;
+  --tenge-deep: #0b7a6e; /* hover */
+  --tenge-press: #096458; /* active */
+  --tenge-tint: #e5f2ef; /* selected / wash */
+  --tenge-ink: #0a5d52; /* teal text on tint */
+  --on-tenge: #f7fffd; /* text on solid teal */
+
+  /* Semantic — paid is a settled green, overdue a burnt steppe amber */
+  --paid: #2f9e44;
+  --paid-tint: #e7f3ea;
+  --paid-ink: #1c6b2c;
+  --late: #c2410c;
+  --late-tint: #fbeee4;
+  --late-ink: #8f3109;
+  --danger: #c0392b;
+  --danger-tint: #f8e9e7;
+
+  --ring: rgba(14, 150, 134, 0.45); /* focus = tenge */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-sunken: var(--sunken);
+  --color-raised: var(--raised);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-ghost: var(--ghost);
+
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+
+  --color-tenge: var(--tenge);
+  --color-tenge-deep: var(--tenge-deep);
+  --color-tenge-press: var(--tenge-press);
+  --color-tenge-tint: var(--tenge-tint);
+  --color-tenge-ink: var(--tenge-ink);
+  --color-on-tenge: var(--on-tenge);
+
+  --color-paid: var(--paid);
+  --color-paid-tint: var(--paid-tint);
+  --color-paid-ink: var(--paid-ink);
+  --color-late: var(--late);
+  --color-late-tint: var(--late-tint);
+  --color-late-ink: var(--late-ink);
+  --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+
+  --color-ring: var(--ring);
+
+  /* Radius — friendly but not bubbly */
+  --radius-field: 10px;
+  --radius-card: 14px;
+  --radius-sheet: 22px;
+  --radius-pill: 999px;
+
+  /* Depth — subtle shadows only */
+  --shadow-soft: 0 1px 2px rgba(33, 29, 23, 0.05);
+  --shadow-sheet: 0 1px 3px rgba(33, 29, 23, 0.05), 0 6px 16px -8px rgba(33, 29, 23, 0.1);
+  --shadow-pop: 0 12px 32px -8px rgba(33, 29, 23, 0.22), 0 4px 10px -6px rgba(33, 29, 23, 0.12);
+
+  --font-sans: var(--font-onest), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
 }
