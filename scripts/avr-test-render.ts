@@ -33,14 +33,14 @@ await writeFile("tmp-avr-test.xlsx", buffer);
 
 const wb = new ExcelJS.Workbook();
 await wb.xlsx.load(buffer as unknown as ArrayBuffer);
-const ws = wb.getWorksheet("Акт вып.работ (оказ.услуг)")!;
+const ws = wb.getWorksheet("Акт выполненных работ")!;
 const show = (addr: string) =>
   console.log(addr.padEnd(6), JSON.stringify(ws.getCell(addr).value));
 
 console.log("--- parties / header ---");
-for (const a of ["E9", "AQ9", "E11", "AQ11", "F13", "AH15", "AM15"]) show(a);
+for (const a of ["E9", "AQ9", "E11", "AQ11", "F13", "AP15", "AT15"]) show(a);
 console.log("--- items (2 → totals shift +1) ---");
-for (const a of ["A20", "C20", "P20", "AD20", "AG20", "AL20", "AR20"]) show(a);
-for (const a of ["A21", "C21", "AD21", "AG21", "AL21", "AR21"]) show(a);
+for (const a of ["A20", "C20", "N20", "AC20", "AF20", "AK20", "AQ20"]) show(a);
+for (const a of ["A21", "C21", "AC21", "AF21", "AK21", "AQ21"]) show(a);
 console.log("--- totals + signatures (shifted by 1) ---");
-for (const a of ["AF22", "AL22", "AR22", "R32", "AR32", "AL35"]) show(a);
+for (const a of ["AE22", "AK22", "AQ22", "R29", "AR29", "AT31"]) show(a);

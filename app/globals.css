@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
-  Быстрые деньги — design tokens.
+  docsify — design tokens.
   World: an official KZ payment document, but warm and reassuring instead of
   bureaucratic. Surfaces are warm paper; the brand colour is "tenge" — the
   turquoise of Kazakhstani banknotes, the money these owners are chasing.
@@ -97,4 +97,61 @@
 body {
   background: var(--paper);
   color: var(--ink);
+}
+
+/*
+  Landing motion — warm and subtle, never flashy. Everything below collapses to
+  a static, fully-visible page when the visitor prefers reduced motion.
+*/
+@keyframes docsify-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes docsify-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes docsify-sheen {
+  0% { transform: translateX(-120%); }
+  60%, 100% { transform: translateX(220%); }
+}
+
+/* Above-the-fold entrance — runs once on load, staggered via inline delay. */
+.lp-rise { animation: docsify-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Gentle ambient float for the layered hero accents. */
+.lp-float { animation: docsify-float 7s ease-in-out infinite; }
+.lp-float-slow { animation: docsify-float 9.5s ease-in-out infinite; }
+
+/* Scroll reveal — base hidden state; `.is-in` is toggled by an observer. */
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--lp-delay, 0ms);
+  will-change: opacity, transform;
+}
+.lp-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* A slow drifting wash behind the hero / CTA, for warmth and depth. */
+.lp-aurora {
+  background:
+    radial-gradient(40% 55% at 78% 18%, rgba(14, 150, 134, 0.16), transparent 70%),
+    radial-gradient(45% 60% at 12% 8%, rgba(14, 150, 134, 0.08), transparent 70%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-rise,
+  .lp-float,
+  .lp-float-slow { animation: none !important; }
+  .lp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

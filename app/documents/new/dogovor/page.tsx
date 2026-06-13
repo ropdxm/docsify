@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { requireCompany, getBankProfiles } from "@/lib/dal";
+import { requireCompany } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
-import { DocumentForm, type SavedClient } from "./document-form";
+import { DogovorForm } from "./dogovor-form";
+import type { SavedClient } from "../document-form";
 
-export default async function NewDocumentPage() {
+export default async function NewDogovorPage() {
   const company = await requireCompany();
 
-  // The user's saved clients — searchable in the form, fetched from the DB.
   const supabase = await createClient();
   const { data } = await supabase
     .from("counterparties")
@@ -15,39 +15,8 @@ export default async function NewDocumentPage() {
     .order("name");
   const clients = (data ?? []) as SavedClient[];
 
-  // Units this company has typed before (АВР / накладная line items), so the
-  // "ед. изм." field can offer them as suggestions. Most-recent documents first.
-  const { data: unitRows } = await supabase
-    .from("documents")
-    .select("items")
-    .eq("company_id", company.id)
-    .order("created_at", { ascending: false })
-    .limit(200);
-  const seen = new Set<string>();
-  const unitOptions: string[] = [];
-  for (const row of unitRows ?? []) {
-    const items = (row.items ?? []) as Array<{ unit?: string | null }>;
-    for (const it of items) {
-      const u = (it?.unit ?? "").trim();
-      if (u && !seen.has(u)) {
-        seen.add(u);
-        unitOptions.push(u);
-      }
-    }
-  }
-
-  const bankProfiles = (await getBankProfiles(company.id)).map((p) => ({
-    id: p.id,
-    label: p.label,
-    bank_name: p.bank_name,
-    iik: p.iik,
-    is_primary: p.is_primary,
-  }));
-
   return (
     <div className="min-h-full">
-      {/* Grounding: where you are + a clear way out. Brand sits on the same warm
-          paper as the canvas, separated only by a hairline — no "header world". */}
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -69,17 +38,16 @@ export default async function NewDocumentPage() {
       <main className="mx-auto w-full max-w-3xl px-4 pb-44 pt-6 sm:pt-10">
         <div className="mb-5 px-1 sm:mb-7">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Новый документ
+            Новый договор
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Заполните, и отправьте клиенту ссылкой — без печатей и Word.
+            Напишите или загрузите договор. Затем подпишите его ЭЦП и отправьте
+            клиенту на подпись.
           </p>
         </div>
-        <DocumentForm
+        <DogovorForm
           company={{ name: company.name, bin: company.bin }}
           clients={clients}
-          bankProfiles={bankProfiles}
-          unitOptions={unitOptions}
         />
       </main>
     </div>

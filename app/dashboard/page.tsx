@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import Link from "next/link";
 import { requireCompany } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
@@ -25,6 +26,58 @@ function clientName(row: DocRow): string {
   return Array.isArray(c) ? c[0]?.name ?? "—" : c.name;
 }
 
+/* Per-type identity: a colour-coded icon tile so the kind of document reads at
+   a glance. Счёт = money (banknote, teal), Акт = signed work (plum), Накладная
+   = goods (box, amber). */
+type IconProps = { className?: string };
+
+const TYPE_META: Record<
+  string,
+  { tile: string; Icon: ComponentType<IconProps> }
+> = {
+  invoice: { tile: "bg-tenge-tint text-tenge-ink", Icon: IconBanknote },
+  avr: { tile: "bg-[#ece8f6] text-[#5d4b9a]", Icon: IconActCheck },
+  nakladnaja: { tile: "bg-[#f4ebda] text-[#8a6516]", Icon: IconBox },
+  dogovor: { tile: "bg-[#e7eef7] text-[#3a5a8c]", Icon: IconContract },
+};
+
+function IconBanknote({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2.5" y="6" width="19" height="12" rx="2.5" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M6 9.5h.01M18 14.5h.01" />
+    </svg>
+  );
+}
+function IconActCheck({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+      <path d="M14 3v5h5" />
+      <path d="M8.75 14l2 2 3.75-3.75" />
+    </svg>
+  );
+}
+function IconBox({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z" />
+      <path d="M3.5 7.5 12 12l8.5-4.5" />
+      <path d="M12 12v9" />
+    </svg>
+  );
+}
+function IconContract({ className }: IconProps) {
+  // A signature on a line — a contract you sign.
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 16c1.7 0 2.1-7 3.5-7 1.2 0 1 5 2.2 5 1 0 1.3-2.3 2.5-2.3 1 0 1.2 1.8 2.3 1.8 1 0 1.6-1.2 2.5-1.2" />
+      <path d="M3 20h18" />
+    </svg>
+  );
+}
+
 export default async function DashboardPage({
   searchParams,
 }: {
@@ -33,6 +86,7 @@ export default async function DashboardPage({
   const company = await requireCompany();
   const sp = await searchParams;
   const justCreated = typeof sp.created === "string";
+  const justUpdated = typeof sp.updated === "string";
 
   const supabase = await createClient();
   const { data } = await supabase
@@ -52,8 +106,13 @@ export default async function DashboardPage({
   let overdue = 0;
   let paidThisMonth = 0;
   for (const d of docs) {
-    if (d.status === "sent" || d.status === "signed") awaiting += d.total_amount;
-    if (d.status === "sent" && new Date(d.date) < cutoff) overdue += d.total_amount;
+    // Only invoices (счёт) are a request for payment — АВР and накладные are
+    // supporting documents, so they don't count toward money owed.
+    const isInvoice = d.type === "invoice";
+    if (isInvoice && (d.status === "sent" || d.status === "signed"))
+      awaiting += d.total_amount;
+    if (isInvoice && d.status === "sent" && new Date(d.date) < cutoff)
+      overdue += d.total_amount;
     if (
       d.status === "paid" &&
       d.paid_at &&
@@ -69,7 +128,7 @@ export default async function DashboardPage({
         <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">Быстрые деньги</span>
+            <span className="font-semibold tracking-tight">docsify</span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
             <Link
@@ -93,17 +152,30 @@ export default async function DashboardPage({
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             Документы
           </h1>
-          <Link
-            href="/documents/new"
-            className="inline-flex items-center gap-2 rounded-field bg-tenge px-4 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep active:bg-tenge-press"
-          >
-            + Новый документ
-          </Link>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Link
+              href="/documents/new/dogovor"
+              className="inline-flex items-center gap-2 rounded-field border border-line bg-sheet px-4 py-2.5 text-sm font-semibold text-ink shadow-soft transition-colors hover:bg-sunken"
+            >
+              + Договор
+            </Link>
+            <Link
+              href="/documents/new"
+              className="inline-flex items-center gap-2 rounded-field bg-tenge px-4 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep active:bg-tenge-press"
+            >
+              + Документ
+            </Link>
+          </div>
         </div>
 
         {justCreated && (
           <p className="mt-4 rounded-card border border-tenge/25 bg-tenge-tint/60 px-4 py-3 text-sm text-tenge-ink">
             Документ создан. Скопируйте ссылку и отправьте клиенту.
+          </p>
+        )}
+        {justUpdated && (
+          <p className="mt-4 rounded-card border border-tenge/25 bg-tenge-tint/60 px-4 py-3 text-sm text-tenge-ink">
+            Изменения сохранены.
           </p>
         )}
 
@@ -132,30 +204,65 @@ export default async function DashboardPage({
           ) : (
             <div className="overflow-hidden rounded-sheet border border-line bg-sheet shadow-sheet">
               {docs.map((d, i) => {
+                const isInvoice = d.type === "invoice";
+                const isDogovor = d.type === "dogovor";
+                const meta = TYPE_META[d.type] ?? TYPE_META.invoice;
+                const Icon = meta.Icon;
                 const st = STATUS[d.status] ?? STATUS.draft;
+                // Status matters for invoices (payment) and договоры (signing).
+                const showStatus = isInvoice || isDogovor;
+                // Договоры open a detail/sign view; structured docs open the editor.
+                const href = isDogovor
+                  ? `/documents/${d.id}`
+                  : `/documents/${d.id}/edit`;
                 return (
                   <div
                     key={d.id}
                     className={cn(
-                      "flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 sm:px-5",
+                      "relative flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 transition-colors hover:bg-sunken/40 sm:px-5",
                       i > 0 && "border-t border-line-soft"
                     )}
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{clientName(d)}</span>
-                        <span
-                          className={cn(
-                            "inline-flex items-center rounded-pill border px-2 py-0.5 text-xs font-medium",
-                            st.cls
+                    {/* The whole row opens the document; action buttons below
+                        sit above this stretched link via z-10. */}
+                    <Link
+                      href={href}
+                      className="absolute inset-0"
+                      aria-label={`Открыть ${DOC_TYPE_LABEL[d.type]} ${d.number}`}
+                    />
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <span
+                        className={cn(
+                          "inline-flex size-9 shrink-0 items-center justify-center rounded-card",
+                          meta.tile
+                        )}
+                        aria-hidden
+                      >
+                        <Icon className="size-[18px]" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="truncate font-medium">
+                            {clientName(d)}
+                          </span>
+                          {/* Status applies to invoices (payment) and договоры (signing). */}
+                          {showStatus && (
+                            <span
+                              className={cn(
+                                "inline-flex shrink-0 items-center rounded-pill border px-2 py-0.5 text-xs font-medium",
+                                st.cls
+                              )}
+                            >
+                              {st.label}
+                            </span>
                           )}
-                        >
-                          {st.label}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 text-xs text-faint">
-                        {DOC_TYPE_LABEL[d.type]} {d.number} ·{" "}
-                        {formatDateRu(new Date(d.date))}
+                        </div>
+                        <div className="mt-0.5 text-xs text-faint">
+                          <span className="font-medium text-muted">
+                            {DOC_TYPE_LABEL[d.type]}
+                          </span>{" "}
+                          {d.number} · {formatDateRu(new Date(d.date))}
+                        </div>
                       </div>
                     </div>
 
@@ -163,7 +270,7 @@ export default async function DashboardPage({
                       {formatTenge(d.total_amount)}
                     </div>
 
-                    <div className="flex items-center gap-1 text-sm">
+                    <div className="relative z-10 flex items-center gap-1 text-sm">
                       <a
                         href={`/api/documents/${d.id}/xlsx`}
                         className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
@@ -178,9 +285,10 @@ export default async function DashboardPage({
                       >
                         Ссылка
                       </a>
-                      {d.status !== "paid" && (
+                      {/* "Mark as paid" only makes sense for invoices. */}
+                      {isInvoice && d.status !== "paid" && (
                         <form action={markDocumentPaid.bind(null, d.id)}>
-                          <button className="rounded-field px-2.5 py-1.5 text-paid-ink transition-colors hover:bg-paid-tint">
+                          <button className="rounded-field bg-paid px-2.5 py-1.5 font-medium text-white opacity-80 transition-opacity hover:opacity-100">
                             Оплачено
                           </button>
                         </form>

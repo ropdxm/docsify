@@ -1,4 +1,4 @@
--- Быстрые деньги — initial schema.
+-- docsify — initial schema.
 -- NOTE: the CLAUDE.md "Data Models (Firestore)" section is stale; the stack is
 -- Supabase. These are the Postgres equivalents (Timestamp -> timestamptz,
 -- Firebase Storage -> Supabase Storage). Run this in the Supabase SQL editor,

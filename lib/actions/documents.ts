@@ -15,7 +15,7 @@ const Item = z.object({
 });
 
 const CreateSchema = z.object({
-  type: z.enum(["invoice", "avr"]),
+  type: z.enum(["invoice", "avr", "nakladnaja"]),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   client: z.object({
     bin: z.string().regex(/^\d{12}$/),
@@ -94,7 +94,7 @@ export async function createDocument(
 
   // Per-company, per-year sequence number.
   const year = Number(date.slice(0, 4));
-  const prefix = type === "invoice" ? "СФ" : "АВР";
+  const prefix = { invoice: "СФ", avr: "АВР", nakladnaja: "Накл" }[type];
   const { count } = await supabase
     .from("documents")
     .select("id", { count: "exact", head: true })
@@ -129,6 +129,98 @@ export async function createDocument(
   if (error) return { error: `Не удалось создать документ: ${error.message}` };
 
   redirect(`/dashboard?created=${doc.id}`);
+}
+
+/**
+ * Edit an existing document (e.g. a saved draft). Number and share token are
+ * preserved. On mode "send" the status moves to "sent"; on "draft" the current
+ * status is kept (so a draft stays a draft, a sent doc stays sent).
+ */
+export async function updateDocument(
+  id: string,
+  input: CreateDocumentInput,
+  mode: "draft" | "send"
+): Promise<{ error: string } | void> {
+  const company = await requireCompany();
+
+  const parsed = CreateSchema.safeParse(input);
+  if (!parsed.success) return { error: "Проверьте поля документа" };
+  const { type, date, client, items } = parsed.data;
+  const contract = type === "avr" ? parsed.data.contract?.trim() || null : null;
+
+  const supabase = await createClient();
+
+  // The document must belong to this company.
+  const { data: existing } = await supabase
+    .from("documents")
+    .select("id")
+    .eq("id", id)
+    .eq("company_id", company.id)
+    .maybeSingle();
+  if (!existing) return { error: "Документ не найден" };
+
+  // Resolve the bank profile (chosen, else primary fallback) — same as create.
+  let bankProfileId: string | null = null;
+  if (parsed.data.bankProfileId) {
+    const { data: bp } = await supabase
+      .from("bank_profiles")
+      .select("id")
+      .eq("id", parsed.data.bankProfileId)
+      .eq("company_id", company.id)
+      .maybeSingle();
+    if (!bp) return { error: "Выбранные банковские реквизиты не найдены" };
+    bankProfileId = bp.id;
+  } else {
+    const { data: bp } = await supabase
+      .from("bank_profiles")
+      .select("id")
+      .eq("company_id", company.id)
+      .eq("is_primary", true)
+      .maybeSingle();
+    bankProfileId = bp?.id ?? null;
+  }
+
+  const { data: cp, error: cpError } = await supabase
+    .from("counterparties")
+    .upsert(
+      {
+        company_id: company.id,
+        bin: client.bin,
+        name: client.name,
+        director: client.director || null,
+        address: client.address || null,
+      },
+      { onConflict: "company_id,bin" }
+    )
+    .select("id")
+    .single();
+  if (cpError) return { error: `Не удалось сохранить клиента: ${cpError.message}` };
+
+  const totalAmount = items.reduce(
+    (sum, it) => sum + it.quantity * it.unitPrice,
+    0
+  );
+
+  const updates: Record<string, unknown> = {
+    counterparty_id: cp.id,
+    type,
+    date,
+    items,
+    total_amount: totalAmount,
+    bank_profile_id: bankProfileId,
+    contract,
+  };
+  if (mode === "send") updates.status = "sent";
+
+  const { error } = await supabase
+    .from("documents")
+    .update(updates)
+    .eq("id", id)
+    .eq("company_id", company.id);
+  if (error) return { error: `Не удалось сохранить документ: ${error.message}` };
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard?updated=1");
 }
 
 export async function markDocumentPaid(id: string, _formData: FormData) {

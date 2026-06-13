@@ -17,7 +17,7 @@ export type XlsxBank = {
 };
 
 export type XlsxDoc = {
-  type: "invoice" | "avr";
+  type: "invoice" | "avr" | "nakladnaja";
   number: string;
   date: string;
   items: Array<{

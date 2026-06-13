@@ -17,7 +17,7 @@ export function AuthShell({
         <Link href="/" className="mb-6 flex items-center gap-2">
           <span className="size-3 rounded-full bg-tenge" />
           <span className="text-lg font-semibold tracking-tight">
-            Быстрые деньги
+            docsify
           </span>
         </Link>
         <div className="rounded-sheet border border-line bg-sheet p-6 shadow-sheet sm:p-8">

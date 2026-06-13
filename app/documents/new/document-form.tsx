@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { formatDateRu, formatTenge, num } from "@/lib/format";
-import { createDocument } from "@/lib/actions/documents";
+import { createDocument, updateDocument } from "@/lib/actions/documents";
+import { STATUS } from "@/lib/status";
 import { useBinLookup } from "@/components/use-bin-lookup";
 
 /* ------------------------------------------------------------------ types -- */
 
-type DocType = "invoice" | "avr";
+type DocType = "invoice" | "avr" | "nakladnaja";
 
 type LineItem = {
   id: string;
@@ -17,7 +18,7 @@ type LineItem = {
   unit: string; // АВР only: единица измерения
 };
 
-type Client = {
+export type Client = {
   bin: string;
   name: string;
   director: string;
@@ -40,6 +41,51 @@ export type BankOption = {
   is_primary: boolean;
 };
 
+/** An existing document loaded into the form for editing. */
+export type DocumentInitial = {
+  type: DocType;
+  status: string;
+  number: string;
+  date: string; // ISO yyyy-mm-dd
+  client: Client;
+  items: Array<{
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    unit?: string | null;
+  }>;
+  contract?: string | null;
+  bankProfileId?: string | null;
+};
+
+const TYPE_LABELS: Record<DocType, string> = {
+  invoice: "Счёт",
+  avr: "Акт (АВР)",
+  nakladnaja: "Накладная",
+};
+
+// Parse a stored contract string ("№ 12 от 01.06.2026") back into its parts.
+function parseContract(contract?: string | null): {
+  no: string;
+  date: Date | null;
+} {
+  if (!contract) return { no: "", date: null };
+  const m = contract
+    .trim()
+    .match(/^№?\s*(.*?)(?:\s+от\s+(\d{2})\.(\d{2})\.(\d{4}))?$/);
+  if (!m) return { no: contract.trim(), date: null };
+  const date = m[2]
+    ? new Date(Number(m[4]), Number(m[3]) - 1, Number(m[2]))
+    : null;
+  return { no: m[1].trim(), date };
+}
+
+// Parse an ISO date ("2026-06-12") in local time (avoids UTC off-by-one).
+function parseIsoDate(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 /* ------------------------------------------------------- per-type wording -- */
 
 const COPY: Record<
@@ -60,6 +106,13 @@ const COPY: Record<
     totalLabel: "Стоимость работ",
     send: "Отправить акт",
   },
+  nakladnaja: {
+    prefix: "Накл",
+    itemsTitle: "Товары и запасы",
+    itemPlaceholder: "Что отгружаете? напр. «Бумага А4, 80 г/м²»",
+    totalLabel: "Сумма к отпуску",
+    send: "Отправить накладную",
+  },
 };
 
 /* ----------------------------------------------------------------- helpers -- */
@@ -68,8 +121,11 @@ function cn(...xs: Array<string | false | null | undefined>): string {
   return xs.filter(Boolean).join(" ");
 }
 
-const fieldCls =
+export const fieldCls =
   "w-full rounded-field bg-sunken px-3 py-2 text-sm text-ink placeholder:text-ghost outline-none transition-colors focus-visible:bg-sheet focus-visible:ring-2 focus-visible:ring-ring";
+
+// Common KZ units of measure, offered alongside the ones the user typed before.
+const COMMON_UNITS = ["шт", "услуга", "упак", "кг", "л", "м", "м²", "час", "сутки", "мес"];
 
 function rowTotal(item: LineItem): number {
   return num(item.qty) * num(item.price);
@@ -86,29 +142,63 @@ export function DocumentForm({
   company,
   clients,
   bankProfiles,
+  unitOptions,
+  documentId,
+  initial,
 }: {
   company: { name: string; bin: string };
   clients: SavedClient[];
   bankProfiles: BankOption[];
+  unitOptions: string[];
+  /** Present when editing an existing document. */
+  documentId?: string;
+  initial?: DocumentInitial;
 }) {
-  const [docType, setDocType] = useState<DocType>("invoice");
-  const [date, setDate] = useState<Date>(() => new Date());
-  const [client, setClient] = useState<Client | null>(null);
+  const isEdit = !!documentId;
+  const initialStatus = initial?.status ?? "draft";
+  // A draft (or a brand-new doc) shows the "save draft + send" pair; an already
+  // sent/paid doc shows a single "save changes" action.
+  const isDraftDoc = !isEdit || initialStatus === "draft";
+  const initialContract = parseContract(initial?.contract);
+
+  const [docType, setDocType] = useState<DocType>(initial?.type ?? "invoice");
+  const [date, setDate] = useState<Date>(() =>
+    initial ? parseIsoDate(initial.date) : new Date()
+  );
+  const [client, setClient] = useState<Client | null>(initial?.client ?? null);
   // The primary profile is preselected; any other can be picked per document.
-  const [bankProfileId, setBankProfileId] = useState<string | null>(
-    () =>
-      bankProfiles.find((p) => p.is_primary)?.id ?? bankProfiles[0]?.id ?? null
+  const [bankProfileId, setBankProfileId] = useState<string | null>(() =>
+    initial
+      ? initial.bankProfileId ?? null
+      : bankProfiles.find((p) => p.is_primary)?.id ?? bankProfiles[0]?.id ?? null
   );
 
-  const [items, setItems] = useState<LineItem[]>([
-    { id: "item-1", description: "", qty: "1", price: "", unit: "" },
-  ]);
-  // АВР only: «Договор (контракт)» reference printed on the act.
-  const [contract, setContract] = useState("");
+  const [items, setItems] = useState<LineItem[]>(() =>
+    initial && initial.items.length
+      ? initial.items.map((it, i) => ({
+          id: `init-${i}`,
+          description: it.description,
+          qty: String(it.quantity),
+          price: String(it.unitPrice),
+          unit: it.unit ?? "",
+        }))
+      : [{ id: "item-1", description: "", qty: "1", price: "", unit: "" }]
+  );
+  // АВР only: «Договор (контракт)» reference printed on the act — number and
+  // date are entered separately, then combined into "№ 12 от 01.06.2026".
+  const [contractNo, setContractNo] = useState(initialContract.no);
+  const [contractDate, setContractDate] = useState<Date | null>(
+    initialContract.date
+  );
   const isAvr = docType === "avr";
+  const isNakladnaja = docType === "nakladnaja";
+  // Both АВР and накладная carry a per-line unit of measure («ед. изм.»).
+  const showUnit = isAvr || isNakladnaja;
 
   const copy = COPY[docType];
-  const number = `${copy.prefix}-${date.getFullYear()}-001`;
+  // Past-entered units first (most relevant), then common fallbacks; deduped.
+  const unitChoices = [...new Set([...unitOptions, ...COMMON_UNITS])];
+  const number = isEdit ? initial!.number : `${copy.prefix}-${date.getFullYear()}-001`;
   const total = items.reduce((sum, it) => sum + rowTotal(it), 0);
 
   const hasValidItem = items.some((it) => rowTotal(it) > 0);
@@ -128,7 +218,7 @@ export function DocumentForm({
         description: it.description,
         quantity: num(it.qty),
         unitPrice: num(it.price),
-        unit: isAvr ? it.unit.trim() || undefined : undefined,
+        unit: showUnit ? it.unit.trim() || undefined : undefined,
       }))
       .filter((it) => it.quantity > 0 && it.unitPrice > 0);
     if (built.length === 0) {
@@ -136,23 +226,30 @@ export function DocumentForm({
       return;
     }
     const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    // Combine the contract number (with an auto-prepended «№») and optional date.
+    const contractNumber = contractNo.trim().replace(/^№\s*/, "");
+    const contract =
+      isAvr && contractNumber
+        ? `№ ${contractNumber}${contractDate ? ` от ${formatDateRu(contractDate)}` : ""}`
+        : undefined;
+    const payload = {
+      type: docType,
+      date: iso,
+      client: {
+        bin: client.bin,
+        name: client.name,
+        director: client.director,
+        address: client.address,
+      },
+      items: built,
+      bankProfileId,
+      contract,
+    };
     startTransition(async () => {
-      const res = await createDocument(
-        {
-          type: docType,
-          date: iso,
-          client: {
-            bin: client.bin,
-            name: client.name,
-            director: client.director,
-            address: client.address,
-          },
-          items: built,
-          bankProfileId,
-          contract: isAvr ? contract.trim() || undefined : undefined,
-        },
-        mode
-      );
+      const res =
+        isEdit && documentId
+          ? await updateDocument(documentId, payload, mode)
+          : await createDocument(payload, mode);
       if (res?.error) setSubmitError(res.error);
     });
   }
@@ -171,8 +268,15 @@ export function DocumentForm({
         {/* ---- masthead ---- */}
         <div className="border-b border-line-soft p-5 sm:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <Segmented value={docType} onChange={setDocType} />
-            <StatusPill />
+            {/* Type is fixed once the document exists (the number is tied to it). */}
+            {isEdit ? (
+              <span className="inline-flex items-center rounded-field bg-sunken px-3.5 py-1.5 text-sm font-medium text-ink">
+                {TYPE_LABELS[docType]}
+              </span>
+            ) : (
+              <Segmented value={docType} onChange={setDocType} />
+            )}
+            <StatusPill status={isEdit ? initialStatus : "draft"} />
           </div>
 
           <div className="mt-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
@@ -201,22 +305,9 @@ export function DocumentForm({
           <ClientField clients={clients} client={client} onSelect={setClient} />
         </section>
 
-        {/* ---- bank requisites (invoice) / contract reference (АВР) ---- */}
-        {isAvr ? (
-          <section className="border-b border-line-soft p-5 sm:p-7">
-            <SectionLabel>Договор (контракт)</SectionLabel>
-            <input
-              value={contract}
-              onChange={(e) => setContract(e.target.value)}
-              placeholder="№ и дата договора, напр. № 12 от 01.06.2026"
-              className={cn(fieldCls, "max-w-md")}
-              aria-label="Договор (контракт)"
-            />
-            <p className="mt-1.5 text-xs text-faint">
-              Необязательно — печатается в шапке акта.
-            </p>
-          </section>
-        ) : (
+        {/* ---- bank requisites (invoice) / contract reference (АВР) ----
+            Накладная needs neither, so it shows nothing here. */}
+        {docType === "invoice" && (
           <section className="border-b border-line-soft p-5 sm:p-7">
             <SectionLabel>Реквизиты для оплаты</SectionLabel>
             <BankProfilePicker
@@ -224,6 +315,45 @@ export function DocumentForm({
               value={bankProfileId}
               onChange={setBankProfileId}
             />
+          </section>
+        )}
+        {isAvr && (
+          <section className="border-b border-line-soft p-5 sm:p-7">
+            <SectionLabel>Договор (контракт)</SectionLabel>
+            <div className="flex flex-wrap items-end gap-3">
+              <div>
+                <label className="mb-1 block text-xs text-faint">Номер</label>
+                <div className="relative w-36">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint">
+                    №
+                  </span>
+                  <input
+                    value={contractNo}
+                    onChange={(e) => setContractNo(e.target.value)}
+                    placeholder="12"
+                    className={cn(fieldCls, "pl-7")}
+                    aria-label="Номер договора"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-faint">Дата</label>
+                <DatePopover
+                  date={contractDate}
+                  onChange={setContractDate}
+                  prefix=""
+                  placeholder="Выберите дату"
+                  align="left"
+                  triggerClassName={cn(
+                    "flex w-44 items-center gap-2 rounded-field bg-sunken px-3 py-2 text-sm transition-colors hover:bg-sunken/70",
+                    contractDate ? "text-ink" : "text-ghost"
+                  )}
+                />
+              </div>
+            </div>
+            <p className="mt-1.5 text-xs text-faint">
+              Необязательно — печатается в шапке акта: «Договор № 12 от 01.06.2026».
+            </p>
           </section>
         )}
 
@@ -237,7 +367,8 @@ export function DocumentForm({
                 key={item.id}
                 item={item}
                 placeholder={copy.itemPlaceholder}
-                showUnit={isAvr}
+                showUnit={showUnit}
+                unitOptions={unitChoices}
                 canRemove={items.length > 1}
                 onChange={(patch) => updateItem(item.id, patch)}
                 onRemove={() => removeItem(item.id)}
@@ -251,7 +382,12 @@ export function DocumentForm({
             className="mt-3 inline-flex items-center gap-2 rounded-field border border-dashed border-line-strong px-3.5 py-2 text-sm font-medium text-muted transition-colors hover:border-tenge/50 hover:text-tenge-ink"
           >
             <IconPlus className="size-4" />
-            Добавить {docType === "avr" ? "работу" : "позицию"}
+            Добавить{" "}
+            {docType === "avr"
+              ? "работу"
+              : docType === "nakladnaja"
+                ? "товар"
+                : "позицию"}
           </button>
         </section>
 
@@ -270,34 +406,52 @@ export function DocumentForm({
       {/* ---- sticky action bar ---- */}
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <button
-            type="button"
-            onClick={() => submit("draft")}
-            disabled={pending}
-            className="rounded-field px-3.5 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-sunken hover:text-ink disabled:opacity-40"
-          >
-            Сохранить черновик
-          </button>
+          {/* Draft / new docs: "save draft" on the left. Already-sent docs save
+              changes with a single primary button, so the left slot is empty. */}
+          {isDraftDoc ? (
+            <button
+              type="button"
+              onClick={() => submit("draft")}
+              disabled={pending}
+              className="rounded-field px-3.5 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-sunken hover:text-ink disabled:opacity-40"
+            >
+              Сохранить черновик
+            </button>
+          ) : (
+            <span />
+          )}
 
           <div className="flex items-center gap-3">
             {submitError ? (
               <span className="text-sm text-danger">{submitError}</span>
             ) : (
+              isDraftDoc &&
               !canSend && (
                 <span className="hidden text-sm text-faint sm:inline">
                   {!client ? "Выберите клиента" : "Добавьте позицию"}
                 </span>
               )
             )}
-            <button
-              type="button"
-              onClick={() => submit("send")}
-              disabled={!canSend || pending}
-              className="inline-flex items-center gap-2 rounded-field bg-tenge px-5 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep active:bg-tenge-press disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {pending ? "Отправляем…" : copy.send}
-              <IconArrowRight className="size-4" />
-            </button>
+            {isDraftDoc ? (
+              <button
+                type="button"
+                onClick={() => submit("send")}
+                disabled={!canSend || pending}
+                className="inline-flex items-center gap-2 rounded-field bg-tenge px-5 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep active:bg-tenge-press disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {pending ? "Отправляем…" : copy.send}
+                <IconArrowRight className="size-4" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => submit("draft")}
+                disabled={pending}
+                className="inline-flex items-center gap-2 rounded-field bg-tenge px-5 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep active:bg-tenge-press disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {pending ? "Сохраняем…" : "Сохранить изменения"}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -358,7 +512,7 @@ function BankProfilePicker({
 
 /* ============================================================ client field == */
 
-function ClientField({
+export function ClientField({
   clients,
   client,
   onSelect,
@@ -610,11 +764,16 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function StatusPill() {
+function StatusPill({ status }: { status: string }) {
+  const st = STATUS[status] ?? STATUS.draft;
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-pill border border-line bg-paper px-2.5 py-1 text-xs font-medium text-muted">
-      <span className="size-1.5 rounded-full bg-faint" />
-      Черновик
+    <span
+      className={cn(
+        "inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium",
+        st.cls
+      )}
+    >
+      {st.label}
     </span>
   );
 }
@@ -644,8 +803,9 @@ function Segmented({
   onChange: (v: DocType) => void;
 }) {
   const opts: Array<{ k: DocType; label: string }> = [
-    { k: "invoice", label: "Счёт на оплату" },
+    { k: "invoice", label: "Счёт" },
     { k: "avr", label: "Акт (АВР)" },
+    { k: "nakladnaja", label: "Накладная" },
   ];
   return (
     <div className="inline-flex rounded-field bg-sunken p-1">
@@ -673,6 +833,7 @@ function ItemCard({
   item,
   placeholder,
   showUnit,
+  unitOptions,
   canRemove,
   onChange,
   onRemove,
@@ -680,6 +841,7 @@ function ItemCard({
   item: LineItem;
   placeholder: string;
   showUnit: boolean;
+  unitOptions: string[];
   canRemove: boolean;
   onChange: (patch: Partial<LineItem>) => void;
   onRemove: () => void;
@@ -716,12 +878,10 @@ function ItemCard({
             aria-label="Количество"
           />
           {showUnit && (
-            <input
+            <UnitField
               value={item.unit}
-              onChange={(e) => onChange({ unit: e.target.value })}
-              placeholder="ед. изм."
-              className={cn(fieldCls, "w-24 text-center")}
-              aria-label="Единица измерения"
+              options={unitOptions}
+              onChange={(v) => onChange({ unit: v })}
             />
           )}
           <span className="text-faint">×</span>
@@ -751,6 +911,73 @@ function ItemCard({
   );
 }
 
+/* ------------------------------------------------------------- unit field -- */
+/* Combobox for «ед. изм.»: pick a previously-used unit or type a new one. */
+
+function UnitField({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: PointerEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointer);
+    return () => document.removeEventListener("pointerdown", onPointer);
+  }, [open]);
+
+  const q = value.trim().toLowerCase();
+  const matches = options.filter(
+    (o) => o.toLowerCase().includes(q) && o.toLowerCase() !== q
+  );
+
+  return (
+    <div ref={ref} className="relative">
+      <input
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        placeholder="ед. изм."
+        className={cn(fieldCls, "w-24 text-center")}
+        aria-label="Единица измерения"
+        autoComplete="off"
+      />
+      {open && matches.length > 0 && (
+        <ul className="absolute left-0 z-30 mt-1 max-h-44 w-32 overflow-auto rounded-card border border-line bg-raised p-1 shadow-pop">
+          {matches.slice(0, 8).map((o) => (
+            <li key={o}>
+              <button
+                type="button"
+                // Fire before the input's blur so the click registers.
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onChange(o);
+                  setOpen(false);
+                }}
+                className="block w-full rounded-md px-2.5 py-1.5 text-left text-sm text-ink transition-colors hover:bg-sunken"
+              >
+                {o}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 /* ----------------------------------------------------------- date popover -- */
 
 const MONTHS = [
@@ -776,17 +1003,32 @@ function sameDay(a: Date, b: Date): boolean {
   );
 }
 
-function DatePopover({
+export function DatePopover({
   date,
   onChange,
+  prefix = "от",
+  placeholder = "дата",
+  triggerClassName,
+  align = "right",
 }: {
-  date: Date;
+  date: Date | null;
   onChange: (d: Date) => void;
+  /** Word before the date in the trigger, e.g. "от". */
+  prefix?: string;
+  /** Trigger text shown when no date is selected. */
+  placeholder?: string;
+  /** Override the trigger styling (defaults to the inline doc-date look). */
+  triggerClassName?: string;
+  /** Which edge the dropdown aligns to. */
+  align?: "left" | "right";
 }) {
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState(() => ({ y: date.getFullYear(), m: date.getMonth() }));
-  const ref = useRef<HTMLDivElement>(null);
   const today = new Date();
+  const [view, setView] = useState(() => {
+    const base = date ?? today;
+    return { y: base.getFullYear(), m: base.getMonth() };
+  });
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -816,14 +1058,22 @@ function DatePopover({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+        className={
+          triggerClassName ??
+          "mt-1 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+        }
       >
         <IconCalendar className="size-4 text-faint" />
-        от {formatDateRu(date)}
+        {date ? `${prefix} ${formatDateRu(date)}`.trim() : placeholder}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-64 rounded-card border border-line bg-raised p-3 shadow-pop">
+        <div
+          className={cn(
+            "absolute z-30 mt-2 w-64 rounded-card border border-line bg-raised p-3 shadow-pop",
+            align === "left" ? "left-0" : "right-0"
+          )}
+        >
           <div className="mb-2 flex items-center justify-between">
             <button
               type="button"
@@ -855,7 +1105,7 @@ function DatePopover({
             {monthCells(view.y, view.m).map((d, i) => {
               if (d === null) return <span key={i} />;
               const cellDate = new Date(view.y, view.m, d);
-              const selected = sameDay(cellDate, date);
+              const selected = date ? sameDay(cellDate, date) : false;
               const isToday = sameDay(cellDate, today);
               return (
                 <button

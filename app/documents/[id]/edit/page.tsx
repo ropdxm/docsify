@@ -1,40 +1,37 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { requireCompany, getBankProfiles } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
-import { DocumentForm, type SavedClient } from "./document-form";
+import {
+  DocumentForm,
+  type SavedClient,
+  type DocumentInitial,
+} from "../../new/document-form";
 
-export default async function NewDocumentPage() {
+export default async function EditDocumentPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const company = await requireCompany();
-
-  // The user's saved clients — searchable in the form, fetched from the DB.
   const supabase = await createClient();
-  const { data } = await supabase
+
+  const { data: doc } = await supabase
+    .from("documents")
+    .select("*, counterparty:counterparties(*)")
+    .eq("id", id)
+    .eq("company_id", company.id)
+    .maybeSingle();
+  if (!doc) notFound();
+
+  // The user's saved clients — searchable in the form.
+  const { data: clientsData } = await supabase
     .from("counterparties")
     .select("id, bin, name, director, address")
     .eq("company_id", company.id)
     .order("name");
-  const clients = (data ?? []) as SavedClient[];
-
-  // Units this company has typed before (АВР / накладная line items), so the
-  // "ед. изм." field can offer them as suggestions. Most-recent documents first.
-  const { data: unitRows } = await supabase
-    .from("documents")
-    .select("items")
-    .eq("company_id", company.id)
-    .order("created_at", { ascending: false })
-    .limit(200);
-  const seen = new Set<string>();
-  const unitOptions: string[] = [];
-  for (const row of unitRows ?? []) {
-    const items = (row.items ?? []) as Array<{ unit?: string | null }>;
-    for (const it of items) {
-      const u = (it?.unit ?? "").trim();
-      if (u && !seen.has(u)) {
-        seen.add(u);
-        unitOptions.push(u);
-      }
-    }
-  }
+  const clients = (clientsData ?? []) as SavedClient[];
 
   const bankProfiles = (await getBankProfiles(company.id)).map((p) => ({
     id: p.id,
@@ -44,10 +41,48 @@ export default async function NewDocumentPage() {
     is_primary: p.is_primary,
   }));
 
+  // Previously-used units, for the "ед. изм." suggestions.
+  const { data: unitRows } = await supabase
+    .from("documents")
+    .select("items")
+    .eq("company_id", company.id)
+    .order("created_at", { ascending: false })
+    .limit(200);
+  const seen = new Set<string>();
+  const unitOptions: string[] = [];
+  for (const row of unitRows ?? []) {
+    const its = (row.items ?? []) as Array<{ unit?: string | null }>;
+    for (const it of its) {
+      const u = (it?.unit ?? "").trim();
+      if (u && !seen.has(u)) {
+        seen.add(u);
+        unitOptions.push(u);
+      }
+    }
+  }
+
+  const cp = Array.isArray(doc.counterparty)
+    ? doc.counterparty[0]
+    : doc.counterparty;
+
+  const initial: DocumentInitial = {
+    type: doc.type,
+    status: doc.status,
+    number: doc.number,
+    date: doc.date,
+    client: {
+      bin: cp?.bin ?? "",
+      name: cp?.name ?? "",
+      director: cp?.director ?? "",
+      address: cp?.address ?? "",
+    },
+    items: (doc.items ?? []) as DocumentInitial["items"],
+    contract: doc.contract ?? null,
+    bankProfileId: doc.bank_profile_id ?? null,
+  };
+
   return (
     <div className="min-h-full">
-      {/* Grounding: where you are + a clear way out. Brand sits on the same warm
-          paper as the canvas, separated only by a hairline — no "header world". */}
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -69,10 +104,10 @@ export default async function NewDocumentPage() {
       <main className="mx-auto w-full max-w-3xl px-4 pb-44 pt-6 sm:pt-10">
         <div className="mb-5 px-1 sm:mb-7">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Новый документ
+            Редактировать документ
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Заполните, и отправьте клиенту ссылкой — без печатей и Word.
+            {doc.number} — изменения сохранятся в этот же документ.
           </p>
         </div>
         <DocumentForm
@@ -80,6 +115,8 @@ export default async function NewDocumentPage() {
           clients={clients}
           bankProfiles={bankProfiles}
           unitOptions={unitOptions}
+          documentId={doc.id}
+          initial={initial}
         />
       </main>
     </div>

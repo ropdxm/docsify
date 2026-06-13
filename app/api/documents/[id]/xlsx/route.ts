@@ -1,5 +1,6 @@
 import { renderInvoiceXlsx, type XlsxDoc } from "@/lib/xlsx/invoice";
 import { renderAvrXlsx } from "@/lib/xlsx/avr";
+import { renderNakladnajaXlsx } from "@/lib/xlsx/nakladnaja";
 import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -41,7 +42,9 @@ export async function GET(
   const buffer =
     doc.type === "avr"
       ? await renderAvrXlsx(payload)
-      : await renderInvoiceXlsx(payload);
+      : doc.type === "nakladnaja"
+        ? await renderNakladnajaXlsx(payload)
+        : await renderInvoiceXlsx(payload);
 
   // Store the filled form (best-effort).
   const filePath = `${doc.company_id}/${doc.id}.xlsx`;

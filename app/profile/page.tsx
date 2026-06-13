@@ -17,7 +17,7 @@ export default async function ProfilePage() {
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">Быстрые деньги</span>
+            <span className="font-semibold tracking-tight">docsify</span>
           </Link>
           <Link
             href="/dashboard"

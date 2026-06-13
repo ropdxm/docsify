@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
   // Trace runtime asset files into the relevant serverless functions.
   outputFileTracingIncludes: {
     "/api/documents/[id]/pdf": ["./lib/pdf/fonts/**"],
-    "/api/documents/[id]/xlsx": ["./public/schet_na_oplatu_AkshatyrPHYTO.xlsx"],
+    "/api/documents/[id]/xlsx": [
+      "./public/schet_na_oplatu_AkshatyrPHYTO.xlsx",
+      "./public/aktofworks.xlsx",
+    ],
   },
 };
 

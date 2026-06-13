@@ -8,4 +8,6 @@ export const STATUS: Record<string, { label: string; cls: string }> = {
 export const DOC_TYPE_LABEL: Record<string, string> = {
   invoice: "Счёт",
   avr: "Акт",
+  nakladnaja: "Накладная",
+  dogovor: "Договор",
 };
