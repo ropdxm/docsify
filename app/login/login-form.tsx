@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { login, type AuthState } from "@/lib/actions/auth";
+import { useGlobalPending } from "@/components/loading";
 import { field, label, btnPrimary, cn } from "@/lib/ui";
 
 export function LoginForm({ next }: { next?: string }) {
@@ -9,6 +10,7 @@ export function LoginForm({ next }: { next?: string }) {
     login,
     undefined
   );
+  useGlobalPending(pending);
 
   return (
     <form action={action} className="space-y-4">

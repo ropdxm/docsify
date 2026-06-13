@@ -1,12 +1,16 @@
 import type { ComponentType } from "react";
 import Link from "next/link";
 import { requireCompany } from "@/lib/dal";
+import { getIncomingDogovors } from "@/lib/incoming";
 import { createClient } from "@/lib/supabase/server";
-import { logout } from "@/lib/actions/auth";
 import { markDocumentPaid } from "@/lib/actions/documents";
 import { formatTenge, formatDateRu } from "@/lib/format";
 import { STATUS, DOC_TYPE_LABEL } from "@/lib/status";
 import { cn } from "@/lib/ui";
+import { AppHeader } from "@/components/app-header";
+import { AppFooter } from "@/components/app-footer";
+import { IncomingList } from "@/components/incoming-list";
+import { SubmitButton } from "@/components/loading";
 
 type DocRow = {
   id: string;
@@ -89,13 +93,16 @@ export default async function DashboardPage({
   const justUpdated = typeof sp.updated === "string";
 
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("documents")
-    .select(
-      "id, type, number, date, total_amount, status, share_token, paid_at, counterparty:counterparties(name)"
-    )
-    .eq("company_id", company.id)
-    .order("created_at", { ascending: false });
+  const [{ data }, incoming] = await Promise.all([
+    supabase
+      .from("documents")
+      .select(
+        "id, type, number, date, total_amount, status, share_token, paid_at, counterparty:counterparties(name)"
+      )
+      .eq("company_id", company.id)
+      .order("created_at", { ascending: false }),
+    getIncomingDogovors(company),
+  ]);
 
   const docs = (data ?? []) as DocRow[];
 
@@ -123,31 +130,14 @@ export default async function DashboardPage({
   }
 
   return (
-    <div className="min-h-full">
-      <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">docsify</span>
-          </Link>
-          <div className="flex items-center gap-3 text-sm">
-            <Link
-              href="/profile"
-              className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
-            >
-              <span className="hidden sm:inline">{company.name}</span>
-              <span className="sm:hidden">Профиль</span>
-            </Link>
-            <form action={logout}>
-              <button className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink">
-                Выйти
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
+    <div className="flex min-h-full flex-col">
+      <AppHeader
+        companyName={company.name}
+        active="documents"
+        incomingCount={incoming.length}
+      />
 
-      <main className="mx-auto w-full max-w-4xl px-4 py-6 sm:py-10">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6 sm:py-10">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             Документы
@@ -185,6 +175,29 @@ export default async function DashboardPage({
           <SummaryCard label="Просрочено" value={overdue} danger />
           <SummaryCard label="Оплачено в этом месяце" value={paidThisMonth} />
         </div>
+
+        {/* Incoming — договоры sent to us, awaiting our signature. */}
+        {incoming.length > 0 && (
+          <section className="mt-8">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-faint">
+                Входящие
+                <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-pill bg-tenge px-1.5 text-[11px] font-semibold text-on-tenge">
+                  {incoming.length}
+                </span>
+              </h2>
+              {incoming.length > 3 && (
+                <Link
+                  href="/incoming"
+                  className="text-sm font-medium text-tenge-ink transition-colors hover:text-tenge-deep"
+                >
+                  Все входящие →
+                </Link>
+              )}
+            </div>
+            <IncomingList items={incoming.slice(0, 3)} />
+          </section>
+        )}
 
         {/* List */}
         <div className="mt-8">
@@ -288,9 +301,9 @@ export default async function DashboardPage({
                       {/* "Mark as paid" only makes sense for invoices. */}
                       {isInvoice && d.status !== "paid" && (
                         <form action={markDocumentPaid.bind(null, d.id)}>
-                          <button className="rounded-field bg-paid px-2.5 py-1.5 font-medium text-white opacity-80 transition-opacity hover:opacity-100">
+                          <SubmitButton className="rounded-field bg-paid px-2.5 py-1.5 font-medium text-white opacity-80 transition-opacity hover:opacity-100">
                             Оплачено
-                          </button>
+                          </SubmitButton>
                         </form>
                       )}
                     </div>
@@ -301,6 +314,8 @@ export default async function DashboardPage({
           )}
         </div>
       </main>
+
+      <AppFooter />
     </div>
   );
 }

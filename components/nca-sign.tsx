@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { NCALayerClient as NCALayerClientType } from "ncalayer-js-client";
 import { signDogovorAsOwner, signDogovorAsClient } from "@/lib/actions/dogovor";
+import { useGlobalPending } from "@/components/loading";
 
 // The package is CommonJS with a NAMED export (`exports.NCALayerClient`).
 // Depending on the bundler's CJS interop it may surface on the namespace or
@@ -48,6 +49,7 @@ export function NcaSign({
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  useGlobalPending(pending);
 
   async function sign() {
     setError(null);

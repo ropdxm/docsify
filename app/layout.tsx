@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Onest, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LoadingProvider } from "@/components/loading";
 
 // Onest — Cyrillic-first humanist sans. Warm and trustworthy without the
 // coldness of a government form. Variable, so we get every weight for free.
@@ -34,7 +35,9 @@ export default function RootLayout({
       lang="ru"
       className={`${onest.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-paper font-sans text-ink">{children}</body>
+      <body className="min-h-full bg-paper font-sans text-ink">
+        <LoadingProvider>{children}</LoadingProvider>
+      </body>
     </html>
   );
 }

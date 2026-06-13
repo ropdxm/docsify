@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { signup, type AuthState } from "@/lib/actions/auth";
 import { RequisitesFields } from "@/components/requisites-fields";
+import { useGlobalPending } from "@/components/loading";
 import { field, label, btnPrimary, cn } from "@/lib/ui";
 
 export function SignupForm() {
@@ -10,6 +11,7 @@ export function SignupForm() {
     signup,
     undefined
   );
+  useGlobalPending(pending);
 
   return (
     <form action={action} className="space-y-6">

@@ -32,10 +32,14 @@ export async function verifyCms(
   cmsBase64: string,
   dataBase64: string
 ): Promise<CmsVerifyResult> {
-  // NCANode's Java base64 decoder is strict — strip any PEM-style line breaks
-  // or whitespace NCALayer may have wrapped the signature with.
-  const cms = cmsBase64.replace(/\s+/g, "");
-  const data = dataBase64.replace(/\s+/g, "");
+  // NCANode's /cms/verify wants the RAW base64 of the CMS. NCALayer's `basics`
+  // module returns the CMS wrapped in PEM armor:
+  //   -----BEGIN CMS-----\n<base64>\n-----END CMS-----
+  // The armor dashes are what NCANode's strict decoder rejects with
+  // "Illegal base64 character 2d" ('-'). Strip the armor and whitespace so only
+  // the base64 body is sent. (The PDF `data` has no armor and is unaffected.)
+  const cms = stripPemToBase64(cmsBase64);
+  const data = stripPemToBase64(dataBase64);
 
   const res = await fetch(`${NCANODE_URL.replace(/\/$/, "")}/cms/verify`, {
     method: "POST",
@@ -71,6 +75,16 @@ export async function verifyCms(
   const valid = json.valid === true && signers.length > 0;
 
   return { valid, signerBin, signerName, raw: json };
+}
+
+// Remove PEM armor (-----BEGIN …----- / -----END …-----) and all whitespace,
+// leaving only the strict standard base64 body NCANode's Java decoder accepts.
+// A bare base64 string (e.g. the PDF data) passes through with just whitespace
+// stripped.
+function stripPemToBase64(s: string): string {
+  return s
+    .replace(/-----(?:BEGIN|END)[^-]*-----/g, "")
+    .replace(/\s+/g, "");
 }
 
 export function sameBin(a: string | null, b: string | null): boolean {

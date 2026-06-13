@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireUser } from "@/lib/dal";
+import { ensureTrialSubscription } from "@/lib/subscription";
 import { Requisites, BankRequisites, fieldErrorsOf } from "@/lib/schemas";
 
 export type AuthState =
@@ -72,6 +73,9 @@ export async function signup(
 
   // The first bank profile becomes the primary one used on documents.
   if (companyRow) {
+    // New accounts get 1 month of Pro for free (DB-only trial, no card needed).
+    await ensureTrialSubscription(companyRow.id);
+
     const { error: bankError } = await admin.from("bank_profiles").insert({
       company_id: companyRow.id,
       iik,
@@ -152,6 +156,9 @@ export async function createCompany(
   if (error && error.code !== "23505") return { error: error.message };
 
   if (companyRow) {
+    // New accounts get 1 month of Pro for free (DB-only trial, no card needed).
+    await ensureTrialSubscription(companyRow.id);
+
     const { error: bankError } = await supabase.from("bank_profiles").insert({
       company_id: companyRow.id,
       iik,

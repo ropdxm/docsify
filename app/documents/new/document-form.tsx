@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { useGlobalPending } from "@/components/loading";
 import { formatDateRu, formatTenge, num } from "@/lib/format";
 import { createDocument, updateDocument } from "@/lib/actions/documents";
 import { STATUS } from "@/lib/status";
@@ -206,6 +207,7 @@ export function DocumentForm({
 
   const [pending, startTransition] = useTransition();
   const [submitError, setSubmitError] = useState<string | null>(null);
+  useGlobalPending(pending);
 
   function submit(mode: "draft" | "send") {
     setSubmitError(null);

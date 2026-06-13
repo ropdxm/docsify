@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { cn } from "@/lib/ui";
+import { useGlobalPending } from "@/components/loading";
 import { createDogovor } from "@/lib/actions/dogovor";
 import {
   ClientField,
@@ -36,6 +37,7 @@ export function DogovorForm({
 
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  useGlobalPending(pending);
 
   const canCreate =
     client !== null &&

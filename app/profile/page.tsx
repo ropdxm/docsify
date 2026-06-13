@@ -5,14 +5,35 @@ import {
   deleteBankProfile,
 } from "@/lib/actions/bank-profiles";
 import { cn } from "@/lib/ui";
+import {
+  getSubscription,
+  effectivePlan,
+  isPaidPro,
+  trialDaysLeft,
+} from "@/lib/subscription";
+import { AppFooter } from "@/components/app-footer";
+import { SubscriptionCard } from "@/components/subscription-card";
+import { SubmitButton } from "@/components/loading";
 import { AddBankProfile } from "./add-bank-profile";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const company = await requireCompany();
-  const profiles = await getBankProfiles(company.id);
+  const [profiles, sub, sp] = await Promise.all([
+    getBankProfiles(company.id),
+    getSubscription(company.id),
+    searchParams,
+  ]);
+
+  const plan = effectivePlan(sub);
+  const paid = isPaidPro(sub);
+  const daysLeft = trialDaysLeft(sub);
 
   return (
-    <div className="min-h-full">
+    <div className="flex min-h-full flex-col">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -28,7 +49,7 @@ export default async function ProfilePage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:py-10">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:py-10">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Профиль</h1>
 
         {/* Company requisites */}
@@ -46,6 +67,22 @@ export default async function ProfilePage() {
               {company.address && <Row label="Адрес" value={company.address} />}
             </dl>
           </div>
+        </section>
+
+        {/* Subscription */}
+        <section className="mt-8">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-faint">
+            Подписка
+          </h2>
+          <SubscriptionCard
+            plan={plan}
+            isPaid={paid}
+            trialDaysLeft={daysLeft}
+            periodEndIso={sub?.current_period_end ?? null}
+            cancelAtPeriodEnd={sub?.cancel_at_period_end ?? false}
+            justUpgraded={typeof sp.upgraded === "string"}
+            justCanceled={typeof sp.canceled === "string"}
+          />
         </section>
 
         {/* Bank requisite profiles */}
@@ -81,6 +118,8 @@ export default async function ProfilePage() {
           </div>
         </section>
       </main>
+
+      <AppFooter />
     </div>
   );
 }
@@ -120,16 +159,16 @@ function BankProfileCard({
         <div className="mt-4 flex items-center gap-2 border-t border-line-soft pt-3 text-sm">
           {!p.is_primary && (
             <form action={setPrimaryBankProfile.bind(null, p.id)}>
-              <button className="rounded-field px-2.5 py-1.5 font-medium text-tenge-ink transition-colors hover:bg-tenge-tint">
+              <SubmitButton className="rounded-field px-2.5 py-1.5 font-medium text-tenge-ink transition-colors hover:bg-tenge-tint">
                 Сделать основным
-              </button>
+              </SubmitButton>
             </form>
           )}
           {deletable && (
             <form action={deleteBankProfile.bind(null, p.id)}>
-              <button className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-danger-tint hover:text-danger">
+              <SubmitButton className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-danger-tint hover:text-danger">
                 Удалить
-              </button>
+              </SubmitButton>
             </form>
           )}
         </div>

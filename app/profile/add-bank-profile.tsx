@@ -6,6 +6,7 @@ import {
   type BankProfileState,
 } from "@/lib/actions/bank-profiles";
 import { BankFields } from "@/components/requisites-fields";
+import { useGlobalPending } from "@/components/loading";
 import { btnPrimary, btnGhost } from "@/lib/ui";
 
 export function AddBankProfile() {
@@ -18,6 +19,7 @@ export function AddBankProfile() {
     },
     undefined
   );
+  useGlobalPending(pending);
 
   if (!open) {
     return (

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { createCompany, type AuthState } from "@/lib/actions/auth";
 import { RequisitesFields } from "@/components/requisites-fields";
+import { useGlobalPending } from "@/components/loading";
 import { btnPrimary, cn } from "@/lib/ui";
 
 export function OnboardingForm() {
@@ -10,6 +11,7 @@ export function OnboardingForm() {
     createCompany,
     undefined
   );
+  useGlobalPending(pending);
 
   return (
     <form action={action} className="space-y-6">
