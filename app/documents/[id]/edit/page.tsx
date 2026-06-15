@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireCompany, getBankProfiles } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -24,6 +24,11 @@ export default async function EditDocumentPage({
     .eq("company_id", company.id)
     .maybeSingle();
   if (!doc) notFound();
+  // Договоры are signed (not edited here), and only drafts are editable. A
+  // sent/signed/paid document is view-only — send it to its detail page.
+  if (doc.type === "dogovor" || doc.status !== "draft") {
+    redirect(`/documents/${id}`);
+  }
 
   // The user's saved clients — searchable in the form.
   const { data: clientsData } = await supabase

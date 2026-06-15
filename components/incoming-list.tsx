@@ -29,7 +29,7 @@ export function IncomingList({ items }: { items: IncomingDogovor[] }) {
           <div
             key={d.id}
             className={cn(
-              "relative flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 transition-colors hover:bg-sunken/40 sm:px-5",
+              "relative px-4 py-3.5 transition-colors hover:bg-sunken/40 sm:px-5",
               i > 0 && "border-t border-line-soft"
             )}
           >
@@ -38,44 +38,46 @@ export function IncomingList({ items }: { items: IncomingDogovor[] }) {
               className="absolute inset-0"
               aria-label={`Открыть договор ${d.number} от ${d.from_name}`}
             />
-            <div className="flex min-w-0 flex-1 items-center gap-3">
-              <span
-                className="inline-flex size-9 shrink-0 items-center justify-center rounded-card bg-[#e7eef7] text-[#3a5a8c]"
-                aria-hidden
-              >
-                <IconContract className="size-[18px]" />
-              </span>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="truncate font-medium">{d.from_name}</span>
-                  <span
-                    className={cn(
-                      "inline-flex shrink-0 items-center rounded-pill border px-2 py-0.5 text-xs font-medium",
-                      st.cls
-                    )}
-                  >
-                    {st.label}
-                  </span>
-                </div>
-                <div className="mt-0.5 truncate text-xs text-faint">
-                  <span className="font-medium text-muted">
-                    {d.title?.trim() || "Договор"}
-                  </span>{" "}
-                  {d.number} · от {formatDateRu(new Date(d.date))}
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-4">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <span
+                  className="inline-flex size-9 shrink-0 items-center justify-center rounded-card bg-[#e7eef7] text-[#3a5a8c]"
+                  aria-hidden
+                >
+                  <IconContract className="size-[18px]" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-medium">{d.from_name}</span>
+                    <span
+                      className={cn(
+                        "inline-flex shrink-0 items-center rounded-pill border px-2 py-0.5 text-xs font-medium",
+                        st.cls
+                      )}
+                    >
+                      {st.label}
+                    </span>
+                  </div>
+                  <div className="mt-0.5 truncate text-xs text-faint">
+                    <span className="font-medium text-muted">
+                      {d.title?.trim() || "Договор"}
+                    </span>{" "}
+                    {d.number} · от {formatDateRu(new Date(d.date))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="shrink-0 text-sm">
-              {awaitingMe ? (
-                <span className="inline-flex items-center gap-1.5 rounded-field bg-tenge px-3 py-1.5 font-semibold text-on-tenge shadow-soft">
-                  Подписать
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 text-tenge-ink">
-                  ✓ Подписан
-                </span>
-              )}
+              <div className="flex items-center justify-end border-t border-line-soft pt-2.5 text-sm sm:border-0 sm:pt-0">
+                {awaitingMe ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-field bg-tenge px-3.5 py-2 font-semibold text-on-tenge shadow-soft">
+                    Подписать
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-tenge-ink">
+                    ✓ Подписан
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         );

@@ -153,11 +153,16 @@ export async function updateDocument(
   // The document must belong to this company.
   const { data: existing } = await supabase
     .from("documents")
-    .select("id")
+    .select("id, status")
     .eq("id", id)
     .eq("company_id", company.id)
     .maybeSingle();
   if (!existing) return { error: "Документ не найден" };
+  // Only drafts can be edited. Once a document is sent/signed/paid it is locked
+  // and view-only — reject any attempt to change it, even if the UI is bypassed.
+  if (existing.status !== "draft") {
+    return { error: "Документ уже отправлен — его можно только просматривать." };
+  }
 
   // Resolve the bank profile (chosen, else primary fallback) — same as create.
   let bankProfileId: string | null = null;

@@ -224,88 +224,94 @@ export default async function DashboardPage({
                 const st = STATUS[d.status] ?? STATUS.draft;
                 // Status matters for invoices (payment) and договоры (signing).
                 const showStatus = isInvoice || isDogovor;
-                // Договоры open a detail/sign view; structured docs open the editor.
-                const href = isDogovor
-                  ? `/documents/${d.id}`
-                  : `/documents/${d.id}/edit`;
+                // Договоры open the sign view. Structured docs: a draft opens
+                // the editor; once sent it's view-only (detail page).
+                const href =
+                  isDogovor || d.status !== "draft"
+                    ? `/documents/${d.id}`
+                    : `/documents/${d.id}/edit`;
                 return (
                   <div
                     key={d.id}
                     className={cn(
-                      "relative flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 transition-colors hover:bg-sunken/40 sm:px-5",
+                      "relative px-4 py-3.5 transition-colors hover:bg-sunken/40 sm:px-5",
                       i > 0 && "border-t border-line-soft"
                     )}
                   >
-                    {/* The whole row opens the document; action buttons below
-                        sit above this stretched link via z-10. */}
+                    {/* The whole row opens the document; the action buttons sit
+                        above this stretched link via z-10. */}
                     <Link
                       href={href}
                       className="absolute inset-0"
                       aria-label={`Открыть ${DOC_TYPE_LABEL[d.type]} ${d.number}`}
                     />
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                      <span
-                        className={cn(
-                          "inline-flex size-9 shrink-0 items-center justify-center rounded-card",
-                          meta.tile
-                        )}
-                        aria-hidden
-                      >
-                        <Icon className="size-[18px]" />
-                      </span>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="truncate font-medium">
-                            {clientName(d)}
-                          </span>
-                          {/* Status applies to invoices (payment) and договоры (signing). */}
-                          {showStatus && (
-                            <span
-                              className={cn(
-                                "inline-flex shrink-0 items-center rounded-pill border px-2 py-0.5 text-xs font-medium",
-                                st.cls
-                              )}
-                            >
-                              {st.label}
-                            </span>
+                    <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-4">
+                      {/* Identity */}
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <span
+                          className={cn(
+                            "inline-flex size-9 shrink-0 items-center justify-center rounded-card",
+                            meta.tile
                           )}
-                        </div>
-                        <div className="mt-0.5 text-xs text-faint">
-                          <span className="font-medium text-muted">
-                            {DOC_TYPE_LABEL[d.type]}
-                          </span>{" "}
-                          {d.number} · {formatDateRu(new Date(d.date))}
+                          aria-hidden
+                        >
+                          <Icon className="size-[18px]" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="truncate font-medium">
+                              {clientName(d)}
+                            </span>
+                            {showStatus && (
+                              <span
+                                className={cn(
+                                  "inline-flex shrink-0 items-center rounded-pill border px-2 py-0.5 text-xs font-medium",
+                                  st.cls
+                                )}
+                              >
+                                {st.label}
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-0.5 truncate text-xs text-faint">
+                            <span className="font-medium text-muted">
+                              {DOC_TYPE_LABEL[d.type]}
+                            </span>{" "}
+                            {d.number} · {formatDateRu(new Date(d.date))}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="text-right font-semibold tabular-nums">
-                      {formatTenge(d.total_amount)}
-                    </div>
-
-                    <div className="relative z-10 flex items-center gap-1 text-sm">
-                      <a
-                        href={`/api/documents/${d.id}/xlsx`}
-                        className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
-                      >
-                        Скачать
-                      </a>
-                      <a
-                        href={`/p/${d.share_token}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
-                      >
-                        Ссылка
-                      </a>
-                      {/* "Mark as paid" only makes sense for invoices. */}
-                      {isInvoice && d.status !== "paid" && (
-                        <form action={markDocumentPaid.bind(null, d.id)}>
-                          <SubmitButton className="rounded-field bg-paid px-2.5 py-1.5 font-medium text-white opacity-80 transition-opacity hover:opacity-100">
-                            Оплачено
-                          </SubmitButton>
-                        </form>
-                      )}
+                      {/* Amount + actions: a divided bar on mobile, inline on desktop */}
+                      <div className="flex items-center justify-between gap-3 border-t border-line-soft pt-2.5 sm:justify-end sm:gap-4 sm:border-0 sm:pt-0">
+                        <div className="shrink-0 font-semibold tabular-nums">
+                          {formatTenge(d.total_amount)}
+                        </div>
+                        <div className="relative z-10 flex items-center gap-0.5 text-sm">
+                          <a
+                            href={`/api/documents/${d.id}/xlsx`}
+                            className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
+                          >
+                            Скачать
+                          </a>
+                          <a
+                            href={`/p/${d.share_token}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
+                          >
+                            Ссылка
+                          </a>
+                          {/* "Mark as paid" only makes sense for invoices. */}
+                          {isInvoice && d.status !== "paid" && (
+                            <form action={markDocumentPaid.bind(null, d.id)}>
+                              <SubmitButton className="rounded-field bg-paid px-2.5 py-1.5 font-medium text-white opacity-80 transition-opacity hover:opacity-100">
+                                Оплачено
+                              </SubmitButton>
+                            </form>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
