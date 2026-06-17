@@ -58,7 +58,7 @@ export async function setPrimaryBankProfile(id: string, _formData: FormData) {
     .maybeSingle();
   if (!target) return;
 
-  // Unset the old primary first — a partial unique index allows only one.
+  // Unset the old primary first - a partial unique index allows only one.
   await supabase
     .from("bank_profiles")
     .update({ is_primary: false })

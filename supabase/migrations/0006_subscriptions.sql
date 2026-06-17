@@ -1,5 +1,5 @@
--- Subscriptions — a single Pro plan ($5/mo via Stripe) plus a Free plan.
--- New accounts get 1 month of Pro for free (a DB-only trial — no card needed at
+-- Subscriptions - a single Pro plan ($5/mo via Stripe) plus a Free plan.
+-- New accounts get 1 month of Pro for free (a DB-only trial - no card needed at
 -- signup). After the trial they fall back to Free. For now Free and Pro expose
 -- identical functionality; the `effectivePlan()` helper centralises the logic so
 -- feature gating can be added later without touching call sites.

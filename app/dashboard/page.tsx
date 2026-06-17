@@ -26,8 +26,8 @@ type DocRow = {
 
 function clientName(row: DocRow): string {
   const c = row.counterparty;
-  if (!c) return "—";
-  return Array.isArray(c) ? c[0]?.name ?? "—" : c.name;
+  if (!c) return "-";
+  return Array.isArray(c) ? c[0]?.name ?? "-" : c.name;
 }
 
 /* Per-type identity: a colour-coded icon tile so the kind of document reads at
@@ -73,7 +73,7 @@ function IconBox({ className }: IconProps) {
   );
 }
 function IconContract({ className }: IconProps) {
-  // A signature on a line — a contract you sign.
+  // A signature on a line - a contract you sign.
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 16c1.7 0 2.1-7 3.5-7 1.2 0 1 5 2.2 5 1 0 1.3-2.3 2.5-2.3 1 0 1.2 1.8 2.3 1.8 1 0 1.6-1.2 2.5-1.2" />
@@ -106,14 +106,14 @@ export default async function DashboardPage({
 
   const docs = (data ?? []) as DocRow[];
 
-  // Summary — the "how much am I owed?" question.
+  // Summary - the "how much am I owed?" question.
   const now = new Date();
   const cutoff = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
   let awaiting = 0;
   let overdue = 0;
   let paidThisMonth = 0;
   for (const d of docs) {
-    // Only invoices (счёт) are a request for payment — АВР and накладные are
+    // Only invoices (счёт) are a request for payment - АВР and накладные are
     // supporting documents, so they don't count toward money owed.
     const isInvoice = d.type === "invoice";
     if (isInvoice && (d.status === "sent" || d.status === "signed"))
@@ -176,7 +176,7 @@ export default async function DashboardPage({
           <SummaryCard label="Оплачено в этом месяце" value={paidThisMonth} />
         </div>
 
-        {/* Incoming — договоры sent to us, awaiting our signature. */}
+        {/* Incoming - договоры sent to us, awaiting our signature. */}
         {incoming.length > 0 && (
           <section className="mt-8">
             <div className="mb-3 flex items-center justify-between gap-3">
@@ -205,7 +205,7 @@ export default async function DashboardPage({
             <div className="rounded-sheet border border-dashed border-line-strong bg-sheet p-10 text-center">
               <p className="font-medium">Пока нет документов</p>
               <p className="mt-1 text-sm text-muted">
-                Создайте первый счёт — это займёт пару минут.
+                Создайте первый счёт - это займёт пару минут.
               </p>
               <Link
                 href="/documents/new"

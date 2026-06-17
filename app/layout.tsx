@@ -3,7 +3,7 @@ import { Onest, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LoadingProvider } from "@/components/loading";
 
-// Onest — Cyrillic-first humanist sans. Warm and trustworthy without the
+// Onest - Cyrillic-first humanist sans. Warm and trustworthy without the
 // coldness of a government form. Variable, so we get every weight for free.
 const onest = Onest({
   variable: "--font-onest",
@@ -11,7 +11,7 @@ const onest = Onest({
   display: "swap",
 });
 
-// Geist Mono — used only for "codes": БИН digits and document numbers, where a
+// Geist Mono - used only for "codes": БИН digits and document numbers, where a
 // monospace face reads as an official reference.
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "docsify — выставить счёт за 2 минуты",
+  title: "docsify - выставить счёт за 2 минуты",
   description:
     "Создавайте счета и акты, отправляйте клиенту ссылкой и следите за оплатой.",
 };

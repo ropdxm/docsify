@@ -60,7 +60,7 @@ export default async function SharePage({
   const company = doc.company;
   const cp = doc.counterparty;
 
-  // Договор is a signable PDF, not a structured document — its own public view.
+  // Договор is a signable PDF, not a structured document - its own public view.
   if (doc.type === "dogovor") {
     const { data: sigData } = await admin
       .from("document_signatures")
@@ -156,7 +156,7 @@ export default async function SharePage({
                 key={i}
                 className="flex items-center justify-between gap-4 border-b border-line-soft pb-2 text-sm last:border-0"
               >
-                <span className="min-w-0 flex-1">{it.description || "—"}</span>
+                <span className="min-w-0 flex-1">{it.description || "-"}</span>
                 <span className="text-faint tabular-nums">
                   {it.quantity}
                   {it.unit ? ` ${it.unit}` : ""} × {formatTenge(it.unitPrice)}
@@ -215,7 +215,7 @@ function Party({
   return (
     <div className="rounded-card border border-line-soft p-3">
       <div className="text-xs uppercase tracking-wider text-faint">{label}</div>
-      <div className="mt-1 font-medium">{name ?? "—"}</div>
+      <div className="mt-1 font-medium">{name ?? "-"}</div>
       {bin ? <div className="text-sm text-muted">БИН/ИИН: {bin}</div> : null}
       {address ? <div className="text-sm text-muted">{address}</div> : null}
     </div>

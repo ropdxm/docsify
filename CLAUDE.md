@@ -2,7 +2,7 @@
 
 ## What This Is
 A B2B SaaS platform for small Kazakhstani businesses (sole proprietors / ТОО with 2–15 employees) 
-that need to get paid faster. Not an "EDO system" — a "get paid" tool.
+that need to get paid faster. Not an "EDO system" - a "get paid" tool.
 
 Core loop: create document → send to client → client signs → track payment status.
 
@@ -16,11 +16,11 @@ Small businesses in Kazakhstan lose 7–14 days per invoice cycle because:
 - Chasing payment requires manual follow-up calls/messages
 
 ### Explicitly Out of Scope for Month 1
-- E-signature (NCA Layer, eGov Mobile) — Month 2
-- Automated payment reminders (SMS/email) — Month 2
-- Integrations (1C, Kaspi, bank APIs) — Month 3+
-- Multi-user / team accounts — Month 3+
-- Mobile app — Month 3+
+- E-signature (NCA Layer, eGov Mobile) - Month 2
+- Automated payment reminders (SMS/email) - Month 2
+- Integrations (1C, Kaspi, bank APIs) - Month 3+
+- Multi-user / team accounts - Month 3+
+- Mobile app - Month 3+
 
 ## Key Pages / Routes
 ## BIN Auto-fill Logic
@@ -57,9 +57,9 @@ The dashboard is the most important screen. It must answer:
 "How much money do I have outstanding right now?"
 
 Show three summary cards at the top:
-1. Awaiting payment — sum of all documents in status 'sent' or 'signed'
-2. Overdue — sum of documents in 'sent' status older than 14 days
-3. Paid this month — sum of documents marked 'paid' in current calendar month
+1. Awaiting payment - sum of all documents in status 'sent' or 'signed'
+2. Overdue - sum of documents in 'sent' status older than 14 days
+3. Paid this month - sum of documents marked 'paid' in current calendar month
 
 Below: document list sorted by updatedAt desc, with:
 - Client name

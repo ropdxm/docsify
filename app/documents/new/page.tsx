@@ -6,7 +6,7 @@ import { DocumentForm, type SavedClient } from "./document-form";
 export default async function NewDocumentPage() {
   const company = await requireCompany();
 
-  // The user's saved clients — searchable in the form, fetched from the DB.
+  // The user's saved clients - searchable in the form, fetched from the DB.
   const supabase = await createClient();
   const { data } = await supabase
     .from("counterparties")
@@ -47,7 +47,7 @@ export default async function NewDocumentPage() {
   return (
     <div className="min-h-full">
       {/* Grounding: where you are + a clear way out. Brand sits on the same warm
-          paper as the canvas, separated only by a hairline — no "header world". */}
+          paper as the canvas, separated only by a hairline - no "header world". */}
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export default async function NewDocumentPage() {
             Новый документ
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Заполните, и отправьте клиенту ссылкой — без печатей и Word.
+            Заполните, и отправьте клиенту ссылкой - без печатей и Word.
           </p>
         </div>
         <DocumentForm

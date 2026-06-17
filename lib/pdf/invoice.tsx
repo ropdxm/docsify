@@ -57,7 +57,7 @@ export type PdfDoc = {
     director?: string | null;
     address?: string | null;
   } | null;
-  /** Реквизиты для оплаты (ИИК, банк, БИК, Кбе, КНП); null — без блока. */
+  /** Реквизиты для оплаты (ИИК, банк, БИК, Кбе, КНП); null - без блока. */
   bank: PdfBank | null;
 };
 
@@ -217,8 +217,8 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
           />
           <Party
             label={isInvoice ? "Покупатель" : "Заказчик"}
-            name={cp?.name ?? "—"}
-            bin={cp?.bin ?? "—"}
+            name={cp?.name ?? "-"}
+            bin={cp?.bin ?? "-"}
             director={cp?.director}
             address={cp?.address}
           />
@@ -235,7 +235,7 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
         {doc.items.map((it, i) => (
           <View key={i} style={s.row} wrap={false}>
             <Text style={s.cNum}>{i + 1}</Text>
-            <Text style={s.cDesc}>{it.description || "—"}</Text>
+            <Text style={s.cDesc}>{it.description || "-"}</Text>
             <Text style={s.cQty}>
               {it.quantity}
               {it.unit ? ` ${it.unit}` : ""}

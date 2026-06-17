@@ -5,7 +5,7 @@ import { STATUS } from "@/lib/status";
 import { cn } from "@/lib/ui";
 
 function IconContract({ className }: { className?: string }) {
-  // A signature on a line — matches the договор icon used elsewhere.
+  // A signature on a line - matches the договор icon used elsewhere.
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 16c1.7 0 2.1-7 3.5-7 1.2 0 1 5 2.2 5 1 0 1.3-2.3 2.5-2.3 1 0 1.2 1.8 2.3 1.8 1 0 1.6-1.2 2.5-1.2" />

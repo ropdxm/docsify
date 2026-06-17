@@ -21,7 +21,7 @@ export function stripeConfigured(): boolean {
 }
 
 // The one paid plan: docsify Pro, $5/month. Defined inline (price_data) so there's
-// no Stripe Dashboard price to create and keep in sync — the amount lives here.
+// no Stripe Dashboard price to create and keep in sync - the amount lives here.
 export const PRO_PRICE = {
   currency: "usd",
   unitAmount: 500, // $5.00, in cents

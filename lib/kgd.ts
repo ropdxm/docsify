@@ -1,12 +1,12 @@
 import "server-only";
 
-// КГД МФ РК «Поиск налогоплательщика» — официальный API портала:
+// КГД МФ РК «Поиск налогоплательщика» - официальный API портала:
 //   GET https://portal.kgd.gov.kz/services/isnaportalsync/public/taxpayer-data
 //   Headers: X-Portal-Token (выдаётся администратором КГД)
 //   Params:  taxpayerCode (12 цифр), taxpayerType (UL | IP | LZCHP), print=false
 // Ответ при совпадении: { taxpayerPortalSearchResponses: [{ messageResult:
 // "SUCCESS", name | fullName, beginDate, endDate?, endReason? }] }.
-// При неверном taxpayerType — HTTP 200 c { errorResponse: { messageResult:
+// При неверном taxpayerType - HTTP 200 c { errorResponse: { messageResult:
 // "FAILED" } }, поэтому перебираем типы по очереди.
 
 const KGD_HOST = "https://portal.kgd.gov.kz";
@@ -14,7 +14,7 @@ const KGD_HOST = "https://portal.kgd.gov.kz";
 export type KgdTaxpayer = {
   name: string;
   taxpayerType: "UL" | "IP" | "LZCHP";
-  /** Дата снятия с учёта (ликвидации); null — действующий. */
+  /** Дата снятия с учёта (ликвидации); null - действующий. */
   endDate: string | null;
 };
 
@@ -32,7 +32,7 @@ type KgdSearchResponse = {
   errorResponse?: { messageResult?: string; errorMessage?: string };
 };
 
-// В БИН пятая цифра — тип юр. лица (4 — резидент, 5 — нерезидент, 6 — ИП(С));
+// В БИН пятая цифра - тип юр. лица (4 - резидент, 5 - нерезидент, 6 - ИП(С));
 // в ИИН на этой позиции стоит цифра месяца рождения. Эвристика выбирает,
 // какой taxpayerType пробовать первым, чтобы не делать лишних запросов
 // (ответ для UL включает многосотенкилобайтную историю платежей).
@@ -78,7 +78,7 @@ export async function kgdLookup(code: string): Promise<KgdTaxpayer | null> {
       if (!name) continue;
       return { name, taxpayerType, endDate: hit.endDate ?? null };
     } catch {
-      // Таймаут или сеть — пробуем следующий тип; в худшем случае вернём null.
+      // Таймаут или сеть - пробуем следующий тип; в худшем случае вернём null.
     }
   }
   return null;

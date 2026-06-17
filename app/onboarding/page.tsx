@@ -11,7 +11,7 @@ export default async function OnboardingPage() {
   return (
     <AuthShell
       title="Ещё пара деталей"
-      subtitle="Укажите реквизиты вашей компании — они пойдут в каждый документ."
+      subtitle="Укажите реквизиты вашей компании - они пойдут в каждый документ."
     >
       <OnboardingForm />
     </AuthShell>

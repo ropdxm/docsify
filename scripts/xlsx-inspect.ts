@@ -5,7 +5,7 @@ const wb = new ExcelJS.Workbook();
 await wb.xlsx.readFile(file);
 
 wb.eachSheet((ws) => {
-  console.log(`\n=== SHEET "${ws.name}" — rows:${ws.rowCount} cols:${ws.columnCount} ===`);
+  console.log(`\n=== SHEET "${ws.name}" - rows:${ws.rowCount} cols:${ws.columnCount} ===`);
   // merged ranges
   const merges = (ws as unknown as { _merges: Record<string, { range?: string }> })._merges;
   console.log("MERGES:", Object.values(merges ?? {}).map((m) => m.range).filter(Boolean).join(", ") || "(none)");

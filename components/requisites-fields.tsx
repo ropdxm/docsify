@@ -186,7 +186,7 @@ export function BankFields({
             name="kbe"
             inputMode="numeric"
             maxLength={2}
-            placeholder="17 — ТОО, 19 — ИП"
+            placeholder="17 - ТОО, 19 - ИП"
             className={field}
           />
           {err("kbe")}

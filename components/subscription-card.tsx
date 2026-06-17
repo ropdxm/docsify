@@ -45,7 +45,7 @@ export function SubscriptionCard({
       )}
       {justCanceled && (
         <p className="mb-4 rounded-card border border-line bg-sunken px-4 py-3 text-sm text-muted">
-          Оплата отменена — вы остались на текущем плане.
+          Оплата отменена - вы остались на текущем плане.
         </p>
       )}
 
@@ -63,7 +63,7 @@ export function SubscriptionCard({
                   ? `Pro активна. Следующее списание ${formatDateRu(periodEnd)}.`
                   : "Pro активна."
               : onTrial
-                ? `Бесплатный Pro на 1 месяц — осталось ${trialDaysLeft} ${plural(trialDaysLeft)}.`
+                ? `Бесплатный Pro на 1 месяц - осталось ${trialDaysLeft} ${plural(trialDaysLeft)}.`
                 : "Базовый план. Подключите Pro, чтобы поддержать развитие docsify."}
           </p>
         </div>
@@ -113,8 +113,8 @@ function CheckoutButton({ trial }: { trial: boolean }) {
         {pending
           ? "Открываем оплату…"
           : trial
-            ? "Подключить Pro — $5/мес"
-            : "Перейти на Pro — $5/мес"}
+            ? "Подключить Pro - $5/мес"
+            : "Перейти на Pro - $5/мес"}
       </button>
       {state?.error && <p className="mt-2 text-sm text-danger">{state.error}</p>}
     </form>

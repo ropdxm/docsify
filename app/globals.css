@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
 /*
-  docsify — design tokens.
+  docsify - design tokens.
   World: an official KZ payment document, but warm and reassuring instead of
-  bureaucratic. Surfaces are warm paper; the brand colour is "tenge" — the
+  bureaucratic. Surfaces are warm paper; the brand colour is "tenge" - the
   turquoise of Kazakhstani banknotes, the money these owners are chasing.
 */
 
 :root {
-  /* Surfaces — warm paper, the document world */
-  --paper: #f3efe7; /* page canvas — warm paper */
-  --sheet: #fffefb; /* the document sheet / cards — warm white */
+  /* Surfaces - warm paper, the document world */
+  --paper: #f3efe7; /* page canvas - warm paper */
+  --sheet: #fffefb; /* the document sheet / cards - warm white */
   --sunken: #ece7db; /* inset inputs (you type INTO them) */
-  --raised: #ffffff; /* popovers, dropdowns — one step up */
+  --raised: #ffffff; /* popovers, dropdowns - one step up */
 
-  /* Ink — warm near-blacks, four-level hierarchy */
-  --ink: #211d17; /* primary text — warm espresso */
-  --muted: #5b5346; /* secondary — supporting text */
-  --faint: #8a8173; /* tertiary — metadata, labels */
+  /* Ink - warm near-blacks, four-level hierarchy */
+  --ink: #211d17; /* primary text - warm espresso */
+  --muted: #5b5346; /* secondary - supporting text */
+  --faint: #8a8173; /* tertiary - metadata, labels */
   --ghost: #b7ae9e; /* placeholder / disabled */
 
-  /* Lines — warm hairlines, low opacity so they whisper */
+  /* Lines - warm hairlines, low opacity so they whisper */
   --line: rgba(33, 29, 23, 0.1);
   --line-soft: rgba(33, 29, 23, 0.06);
   --line-strong: rgba(33, 29, 23, 0.18);
 
-  /* Tenge teal — the brand IS the colour of the money */
+  /* Tenge teal - the brand IS the colour of the money */
   --tenge: #0e9686;
   --tenge-deep: #0b7a6e; /* hover */
   --tenge-press: #096458; /* active */
@@ -33,7 +33,7 @@
   --tenge-ink: #0a5d52; /* teal text on tint */
   --on-tenge: #f7fffd; /* text on solid teal */
 
-  /* Semantic — paid is a settled green, overdue a burnt steppe amber */
+  /* Semantic - paid is a settled green, overdue a burnt steppe amber */
   --paid: #2f9e44;
   --paid-tint: #e7f3ea;
   --paid-ink: #1c6b2c;
@@ -79,13 +79,13 @@
 
   --color-ring: var(--ring);
 
-  /* Radius — friendly but not bubbly */
+  /* Radius - friendly but not bubbly */
   --radius-field: 10px;
   --radius-card: 14px;
   --radius-sheet: 22px;
   --radius-pill: 999px;
 
-  /* Depth — subtle shadows only */
+  /* Depth - subtle shadows only */
   --shadow-soft: 0 1px 2px rgba(33, 29, 23, 0.05);
   --shadow-sheet: 0 1px 3px rgba(33, 29, 23, 0.05), 0 6px 16px -8px rgba(33, 29, 23, 0.1);
   --shadow-pop: 0 12px 32px -8px rgba(33, 29, 23, 0.22), 0 4px 10px -6px rgba(33, 29, 23, 0.12);
@@ -100,7 +100,7 @@ body {
 }
 
 /*
-  Landing motion — warm and subtle, never flashy. Everything below collapses to
+  Landing motion - warm and subtle, never flashy. Everything below collapses to
   a static, fully-visible page when the visitor prefers reduced motion.
 */
 @keyframes docsify-float {
@@ -116,14 +116,14 @@ body {
   60%, 100% { transform: translateX(220%); }
 }
 
-/* Above-the-fold entrance — runs once on load, staggered via inline delay. */
+/* Above-the-fold entrance - runs once on load, staggered via inline delay. */
 .lp-rise { animation: docsify-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 /* Gentle ambient float for the layered hero accents. */
 .lp-float { animation: docsify-float 7s ease-in-out infinite; }
 .lp-float-slow { animation: docsify-float 9.5s ease-in-out infinite; }
 
-/* Scroll reveal — base hidden state; `.is-in` is toggled by an observer. */
+/* Scroll reveal - base hidden state; `.is-in` is toggled by an observer. */
 .lp-reveal {
   opacity: 0;
   transform: translateY(22px);
@@ -157,7 +157,7 @@ body {
 }
 
 /*
-  App footer — a soft warm wash with a teal glow that drifts slowly across the
+  App footer - a soft warm wash with a teal glow that drifts slowly across the
   top hairline. Calm, never attention-grabbing.
 */
 .app-footer {
@@ -198,7 +198,7 @@ body {
   }
 }
 
-/* Global loading spinner — shown centered while the screen is locked. */
+/* Global loading spinner - shown centered while the screen is locked. */
 /* HTML: <div class="loader"></div> */
 /* HTML: <div class="loader"></div> */
 .loader {

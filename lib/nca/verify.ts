@@ -1,7 +1,7 @@
 import "server-only";
 
 // Server-side ЭЦП verification via NCANode (v3 REST). Run NCANode (Docker) and
-// point NCANODE_URL at it, e.g. http://localhost:14579. We never write Java —
+// point NCANODE_URL at it, e.g. http://localhost:14579. We never write Java -
 // NCANode wraps the official KalkanCrypt and returns the signer's certificate
 // (including ИИН/БИН), validity, and revocation status.
 const NCANODE_URL = process.env.NCANODE_URL ?? "http://localhost:14579";
@@ -53,9 +53,9 @@ export async function verifyCms(
     let msg = `${res.status}`;
     try {
       const j = JSON.parse(detail) as { message?: string };
-      if (j?.message) msg = `${res.status} — ${j.message}`;
+      if (j?.message) msg = `${res.status} - ${j.message}`;
     } catch {
-      if (detail) msg = `${res.status} — ${detail.slice(0, 200)}`;
+      if (detail) msg = `${res.status} - ${detail.slice(0, 200)}`;
     }
     throw new Error(`NCANode ответил статусом ${msg}`);
   }

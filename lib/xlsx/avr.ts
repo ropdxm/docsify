@@ -3,7 +3,7 @@ import ExcelJS from "exceljs";
 import { formatDateRu } from "@/lib/format";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
 
-// Official «Акт выполненных работ (оказанных услуг)» — Форма Р-1
+// Official «Акт выполненных работ (оказанных услуг)» - Форма Р-1
 // (Приложение 50 к приказу Министра финансов РК от 20.12.2012 № 562).
 const TEMPLATE = path.join(process.cwd(), "public", "aktofworks.xlsx");
 const SHEET = "Акт выполненных работ";
@@ -42,7 +42,7 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
   // Defensive: a print area / print titles (defined names) plus a printer-driven
   // page setup make ExcelJS emit a mangled print-area reference and a bogus DPI
   // (4294967295), which Excel rejects as corrupt ("Replaced Part: sheet1.xml").
-  // None of this affects content — drop the print metadata, normalise the DPI.
+  // None of this affects content - drop the print metadata, normalise the DPI.
   ws.pageSetup.printArea = undefined;
   ws.pageSetup.printTitlesRow = undefined;
   ws.pageSetup.horizontalDpi = 300;
@@ -63,7 +63,7 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
     try {
       ws.unMergeCells(range);
     } catch {
-      /* not merged — ignore */
+      /* not merged - ignore */
     }
   }
 
@@ -107,11 +107,11 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
     try {
       ws.mergeCells(range);
     } catch {
-      /* already merged / overlap — ignore */
+      /* already merged / overlap - ignore */
     }
   }
 
-  // 3) Content — only values change.
+  // 3) Content - only values change.
   const c = doc.company;
   const cp = doc.counterparty;
   const dateRu = formatDateRu(new Date(doc.date));
@@ -147,9 +147,9 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
 
   // Totals & signatures (shifted positions).
   ws.getCell(`AQ${s21}`).value = doc.total_amount;
-  ws.getCell(`F${s28}`).value = "Руководитель"; // Сдал — должность
+  ws.getCell(`F${s28}`).value = "Руководитель"; // Сдал - должность
   ws.getCell(`R${s28}`).value = c.director ?? ""; // Сдал (Исполнитель)
-  ws.getCell(`AF${s28}`).value = "Руководитель"; // Принял — должность
+  ws.getCell(`AF${s28}`).value = "Руководитель"; // Принял - должность
   ws.getCell(`AR${s28}`).value = cp?.director ?? ""; // Принял (Заказчик)
   ws.getCell(`AT${s30}`).value = dateRu; // дата подписания
 

@@ -60,7 +60,7 @@ export function NcaSign({
       if (!res.ok) throw new Error("Не удалось загрузить файл договора.");
       const base64 = toBase64(await res.arrayBuffer());
 
-      // 2) Sign via NCALayer (detached CMS). Imported lazily — it's browser-only.
+      // 2) Sign via NCALayer (detached CMS). Imported lazily - it's browser-only.
       const NCALayerClient = await loadNcaClient();
       const nca = new NCALayerClient();
       try {

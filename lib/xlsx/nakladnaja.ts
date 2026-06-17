@@ -1,9 +1,9 @@
 import path from "node:path";
 import ExcelJS from "exceljs";
-import { formatDateRu } from "@/lib/format";
+import { formatDateRu, formatTengeWords } from "@/lib/format";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
 
-// Official «Накладная на отпуск запасов на сторону» — Форма З-2
+// Official «Накладная на отпуск запасов на сторону» - Форма З-2
 // (Приложение 26 к приказу Министра финансов РК от 20.12.2012 № 562).
 const TEMPLATE = path.join(process.cwd(), "public", "nakladnaja.xlsx");
 const SHEET = "Накладная по форме 3-2";
@@ -41,7 +41,7 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
   if (!ws) throw new Error(`Лист «${SHEET}» не найден в шаблоне`);
 
   // Defensive: drop the print metadata and normalise the DPI, same as the АВР
-  // renderer — otherwise ExcelJS emits a bogus DPI that Excel rejects as corrupt.
+  // renderer - otherwise ExcelJS emits a bogus DPI that Excel rejects as corrupt.
   ws.pageSetup.printArea = undefined;
   ws.pageSetup.printTitlesRow = undefined;
   ws.pageSetup.horizontalDpi = 300;
@@ -62,7 +62,7 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
     try {
       ws.unMergeCells(range);
     } catch {
-      /* not merged — ignore */
+      /* not merged - ignore */
     }
   }
 
@@ -109,11 +109,11 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
     try {
       ws.mergeCells(range);
     } catch {
-      /* already merged / overlap — ignore */
+      /* already merged / overlap - ignore */
     }
   }
 
-  // 3) Content — only values change.
+  // 3) Content - only values change.
   const c = doc.company;
   const cp = doc.counterparty;
   const dateRu = formatDateRu(new Date(doc.date));
@@ -143,8 +143,8 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
     ws.getCell(`A${r}`).value = i + 1; // номер по порядку
     ws.getCell(`C${r}`).value = it.description || ""; // наименование
     ws.getCell(`T${r}`).value = it.unit || "шт"; // единица измерения
-    ws.getCell(`W${r}`).value = it.quantity; // количество — подлежит отпуску
-    ws.getCell(`AB${r}`).value = it.quantity; // количество — отпущено
+    ws.getCell(`W${r}`).value = it.quantity; // количество - подлежит отпуску
+    ws.getCell(`AB${r}`).value = it.quantity; // количество - отпущено
     ws.getCell(`AF${r}`).value = it.unitPrice; // цена за единицу
     ws.getCell(`AL${r}`).value = it.quantity * it.unitPrice; // сумма с НДС
   }
@@ -153,6 +153,13 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.getCell(`W${s25}`).value = qtyTotal;
   ws.getCell(`AB${s25}`).value = qtyTotal;
   ws.getCell(`AL${s25}`).value = doc.total_amount;
+  const totalWordsCell = ws.getCell(`AE${s27}`);
+  totalWordsCell.value = formatTengeWords(doc.total_amount);
+  totalWordsCell.alignment = {
+    ...totalWordsCell.alignment,
+    wrapText: true,
+    vertical: "top",
+  };
 
   // «Отпуск разрешил»: руководитель отправителя.
   ws.getCell(`F${s29}`).value = "Руководитель";

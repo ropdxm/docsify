@@ -21,7 +21,7 @@ export function AppHeader({
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/dashboard"
-            aria-label="docsify — на главную"
+            aria-label="docsify - на главную"
             className="group flex items-center gap-2"
           >
             <span className="size-2.5 rounded-full bg-tenge transition-transform duration-200 group-hover:scale-110" />

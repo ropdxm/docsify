@@ -1,4 +1,4 @@
--- Договор (contract) — a signable document type. Unlike the structured docs it
+-- Договор (contract) - a signable document type. Unlike the structured docs it
 -- has no line items; its content is a PDF (uploaded, or rendered from written
 -- text) that both parties sign with ЭЦП. Signatures live in their own table.
 

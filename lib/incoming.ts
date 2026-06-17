@@ -3,7 +3,7 @@ import { cache } from "react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Company } from "@/lib/dal";
 
-// A договор that another business has sent to us — i.e. one where WE are the
+// A договор that another business has sent to us - i.e. one where WE are the
 // counterparty (matched by БИН). The owner already signed (status 'sent') or
 // both parties signed (status 'signed').
 export type IncomingDogovor = {
@@ -33,7 +33,7 @@ type Row = {
 /**
  * Договоры sent TO this company. RLS scopes the `documents` table to the
  * owner's company, but an incoming договор is owned by a *different* business,
- * so we read with the service-role client — strictly filtered to documents
+ * so we read with the service-role client - strictly filtered to documents
  * whose counterparty БИН equals the authenticated company's БИН.
  */
 export const getIncomingDogovors = cache(
@@ -68,7 +68,7 @@ export const getIncomingDogovors = cache(
         date: d.date,
         status: d.status,
         share_token: d.share_token,
-        from_name: c?.name ?? "—",
+        from_name: c?.name ?? "-",
         from_bin: c?.bin ?? "",
       };
     });

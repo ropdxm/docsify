@@ -7,12 +7,12 @@ export type BinLookupResult =
   | { found: false; error: string };
 
 /**
- * Поиск контрагента в реестре КГД по ИИН/БИН. Доступен без сессии — нужен
+ * Поиск контрагента в реестре КГД по ИИН/БИН. Доступен без сессии - нужен
  * на странице регистрации.
  */
 export async function lookupBin(code: string): Promise<BinLookupResult> {
   if (!/^\d{12}$/.test(code)) {
-    return { found: false, error: "БИН/ИИН — ровно 12 цифр" };
+    return { found: false, error: "БИН/ИИН - ровно 12 цифр" };
   }
   const hit = await kgdLookup(code);
   if (!hit) {

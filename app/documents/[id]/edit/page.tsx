@@ -25,12 +25,12 @@ export default async function EditDocumentPage({
     .maybeSingle();
   if (!doc) notFound();
   // Договоры are signed (not edited here), and only drafts are editable. A
-  // sent/signed/paid document is view-only — send it to its detail page.
+  // sent/signed/paid document is view-only - send it to its detail page.
   if (doc.type === "dogovor" || doc.status !== "draft") {
     redirect(`/documents/${id}`);
   }
 
-  // The user's saved clients — searchable in the form.
+  // The user's saved clients - searchable in the form.
   const { data: clientsData } = await supabase
     .from("counterparties")
     .select("id, bin, name, director, address")
@@ -112,7 +112,7 @@ export default async function EditDocumentPage({
             Редактировать документ
           </h1>
           <p className="mt-1 text-sm text-muted">
-            {doc.number} — изменения сохранятся в этот же документ.
+            {doc.number} - изменения сохранятся в этот же документ.
           </p>
         </div>
         <DocumentForm

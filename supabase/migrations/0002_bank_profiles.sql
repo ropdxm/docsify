@@ -9,7 +9,7 @@ create table if not exists public.bank_profiles (
   iik        text not null,              -- ИИК: KZ IBAN, 20 chars
   bank_name  text not null,              -- e.g. АО «Фридом Банк Казахстан»
   bik        text not null,              -- БИК (SWIFT), e.g. KSNVKZKA
-  kbe        text not null default '19', -- Кбе: 17 — ТОО, 19 — ИП
+  kbe        text not null default '19', -- Кбе: 17 - ТОО, 19 - ИП
   knp        text,                       -- Код назначения платежа, optional
   is_primary boolean not null default false,
   created_at timestamptz not null default now()

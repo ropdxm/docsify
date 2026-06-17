@@ -185,7 +185,7 @@ export function DocumentForm({
         }))
       : [{ id: "item-1", description: "", qty: "1", price: "", unit: "" }]
   );
-  // АВР only: «Договор (контракт)» reference printed on the act — number and
+  // АВР only: «Договор (контракт)» reference printed on the act - number and
   // date are entered separately, then combined into "№ 12 от 01.06.2026".
   const [contractNo, setContractNo] = useState(initialContract.no);
   const [contractDate, setContractDate] = useState<Date | null>(
@@ -265,7 +265,7 @@ export function DocumentForm({
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      {/* The document sheet — one elevated piece of paper materialising. */}
+      {/* The document sheet - one elevated piece of paper materialising. */}
       <div className="overflow-hidden rounded-sheet border border-line bg-sheet shadow-sheet">
         {/* ---- masthead ---- */}
         <div className="border-b border-line-soft p-5 sm:p-7">
@@ -354,7 +354,7 @@ export function DocumentForm({
               </div>
             </div>
             <p className="mt-1.5 text-xs text-faint">
-              Необязательно — печатается в шапке акта: «Договор № 12 от 01.06.2026».
+              Необязательно - печатается в шапке акта: «Договор № 12 от 01.06.2026».
             </p>
           </section>
         )}
@@ -475,7 +475,7 @@ function BankProfilePicker({
   if (profiles.length === 0) {
     return (
       <p className="text-sm text-faint">
-        Банковские реквизиты не заполнены — счёт выйдет без блока для оплаты.{" "}
+        Банковские реквизиты не заполнены - счёт выйдет без блока для оплаты.{" "}
         <a
           href="/profile"
           className="font-medium text-tenge-ink hover:underline"
@@ -499,7 +499,7 @@ function BankProfilePicker({
         >
           {profiles.map((p) => (
             <option key={p.id} value={p.id}>
-              {(p.label || p.bank_name) + (p.is_primary ? " — основной" : "")}
+              {(p.label || p.bank_name) + (p.is_primary ? " - основной" : "")}
             </option>
           ))}
         </select>
@@ -566,7 +566,7 @@ export function ClientField({
 
       {clients.length === 0 ? (
         <p className="mt-2 text-sm text-faint">
-          У вас пока нет сохранённых клиентов — добавьте первого.
+          У вас пока нет сохранённых клиентов - добавьте первого.
         </p>
       ) : matches.length > 0 ? (
         <ul className="mt-2 max-w-md divide-y divide-line-soft overflow-hidden rounded-card border border-line-soft">
@@ -673,7 +673,7 @@ function NewClient({
               onBinChange(v);
             }}
             inputMode="numeric"
-            placeholder="12 цифр — найдём в реестре КГД"
+            placeholder="12 цифр - найдём в реестре КГД"
             className={cn(fieldCls, "font-mono tracking-wider")}
           />
           {lookup.status === "loading" && (
@@ -1138,7 +1138,7 @@ export function DatePopover({
 }
 
 /* -------------------------------------------------------------------- icons -- */
-/* One set, 24-grid, currentColor — consistent throughout. */
+/* One set, 24-grid, currentColor - consistent throughout. */
 
 type IconProps = { className?: string };
 

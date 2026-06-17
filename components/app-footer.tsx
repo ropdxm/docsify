@@ -2,7 +2,7 @@ import Link from "next/link";
 
 // A calm, warm footer for the authenticated app. The animated gradient hairline
 // and soft wash live in globals.css (.app-footer); links get a smooth underline
-// on hover. Static markup — safe in any server component.
+// on hover. Static markup - safe in any server component.
 export function AppFooter() {
   return (
     <footer className="app-footer mt-16 border-t border-line">
@@ -14,7 +14,7 @@ export function AppFooter() {
               <span className="font-semibold tracking-tight">docsify</span>
             </Link>
             <p className="mt-3 text-sm text-muted">
-              От «работа сделана» до «счёт отправлен» — за пару минут.
+              От «работа сделана» до «счёт отправлен» - за пару минут.
             </p>
           </div>
 

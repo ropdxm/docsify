@@ -139,14 +139,14 @@ function Hero() {
             style={{ animationDelay: "0ms" }}
           >
             <span className="size-1.5 rounded-full bg-tenge" />
-            Не ЭДО — инструмент, чтобы получить деньги
+            Не ЭДО - инструмент, чтобы получить деньги
           </div>
 
           <h1
             className="lp-rise mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"
             style={{ animationDelay: "80ms" }}
           >
-            От «работа сделана» до «счёт отправлен» —{" "}
+            От «работа сделана» до «счёт отправлен» -{" "}
             <span className="text-tenge-ink">за пару минут.</span>
           </h1>
 
@@ -155,7 +155,7 @@ function Hero() {
             style={{ animationDelay: "160ms" }}
           >
             Счета и акты для ИП и ТОО в Казахстане. Сохраните клиента один раз,
-            отправьте документ ссылкой и видьте, кто уже заплатил — без Word,
+            отправьте документ ссылкой и видьте, кто уже заплатил - без Word,
             печатей и потерянных PDF в WhatsApp.
           </p>
 
@@ -205,7 +205,7 @@ function Hero() {
 function HeroVisual() {
   return (
     <div className="lp-rise relative mx-auto w-full max-w-md" style={{ animationDelay: "200ms" }}>
-      {/* The document sheet — the heart of the product. */}
+      {/* The document sheet - the heart of the product. */}
       <div className="relative overflow-hidden rounded-sheet border border-line bg-sheet shadow-sheet">
         <div className="flex items-center justify-between border-b border-line-soft px-5 py-4">
           <div className="inline-flex rounded-field bg-sunken p-0.5 text-xs font-medium">
@@ -261,7 +261,7 @@ function HeroVisual() {
         </div>
       </div>
 
-      {/* Floating accent — KGD verified lookup. */}
+      {/* Floating accent - KGD verified lookup. */}
       <div className="lp-float absolute -left-4 -top-5 hidden w-56 rounded-card border border-tenge/25 bg-raised p-3 shadow-pop sm:block">
         <div className="flex items-center gap-2">
           <span className="inline-flex size-7 items-center justify-center rounded-field bg-tenge-tint text-tenge-ink">
@@ -277,7 +277,7 @@ function HeroVisual() {
         </div>
       </div>
 
-      {/* Floating accent — awaiting payment. */}
+      {/* Floating accent - awaiting payment. */}
       <div className="lp-float-slow absolute -bottom-6 -right-3 hidden w-44 rounded-card border border-line bg-raised p-3.5 shadow-pop sm:block">
         <div className="text-xs text-faint">Ожидает оплаты</div>
         <div className="mt-0.5 text-lg font-bold tracking-tight tabular-nums text-tenge-ink">
@@ -297,7 +297,7 @@ function HeroVisual() {
 function Problem() {
   const pains: Array<[React.ReactNode, string, string]> = [
     [<IconKeyboard key="i" className="size-5" />, "Реквизиты вручную", "Каждый раз вбиваете БИН, адрес и директора клиента в Word."],
-    [<IconChat key="i" className="size-5" />, "PDF тонут в WhatsApp", "Отправили — и потеряли. Кто оплатил, кто нет — непонятно."],
+    [<IconChat key="i" className="size-5" />, "PDF тонут в WhatsApp", "Отправили - и потеряли. Кто оплатил, кто нет - непонятно."],
     [<IconEye key="i" className="size-5" />, "Не видно статуса", "Открыл ли клиент документ, принял ли его, заплатил ли."],
     [<IconPhone key="i" className="size-5" />, "Догоняете звонками", "Напоминать об оплате приходится вручную, по одному."],
   ];
@@ -310,7 +310,7 @@ function Problem() {
             Деньги застревают на 7–14 дней.
           </h2>
           <p className="mt-3 text-lg text-muted">
-            Не потому что клиент не хочет платить — а потому что счёт долго
+            Не потому что клиент не хочет платить - а потому что счёт долго
             оформляется, теряется в переписке и про него забывают.
           </p>
         </Reveal>
@@ -342,10 +342,10 @@ function HowItWorks() {
     desc: string;
     status: keyof typeof STATUS;
   }> = [
-    { icon: <IconDoc className="size-5" />, title: "Создайте документ", desc: "Счёт или акт за минуту. Клиент и реквизиты — из сохранённых.", status: "draft" },
+    { icon: <IconDoc className="size-5" />, title: "Создайте документ", desc: "Счёт или акт за минуту. Клиент и реквизиты - из сохранённых.", status: "draft" },
     { icon: <IconLink className="size-5" />, title: "Отправьте ссылкой", desc: "Уникальная ссылка. Клиент открывает без регистрации.", status: "sent" },
     { icon: <IconEye className="size-5" />, title: "Клиент принимает", desc: "Видит счёт, скачивает PDF или Excel, подтверждает.", status: "signed" },
-    { icon: <IconWallet className="size-5" />, title: "Следите за оплатой", desc: "Отметьте «Оплачено» — и двигайтесь к следующему.", status: "paid" },
+    { icon: <IconWallet className="size-5" />, title: "Следите за оплатой", desc: "Отметьте «Оплачено» - и двигайтесь к следующему.", status: "paid" },
   ];
   return (
     <section id="how" className="scroll-mt-16">
@@ -405,12 +405,12 @@ function Features() {
         </Reveal>
 
         <div className="mt-10 grid gap-4 md:grid-cols-6">
-          {/* КГД autofill — wide hero cell */}
+          {/* КГД autofill - wide hero cell */}
           <Reveal className="md:col-span-4">
             <FeatureCard
               icon={<IconSearch className="size-5" />}
               title="Автозаполнение по БИН из КГД"
-              desc="Введите 12 цифр — название, директор и адрес подтянутся из реестра налогоплательщиков. С пометкой «проверено»."
+              desc="Введите 12 цифр - название, директор и адрес подтянутся из реестра налогоплательщиков. С пометкой «проверено»."
             >
               <KgdMini />
             </FeatureCard>
@@ -420,7 +420,7 @@ function Features() {
             <FeatureCard
               icon={<IconUsers className="size-5" />}
               title="База клиентов"
-              desc="Сохраните клиента один раз — и переиспользуйте в любом документе."
+              desc="Сохраните клиента один раз - и переиспользуйте в любом документе."
             >
               <ClientsMini />
             </FeatureCard>
@@ -472,7 +472,7 @@ function Features() {
             <FeatureCard
               icon={<IconWallet className="size-5" />}
               title="Дашборд оплат"
-              desc="Главный экран отвечает на один вопрос: сколько мне должны прямо сейчас? Ожидает, просрочено, оплачено за месяц — на виду."
+              desc="Главный экран отвечает на один вопрос: сколько мне должны прямо сейчас? Ожидает, просрочено, оплачено за месяц - на виду."
             >
               <div className="grid grid-cols-3 gap-2">
                 <MiniStat label="Ожидает" value="1 250 000 ₸" accent />
@@ -641,13 +641,13 @@ function DashboardShowcase() {
             </h2>
             <p className="mt-3 text-lg text-muted">
               Главный экран отвечает сразу. Три суммы сверху, список документов со
-              статусами — и никаких таблиц, в которых легко утонуть.
+              статусами - и никаких таблиц, в которых легко утонуть.
             </p>
             <ul className="mt-6 space-y-3 text-sm">
               {[
-                "Ожидает оплаты — всё, что отправлено и ещё не оплачено",
-                "Просрочено — счета старше 14 дней, чтобы вовремя напомнить",
-                "Оплачено за месяц — сколько уже пришло",
+                "Ожидает оплаты - всё, что отправлено и ещё не оплачено",
+                "Просрочено - счета старше 14 дней, чтобы вовремя напомнить",
+                "Оплачено за месяц - сколько уже пришло",
               ].map((t) => (
                 <li key={t} className="flex gap-2.5">
                   <IconCheck className="mt-0.5 size-4 shrink-0 text-tenge" />
@@ -750,8 +750,8 @@ function Philosophy() {
               в docsify всё названо так, как вы говорите сами.
             </p>
             <div className="mt-6 inline-flex flex-wrap gap-2">
-              <RoadmapPill>Скоро — электронная подпись</RoadmapPill>
-              <RoadmapPill>Скоро — автонапоминания</RoadmapPill>
+              <RoadmapPill>Скоро - электронная подпись</RoadmapPill>
+              <RoadmapPill>Скоро - автонапоминания</RoadmapPill>
             </div>
           </Reveal>
 
@@ -808,7 +808,7 @@ function FinalCta() {
               <span className="text-tenge-ink">за пару минут.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-pretty text-lg text-muted">
-              Зарегистрируйтесь, добавьте свой БИН один раз — и отправьте клиенту
+              Зарегистрируйтесь, добавьте свой БИН один раз - и отправьте клиенту
               документ, который выглядит официально и не теряется.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -844,7 +844,7 @@ function Footer() {
             <Brand />
             <p className="mt-3 text-sm text-muted">
               Счета и акты для ИП и ТОО в Казахстане. От «работа сделана» до
-              «счёт отправлен» — за пару минут.
+              «счёт отправлен» - за пару минут.
             </p>
           </div>
           <div className="flex gap-12 text-sm">
@@ -925,7 +925,7 @@ function StatusPill({ status }: { status: keyof typeof STATUS }) {
 }
 
 /* -------------------------------------------------------------------- icons */
-/* 24-grid, currentColor — matching the app's existing icon language. */
+/* 24-grid, currentColor - matching the app's existing icon language. */
 
 type IconProps = { className?: string };
 

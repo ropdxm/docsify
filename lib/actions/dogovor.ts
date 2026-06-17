@@ -75,7 +75,7 @@ export async function createDogovor(
     if (!body) return { error: "Напишите текст договора." };
     const element = React.createElement(DogovorDocument, {
       doc: {
-        number: "—",
+        number: "-",
         title,
         date,
         body,
@@ -138,7 +138,7 @@ export async function createDogovor(
     .single();
   if (error) return { error: `Не удалось создать договор: ${error.message}` };
 
-  // Store the signable PDF (service role — the bucket is private).
+  // Store the signable PDF (service role - the bucket is private).
   const filePath = `${company.id}/${doc.id}/dogovor.pdf`;
   const admin = createAdminClient();
   const { error: upErr } = await admin.storage
@@ -209,7 +209,7 @@ export async function signDogovorAsOwner(
   if (!v.valid) return { error: "Подпись недействительна или отозвана." };
   if (!sameBin(v.signerBin, company.bin)) {
     return {
-      error: `ЭЦП оформлена на другой БИН/ИИН (${v.signerBin ?? "—"}). Подпишите ключом вашей организации.`,
+      error: `ЭЦП оформлена на другой БИН/ИИН (${v.signerBin ?? "-"}). Подпишите ключом вашей организации.`,
     };
   }
 
@@ -276,7 +276,7 @@ export async function signDogovorAsClient(
   if (!v.valid) return { error: "Подпись недействительна или отозвана." };
   if (cp?.bin && !sameBin(v.signerBin, cp.bin)) {
     return {
-      error: `ЭЦП оформлена на другой БИН/ИИН (${v.signerBin ?? "—"}). Подпишите ключом вашей организации.`,
+      error: `ЭЦП оформлена на другой БИН/ИИН (${v.signerBin ?? "-"}). Подпишите ключом вашей организации.`,
     };
   }
 

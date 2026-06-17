@@ -42,4 +42,4 @@ console.log("--- items (2 → Итого shifts +1) ---");
 for (const a of ["A24", "C24", "T24", "W24", "AB24", "AF24", "AL24"]) show(a);
 for (const a of ["A25", "C25", "T25", "AF25", "AL25"]) show(a);
 console.log("--- Итого + Отпуск разрешил (shifted by 1) ---");
-for (const a of ["W26", "AB26", "AL26", "F30", "R30"]) show(a);
+for (const a of ["W26", "AB26", "AL26", "AE28", "F30", "R30"]) show(a);

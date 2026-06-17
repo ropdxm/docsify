@@ -142,7 +142,7 @@ export function DogovorForm({
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder={
-                "Введите текст договора.\n\nСтороны, предмет, сумма, сроки, реквизиты — всё, как обычно. Пустая строка разделяет абзацы."
+                "Введите текст договора.\n\nСтороны, предмет, сумма, сроки, реквизиты - всё, как обычно. Пустая строка разделяет абзацы."
               }
               rows={14}
               className={cn(fieldCls, "resize-y font-normal leading-relaxed")}
@@ -170,7 +170,7 @@ export function DogovorForm({
                 )}
               </button>
               <p className="mt-1.5 text-xs text-faint">
-                Только PDF, до 15 МБ. Word — экспортируйте в PDF.
+                Только PDF, до 15 МБ. Word - экспортируйте в PDF.
               </p>
             </div>
           )}

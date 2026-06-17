@@ -23,7 +23,7 @@ export async function createClient() {
             );
           } catch {
             // Called from a Server Component, where cookies are read-only.
-            // The proxy refreshes the session cookie instead — safe to ignore.
+            // The proxy refreshes the session cookie instead - safe to ignore.
           }
         },
       },

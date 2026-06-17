@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/ui";
 
 type LoadingContextValue = {
-  /** Increment the busy count — locks the screen until the matching stop(). */
+  /** Increment the busy count - locks the screen until the matching stop(). */
   start: () => void;
   /** Decrement the busy count. */
   stop: () => void;
@@ -30,7 +30,7 @@ export function useLoading(): LoadingContextValue {
 /**
  * Mirror a local `pending`/`isPending` flag into the global overlay. Balanced:
  * starts when pending turns true, stops when it turns false or the component
- * unmounts — so it survives both redirects and validation errors.
+ * unmounts - so it survives both redirects and validation errors.
  */
 export function useGlobalPending(pending: boolean): void {
   const { start, stop } = useLoading();
@@ -155,7 +155,7 @@ function LoadingOverlay({ visible }: { visible: boolean }) {
         visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
       )}
     >
-      {/* Flat translucent scrim — NO backdrop-filter. A full-screen blur must
+      {/* Flat translucent scrim - NO backdrop-filter. A full-screen blur must
           re-rasterize the page behind it every frame (and the page is being
           re-rendered mid-navigation), which starves the compositor and makes the
           spinner stutter. A plain dim is painted once and stays on the GPU. */}

@@ -12,7 +12,7 @@ export type BinLookup =
 /**
  * Ищет компанию в реестре КГД, как только в поле набраны 12 цифр.
  * Вызывайте `onBinChange` из onChange поля; `onFound` получает официальное
- * название — для автозаполнения.
+ * название - для автозаполнения.
  */
 export function useBinLookup(onFound: (name: string) => void): {
   state: BinLookup;

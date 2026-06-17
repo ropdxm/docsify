@@ -42,7 +42,7 @@ export type XlsxDoc = {
     director?: string | null;
     address?: string | null;
   } | null;
-  /** Реквизиты блока «Платежное поручение»; null — блок остаётся пустым. */
+  /** Реквизиты блока «Платежное поручение»; null - блок остаётся пустым. */
   bank: XlsxBank | null;
 };
 
@@ -97,7 +97,7 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
     try {
       ws.unMergeCells(range);
     } catch {
-      /* not merged — ignore */
+      /* not merged - ignore */
     }
   }
   const merges: string[] = [
@@ -121,11 +121,11 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
     try {
       ws.mergeCells(range);
     } catch {
-      /* already merged / overlap — ignore */
+      /* already merged / overlap - ignore */
     }
   }
 
-  // 3) Content — only values change.
+  // 3) Content - only values change.
   const isInvoice = doc.type === "invoice";
   const heading = isInvoice ? "Счёт на оплату" : "Акт выполненных работ";
   const c = doc.company;
@@ -140,7 +140,7 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.getCell("V13").value = doc.bank?.bik ?? "";
   ws.getCell("AD13").value = doc.bank?.knp ?? "";
 
-  // Parties — multiline cells (name / БИН / address), so the rows grow.
+  // Parties - multiline cells (name / БИН / address), so the rows grow.
   const setParty = (row: number, lines: string[]) => {
     const cell = ws.getCell(`F${row}`);
     cell.value = lines.join("\n");

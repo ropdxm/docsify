@@ -29,7 +29,7 @@ export async function startProCheckout(
   _prev: BillingState,
   formData: FormData
 ): Promise<BillingState> {
-  void formData; // no form fields — params satisfy the useActionState signature
+  void formData; // no form fields - params satisfy the useActionState signature
   if (!stripeConfigured()) return { error: "Оплата временно недоступна." };
   const stripe = getStripe();
 
@@ -91,7 +91,7 @@ export async function openBillingPortal(
   _prev: BillingState,
   formData: FormData
 ): Promise<BillingState> {
-  void formData; // no form fields — params satisfy the useActionState signature
+  void formData; // no form fields - params satisfy the useActionState signature
   if (!stripeConfigured()) return { error: "Оплата временно недоступна." };
   const stripe = getStripe();
 

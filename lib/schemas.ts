@@ -32,7 +32,7 @@ export const BankRequisites = z.object({
     .optional(),
 });
 
-// Build field errors from issues directly — robust across zod versions.
+// Build field errors from issues directly - robust across zod versions.
 export function fieldErrorsOf(error: z.ZodError): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   for (const issue of error.issues) {

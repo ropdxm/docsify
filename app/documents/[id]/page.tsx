@@ -122,14 +122,14 @@ export default async function DocumentDetailPage({
         {/* Signatures */}
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <SignatureCard role="Исполнитель (вы)" party={company.name} sig={ownerSig} />
-          <SignatureCard role="Заказчик" party={cp?.name ?? "—"} sig={clientSig} />
+          <SignatureCard role="Заказчик" party={cp?.name ?? "-"} sig={clientSig} />
         </div>
 
         {/* Sign action (NCALayer ЭЦП). */}
         <div className="mt-5">
           {ownerSig ? (
             <p className="text-sm text-muted">
-              Вы подписали договор. Отправьте клиенту ссылку выше — он подпишет
+              Вы подписали договор. Отправьте клиенту ссылку выше - он подпишет
               его своей ЭЦП.
             </p>
           ) : (
@@ -178,7 +178,7 @@ function SignatureCard({
 }
 
 /* Read-only view of a sent structured document (счёт / АВР / накладная). Once a
-   document leaves draft it can't be edited — only viewed and downloaded. */
+   document leaves draft it can't be edited - only viewed and downloaded. */
 function StructuredView({
   doc,
   cp,
@@ -250,7 +250,7 @@ function StructuredView({
         </div>
 
         <p className="mb-5 rounded-card border border-line-soft bg-sunken/50 px-4 py-3 text-sm text-muted">
-          Документ отправлен — доступен только для просмотра. Редактировать можно
+          Документ отправлен - доступен только для просмотра. Редактировать можно
           только черновик.
         </p>
 
@@ -274,9 +274,9 @@ function StructuredView({
                     key={i}
                     className={cn(i > 0 && "border-t border-line-soft")}
                   >
-                    <td className="px-4 py-2.5">{it.description || "—"}</td>
+                    <td className="px-4 py-2.5">{it.description || "-"}</td>
                     {isAvr && (
-                      <td className="px-2 py-2.5 text-muted">{it.unit || "—"}</td>
+                      <td className="px-2 py-2.5 text-muted">{it.unit || "-"}</td>
                     )}
                     <td className="px-2 py-2.5 text-right tabular-nums">{qty}</td>
                     <td className="px-2 py-2.5 text-right tabular-nums">
