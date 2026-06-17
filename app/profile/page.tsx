@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireCompany, getBankProfiles, type BankProfile } from "@/lib/dal";
 import {
-  setPrimaryBankProfile,
+  setPrimaryBankProfileFromForm,
   deleteBankProfile,
 } from "@/lib/actions/bank-profiles";
 import { cn } from "@/lib/ui";
@@ -31,6 +31,10 @@ export default async function ProfilePage({
   const plan = effectivePlan(sub);
   const paid = isPaidPro(sub);
   const daysLeft = trialDaysLeft(sub);
+  const primaryProfile = profiles.find((p) => p.is_primary) ?? profiles[0];
+  const otherProfiles = primaryProfile
+    ? profiles.filter((p) => p.id !== primaryProfile.id)
+    : [];
 
   return (
     <div className="flex min-h-full flex-col">
@@ -103,15 +107,51 @@ export default async function ProfilePage({
             </p>
           )}
 
-          <div className="space-y-3">
-            {profiles.map((p) => (
+          {primaryProfile && (
+            <div className="space-y-3">
+              <form
+                action={setPrimaryBankProfileFromForm}
+                className="rounded-card border border-line bg-sheet p-4 shadow-soft sm:p-5"
+              >
+                <label
+                  htmlFor="primary-bank-profile"
+                  className="mb-1.5 block text-sm font-medium text-muted"
+                >
+                  Основной банковский профиль
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <select
+                    id="primary-bank-profile"
+                    name="bankProfileId"
+                    defaultValue={primaryProfile.id}
+                    disabled={profiles.length < 2}
+                    className="w-full rounded-field bg-sunken px-3 py-2.5 text-sm text-ink outline-none transition-colors focus-visible:bg-sheet focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {profiles.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {bankProfileTitle(p)} · {p.bank_name} · {shortIik(p.iik)}
+                      </option>
+                    ))}
+                  </select>
+                  <SubmitButton
+                    disabled={profiles.length < 2}
+                    className="inline-flex items-center justify-center rounded-field bg-tenge px-4 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep disabled:cursor-not-allowed disabled:opacity-40"
+                    pendingChildren="Сохраняем..."
+                  >
+                    Сохранить
+                  </SubmitButton>
+                </div>
+              </form>
+
               <BankProfileCard
-                key={p.id}
-                profile={p}
+                profile={primaryProfile}
+                title="Основные реквизиты"
                 deletable={profiles.length > 1}
+                accent
               />
-            ))}
-          </div>
+            </div>
+          )}
+
 
           <div className="mt-4">
             <AddBankProfile />
@@ -126,23 +166,41 @@ export default async function ProfilePage({
 
 function BankProfileCard({
   profile: p,
+  title,
   deletable,
+  accent,
 }: {
   profile: BankProfile;
+  title?: string;
   deletable: boolean;
+  accent?: boolean;
 }) {
   return (
     <div
       className={cn(
         "rounded-card border bg-sheet p-4 shadow-soft sm:p-5",
-        p.is_primary ? "border-tenge/35" : "border-line"
+        accent ? "border-tenge/35" : "border-line"
       )}
     >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-semibold">{p.label || p.bank_name}</span>
-        {p.is_primary && (
-          <span className="inline-flex items-center rounded-pill bg-tenge-tint px-2 py-0.5 text-xs font-medium text-tenge-ink">
-            Основной
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold">{title ?? bankProfileTitle(p)}</span>
+            {accent && (
+              <span className="inline-flex items-center rounded-pill bg-tenge-tint px-2 py-0.5 text-xs font-medium text-tenge-ink">
+                Основной
+              </span>
+            )}
+          </div>
+          {title && (
+            <p className="mt-1 text-sm font-medium text-ink">
+              {bankProfileTitle(p)}
+            </p>
+          )}
+        </div>
+        {!accent && (
+          <span className="inline-flex items-center rounded-pill bg-sunken px-2 py-0.5 text-xs font-medium text-muted">
+            Не основной
           </span>
         )}
       </div>
@@ -155,26 +213,25 @@ function BankProfileCard({
         {p.knp && <Row label="КНП" value={p.knp} mono />}
       </dl>
 
-      {(!p.is_primary || deletable) && (
+      {deletable && (
         <div className="mt-4 flex items-center gap-2 border-t border-line-soft pt-3 text-sm">
-          {!p.is_primary && (
-            <form action={setPrimaryBankProfile.bind(null, p.id)}>
-              <SubmitButton className="rounded-field px-2.5 py-1.5 font-medium text-tenge-ink transition-colors hover:bg-tenge-tint">
-                Сделать основным
-              </SubmitButton>
-            </form>
-          )}
-          {deletable && (
-            <form action={deleteBankProfile.bind(null, p.id)}>
-              <SubmitButton className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-danger-tint hover:text-danger">
-                Удалить
-              </SubmitButton>
-            </form>
-          )}
+          <form action={deleteBankProfile.bind(null, p.id)}>
+            <SubmitButton className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-danger-tint hover:text-danger">
+              Удалить
+            </SubmitButton>
+          </form>
         </div>
       )}
     </div>
   );
+}
+
+function bankProfileTitle(p: BankProfile): string {
+  return p.label || p.bank_name;
+}
+
+function shortIik(iik: string): string {
+  return `...${iik.slice(-4)}`;
 }
 
 function Row({

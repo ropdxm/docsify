@@ -46,7 +46,8 @@ export async function createBankProfile(
   return { ok: true };
 }
 
-export async function setPrimaryBankProfile(id: string, _formData: FormData) {
+export async function setPrimaryBankProfile(id: string, formData?: FormData) {
+  void formData;
   const company = await requireCompany();
   const supabase = await createClient();
 
@@ -73,7 +74,15 @@ export async function setPrimaryBankProfile(id: string, _formData: FormData) {
   revalidatePath("/documents/new");
 }
 
-export async function deleteBankProfile(id: string, _formData: FormData) {
+export async function setPrimaryBankProfileFromForm(formData: FormData) {
+  const id = formData.get("bankProfileId");
+  if (typeof id !== "string" || !id) return;
+
+  await setPrimaryBankProfile(id, formData);
+}
+
+export async function deleteBankProfile(id: string, formData: FormData) {
+  void formData;
   const company = await requireCompany();
   const supabase = await createClient();
 
