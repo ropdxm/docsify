@@ -120,19 +120,33 @@ export default async function ProfilePage({
                   Основной банковский профиль
                 </label>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <select
-                    id="primary-bank-profile"
-                    name="bankProfileId"
-                    defaultValue={primaryProfile.id}
-                    disabled={profiles.length < 2}
-                    className="w-full rounded-field bg-sunken px-3 py-2.5 text-sm text-ink outline-none transition-colors focus-visible:bg-sheet focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    {profiles.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {bankProfileTitle(p)} · {p.bank_name} · {shortIik(p.iik)}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative w-full">
+                    <select
+                      id="primary-bank-profile"
+                      name="bankProfileId"
+                      defaultValue={primaryProfile.id}
+                      disabled={profiles.length < 2}
+                      className="w-full appearance-none rounded-field bg-sunken py-2.5 pl-3 pr-10 text-sm text-ink outline-none transition-colors focus-visible:bg-sheet focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                      {profiles.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {bankProfileTitle(p)} · {p.bank_name} · {shortIik(p.iik)}
+                        </option>
+                      ))}
+                    </select>
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-faint"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.8}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </div>
                   <SubmitButton
                     disabled={profiles.length < 2}
                     className="inline-flex items-center justify-center rounded-field bg-tenge px-4 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep disabled:cursor-not-allowed disabled:opacity-40"

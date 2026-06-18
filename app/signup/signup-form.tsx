@@ -2,7 +2,6 @@
 
 import { useActionState } from "react";
 import { signup, type AuthState } from "@/lib/actions/auth";
-import { RequisitesFields } from "@/components/requisites-fields";
 import { useGlobalPending } from "@/components/loading";
 import { field, label, btnPrimary, cn } from "@/lib/ui";
 
@@ -14,7 +13,7 @@ export function SignupForm() {
   useGlobalPending(pending);
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-4">
       <div className="space-y-4">
         <div>
           <label className={label} htmlFor="email">
@@ -52,13 +51,6 @@ export function SignupForm() {
             </p>
           )}
         </div>
-      </div>
-
-      <div className="border-t border-line-soft pt-5">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-faint">
-          Реквизиты вашей компании
-        </p>
-        <RequisitesFields fieldErrors={state?.fieldErrors} />
       </div>
 
       {state?.error && <p className="text-sm text-danger">{state.error}</p>}

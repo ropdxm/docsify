@@ -491,18 +491,32 @@ function BankProfilePicker({
   return (
     <div className="max-w-md space-y-2">
       {profiles.length > 1 && (
-        <select
-          value={selected.id}
-          onChange={(e) => onChange(e.target.value)}
-          className={fieldCls}
-          aria-label="Банковские реквизиты"
-        >
-          {profiles.map((p) => (
-            <option key={p.id} value={p.id}>
-              {(p.label || p.bank_name) + (p.is_primary ? " - основной" : "")}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            value={selected.id}
+            onChange={(e) => onChange(e.target.value)}
+            className={cn(fieldCls, "appearance-none pr-10")}
+            aria-label="Банковские реквизиты"
+          >
+            {profiles.map((p) => (
+              <option key={p.id} value={p.id}>
+                {(p.label || p.bank_name) + (p.is_primary ? " - основной" : "")}
+              </option>
+            ))}
+          </select>
+          <svg
+            viewBox="0 0 24 24"
+            className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-faint"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
       )}
       <div className="rounded-card border border-line-soft px-3.5 py-2.5 text-sm">
         <div className="font-medium">{selected.bank_name}</div>

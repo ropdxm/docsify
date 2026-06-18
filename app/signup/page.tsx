@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { AuthShell, OrDivider } from "@/components/auth-shell";
-import { GoogleButton } from "@/components/google-button";
+import { AuthShell } from "@/components/auth-shell";
 import { SignupForm } from "./signup-form";
 
 export default function SignupPage() {
   return (
     <AuthShell
       title="Создать аккаунт"
-      subtitle="Укажите реквизиты вашей компании - они пойдут в каждый документ."
+      subtitle="Зарегистрируйтесь по email и паролю. Реквизиты попросим только перед первым документом."
       footer={
         <>
           Уже есть аккаунт?{" "}
@@ -18,8 +17,6 @@ export default function SignupPage() {
       }
     >
       <SignupForm />
-      <OrDivider />
-      <GoogleButton next="/dashboard" />
     </AuthShell>
   );
 }

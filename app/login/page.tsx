@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { AuthShell, OrDivider } from "@/components/auth-shell";
-import { GoogleButton } from "@/components/google-button";
+import { AuthShell } from "@/components/auth-shell";
 import { LoginForm } from "./login-form";
 
 export default async function LoginPage({
@@ -31,8 +30,6 @@ export default async function LoginPage({
         </p>
       )}
       <LoginForm next={next} />
-      <OrDivider />
-      <GoogleButton next={next || "/dashboard"} />
     </AuthShell>
   );
 }

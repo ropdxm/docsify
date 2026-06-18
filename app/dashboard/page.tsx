@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 import Link from "next/link";
-import { requireCompany } from "@/lib/dal";
+import { getCompany, requireUser } from "@/lib/dal";
 import { getIncomingDogovors } from "@/lib/incoming";
 import { createClient } from "@/lib/supabase/server";
 import { markDocumentPaid } from "@/lib/actions/documents";
@@ -87,22 +87,25 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const company = await requireCompany();
+  await requireUser();
+  const company = await getCompany();
   const sp = await searchParams;
   const justCreated = typeof sp.created === "string";
   const justUpdated = typeof sp.updated === "string";
 
   const supabase = await createClient();
-  const [{ data }, incoming] = await Promise.all([
-    supabase
-      .from("documents")
-      .select(
-        "id, type, number, date, total_amount, status, share_token, paid_at, counterparty:counterparties(name)"
-      )
-      .eq("company_id", company.id)
-      .order("created_at", { ascending: false }),
-    getIncomingDogovors(company),
-  ]);
+  const [{ data }, incoming] = company
+    ? await Promise.all([
+        supabase
+          .from("documents")
+          .select(
+            "id, type, number, date, total_amount, status, share_token, paid_at, counterparty:counterparties(name)"
+          )
+          .eq("company_id", company.id)
+          .order("created_at", { ascending: false }),
+        getIncomingDogovors(company),
+      ])
+    : [{ data: [] }, []];
 
   const docs = (data ?? []) as DocRow[];
 
@@ -132,7 +135,7 @@ export default async function DashboardPage({
   return (
     <div className="flex min-h-full flex-col">
       <AppHeader
-        companyName={company.name}
+        companyName={company?.name ?? "Профиль"}
         active="documents"
         incomingCount={incoming.length}
       />
