@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { AuthShell } from "@/components/auth-shell";
+import { AuthShell, OrDivider } from "@/components/auth-shell";
+import { GoogleButton } from "@/components/google-button";
 import { SignupForm } from "./signup-form";
 
 export default function SignupPage() {
@@ -17,6 +18,8 @@ export default function SignupPage() {
       }
     >
       <SignupForm />
+      <OrDivider />
+      <GoogleButton next="/dashboard" />
     </AuthShell>
   );
 }

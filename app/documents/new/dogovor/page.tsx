@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getCompany, requireUser } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import { BrandLogo } from "@/components/brand-logo";
-import { OnboardingForm } from "@/app/onboarding/onboarding-form";
+import { MissingRequisitesPrompt } from "../missing-requisites-prompt";
 import { DogovorForm } from "./dogovor-form";
 import type { SavedClient } from "../document-form";
 
@@ -10,9 +10,7 @@ export default async function NewDogovorPage() {
   await requireUser();
   const company = await getCompany();
 
-  if (!company) {
-    return <MissingRequisitesModal next="/documents/new/dogovor" />;
-  }
+  if (!company) return <MissingRequisitesPage />;
 
   const supabase = await createClient();
   const { data } = await supabase
@@ -60,7 +58,7 @@ export default async function NewDogovorPage() {
   );
 }
 
-function MissingRequisitesModal({ next }: { next: string }) {
+function MissingRequisitesPage() {
   return (
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
@@ -86,25 +84,17 @@ function MissingRequisitesModal({ next }: { next: string }) {
             Новый договор
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Сначала добавим данные, которые попадут в ваши документы.
+            Напишите или загрузите договор. Затем подпишите его ЭЦП и отправьте
+            клиенту на подпись.
           </p>
         </div>
+        <MissingRequisitesPrompt
+          title="Реквизиты ещё не заполнены"
+          description="Создать договор можно после добавления данных компании."
+          buttonLabel="Создать договор"
+          next="/documents/new/dogovor"
+        />
       </main>
-
-      <div className="fixed inset-0 z-40 grid place-items-center bg-paper/80 px-4 py-8">
-        <div className="max-h-full w-full max-w-lg overflow-auto rounded-sheet border border-line bg-sheet p-5 shadow-pop sm:p-6">
-          <div className="mb-5">
-            <h2 className="text-xl font-bold tracking-tight">
-              Заполните реквизиты
-            </h2>
-            <p className="mt-1 text-sm text-muted">
-              Укажите БИН/ИИН, данные компании и банковские реквизиты. После
-              сохранения вернём вас к созданию договора.
-            </p>
-          </div>
-          <OnboardingForm next={next} />
-        </div>
-      </div>
     </div>
   );
 }

@@ -2,16 +2,14 @@ import Link from "next/link";
 import { getBankProfiles, getCompany, requireUser } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
 import { BrandLogo } from "@/components/brand-logo";
-import { OnboardingForm } from "@/app/onboarding/onboarding-form";
 import { DocumentForm, type SavedClient } from "./document-form";
+import { MissingRequisitesPrompt } from "./missing-requisites-prompt";
 
 export default async function NewDocumentPage() {
   await requireUser();
   const company = await getCompany();
 
-  if (!company) {
-    return <MissingRequisitesModal next="/documents/new" />;
-  }
+  if (!company) return <MissingRequisitesPage />;
 
   // The user's saved clients - searchable in the form, fetched from the DB.
   const supabase = await createClient();
@@ -92,7 +90,7 @@ export default async function NewDocumentPage() {
   );
 }
 
-function MissingRequisitesModal({ next }: { next: string }) {
+function MissingRequisitesPage() {
   return (
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
@@ -118,25 +116,16 @@ function MissingRequisitesModal({ next }: { next: string }) {
             Новый документ
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Сначала добавим данные, которые попадут в ваши документы.
+            Заполните, и отправьте клиенту ссылкой - без печатей и Word.
           </p>
         </div>
+        <MissingRequisitesPrompt
+          title="Реквизиты ещё не заполнены"
+          description="Создать документ можно после добавления данных компании."
+          buttonLabel="Создать документ"
+          next="/documents/new"
+        />
       </main>
-
-      <div className="fixed inset-0 z-40 grid place-items-center bg-paper/80 px-4 py-8">
-        <div className="max-h-full w-full max-w-lg overflow-auto rounded-sheet border border-line bg-sheet p-5 shadow-pop sm:p-6">
-          <div className="mb-5">
-            <h2 className="text-xl font-bold tracking-tight">
-              Заполните реквизиты
-            </h2>
-            <p className="mt-1 text-sm text-muted">
-              Укажите БИН/ИИН, данные компании и банковские реквизиты. После
-              сохранения вернём вас к созданию документа.
-            </p>
-          </div>
-          <OnboardingForm next={next} />
-        </div>
-      </div>
     </div>
   );
 }
