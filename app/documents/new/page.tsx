@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireCompany, getBankProfiles } from "@/lib/dal";
 import { createClient } from "@/lib/supabase/server";
+import { BrandLogo } from "@/components/brand-logo";
 import { DocumentForm, type SavedClient } from "./document-form";
 
 export default async function NewDocumentPage() {
@@ -50,9 +51,8 @@ export default async function NewDocumentPage() {
           paper as the canvas, separated only by a hairline - no "header world". */}
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">docsify</span>
+          <Link href="/dashboard" aria-label="docsify" className="flex items-center">
+            <BrandLogo className="size-8" />
           </Link>
           <Link
             href="/dashboard"

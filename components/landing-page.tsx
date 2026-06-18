@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { STATUS } from "@/lib/status";
+import { BrandLogo } from "@/components/brand-logo";
 
 /* ------------------------------------------------------------------ utils -- */
 
@@ -78,9 +79,8 @@ export function LandingPage() {
 
 function Brand({ className }: { className?: string }) {
   return (
-    <Link href="/" className={cn("flex items-center gap-2", className)}>
-      <span className="size-2.5 rounded-full bg-tenge" />
-      <span className="font-semibold tracking-tight">docsify</span>
+    <Link href="/" aria-label="docsify" className={cn("flex items-center", className)}>
+      <BrandLogo className="size-8" />
     </Link>
   );
 }

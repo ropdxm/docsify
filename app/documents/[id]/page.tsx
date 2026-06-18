@@ -6,6 +6,7 @@ import { formatDateRu, formatTenge } from "@/lib/format";
 import { STATUS, DOC_TYPE_LABEL } from "@/lib/status";
 import { cn } from "@/lib/ui";
 import { NcaSign } from "@/components/nca-sign";
+import { BrandLogo } from "@/components/brand-logo";
 
 type Signature = {
   signer_role: "owner" | "client";
@@ -56,9 +57,8 @@ export default async function DocumentDetailPage({
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">docsify</span>
+          <Link href="/dashboard" aria-label="docsify" className="flex items-center">
+            <BrandLogo className="size-8" />
           </Link>
           <Link
             href="/dashboard"
@@ -212,9 +212,8 @@ function StructuredView({
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">docsify</span>
+          <Link href="/dashboard" aria-label="docsify" className="flex items-center">
+            <BrandLogo className="size-8" />
           </Link>
           <Link
             href="/dashboard"

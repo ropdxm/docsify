@@ -14,6 +14,7 @@ import {
 import { AppFooter } from "@/components/app-footer";
 import { SubscriptionCard } from "@/components/subscription-card";
 import { SubmitButton } from "@/components/loading";
+import { BrandLogo } from "@/components/brand-logo";
 import { AddBankProfile } from "./add-bank-profile";
 
 export default async function ProfilePage({
@@ -40,9 +41,8 @@ export default async function ProfilePage({
     <div className="flex min-h-full flex-col">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="size-2.5 rounded-full bg-tenge" />
-            <span className="font-semibold tracking-tight">docsify</span>
+          <Link href="/dashboard" aria-label="docsify" className="flex items-center">
+            <BrandLogo className="size-8" />
           </Link>
           <Link
             href="/dashboard"
@@ -152,6 +152,18 @@ export default async function ProfilePage({
             </div>
           )}
 
+          {otherProfiles.length > 0 && (
+            <div className="mt-5">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-faint">
+                Другие банковские профили
+              </h3>
+              <div className="space-y-3">
+                {otherProfiles.map((p) => (
+                  <BankProfileCard key={p.id} profile={p} deletable />
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mt-4">
             <AddBankProfile />

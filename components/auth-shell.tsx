@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function AuthShell({
   title,
@@ -14,11 +15,8 @@ export function AuthShell({
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <Link href="/" className="mb-6 flex items-center gap-2">
-          <span className="size-3 rounded-full bg-tenge" />
-          <span className="text-lg font-semibold tracking-tight">
-            docsify
-          </span>
+        <Link href="/" aria-label="docsify" className="mb-6 flex items-center">
+          <BrandLogo className="size-9" />
         </Link>
         <div className="rounded-sheet border border-line bg-sheet p-6 shadow-sheet sm:p-8">
           <h1 className="text-xl font-bold tracking-tight">{title}</h1>

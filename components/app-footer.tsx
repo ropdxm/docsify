@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 
 // A calm, warm footer for the authenticated app. The animated gradient hairline
 // and soft wash live in globals.css (.app-footer); links get a smooth underline
@@ -9,9 +10,8 @@ export function AppFooter() {
       <div className="mx-auto max-w-4xl px-4 py-10 sm:py-12">
         <div className="flex flex-col justify-between gap-8 sm:flex-row">
           <div className="max-w-xs">
-            <Link href="/dashboard" className="group inline-flex items-center gap-2">
-              <span className="size-2.5 rounded-full bg-tenge transition-transform duration-200 group-hover:scale-110" />
-              <span className="font-semibold tracking-tight">docsify</span>
+            <Link href="/dashboard" aria-label="docsify" className="group inline-flex items-center">
+              <BrandLogo className="size-8 transition-transform duration-200 group-hover:scale-105" />
             </Link>
             <p className="mt-3 text-sm text-muted">
               От «работа сделана» до «счёт отправлен» - за пару минут.

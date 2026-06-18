@@ -2,6 +2,7 @@ import Link from "next/link";
 import { logout } from "@/lib/actions/auth";
 import { SubmitButton } from "@/components/loading";
 import { cn } from "@/lib/ui";
+import { BrandLogo } from "@/components/brand-logo";
 
 // The app's primary navbar. The docsify brand always returns to the main page
 // (/dashboard). Shared across the authenticated list pages so navigation is
@@ -22,10 +23,9 @@ export function AppHeader({
           <Link
             href="/dashboard"
             aria-label="docsify - на главную"
-            className="group flex items-center gap-2"
+            className="group flex items-center"
           >
-            <span className="size-2.5 rounded-full bg-tenge transition-transform duration-200 group-hover:scale-110" />
-            <span className="font-semibold tracking-tight">docsify</span>
+            <BrandLogo className="size-8 transition-transform duration-200 group-hover:scale-105" />
           </Link>
 
           {/* Primary nav (desktop) */}

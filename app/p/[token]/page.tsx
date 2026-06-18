@@ -5,6 +5,7 @@ import { formatTenge, formatDateRu } from "@/lib/format";
 import { STATUS } from "@/lib/status";
 import { cn } from "@/lib/ui";
 import { NcaSign } from "@/components/nca-sign";
+import { BrandLogo } from "@/components/brand-logo";
 
 type Item = {
   description: string;
@@ -91,9 +92,8 @@ export default async function SharePage({
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
       <div className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-tenge" />
-          <span className="font-semibold tracking-tight">docsify</span>
+        <div aria-label="docsify" className="flex items-center">
+          <BrandLogo className="size-8" />
         </div>
         <span
           className={cn(
@@ -247,9 +247,8 @@ function DogovorShareView({
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
       <div className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-tenge" />
-          <span className="font-semibold tracking-tight">docsify</span>
+        <div aria-label="docsify" className="flex items-center">
+          <BrandLogo className="size-8" />
         </div>
         <span
           className={cn(

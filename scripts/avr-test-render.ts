@@ -15,16 +15,16 @@ const buffer = await renderAvrXlsx({
   ],
   total_amount: 600000,
   company: {
-    name: "ИП «ЖДМ»",
-    bin: "050916501298",
-    director: "Жанбыршын Д. М.",
+    name: "ИП «Максим»",
+    bin: "951116555298",
+    director: "Утемуратов М. М.",
     address: "г. Шымкент, Каратауский район, мкр. Нурсат, д. 1",
   },
   counterparty: {
     name: "ТОО «PHYTO-APIPHARM»",
-    bin: "110240013813",
-    director: "Жаскалиева Г. И.",
-    address: "г. Шымкент, мкр. Катын Копр, ул. Капал батыра, зд. 1/4",
+    bin: "110040010813",
+    director: "Аймуратов Г. И.",
+    address: "г. Алматы, ул. Бауыржан М., зд. 5",
   },
   bank: null,
 });
