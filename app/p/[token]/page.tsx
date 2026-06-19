@@ -92,7 +92,7 @@ export default async function SharePage({
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
       <div className="mb-5 flex items-center justify-between">
-        <div aria-label="docsify" className="flex items-center">
+        <div aria-label="Docsify" className="flex items-center">
           <BrandLogo className="size-8" />
         </div>
         <span
@@ -247,7 +247,7 @@ function DogovorShareView({
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
       <div className="mb-5 flex items-center justify-between">
-        <div aria-label="docsify" className="flex items-center">
+        <div aria-label="Docsify" className="flex items-center">
           <BrandLogo className="size-8" />
         </div>
         <span

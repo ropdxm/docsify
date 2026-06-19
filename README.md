@@ -1,6 +1,6 @@
-# docsify
+# Docsify
 
-docsify is a document workspace for Kazakhstan businesses. It helps users create, send, sign, and track common business documents without assembling them manually in Word or Excel.
+Docsify is a document workspace for Kazakhstan businesses. It helps users create, send, sign, and track common business documents without assembling them manually in Word or Excel.
 
 ## What It Does
 

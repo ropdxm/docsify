@@ -21,7 +21,7 @@ async function baseUrl(): Promise<string> {
 }
 
 /**
- * Start a Stripe Checkout for docsify Pro ($5/mo) and redirect the user to it.
+ * Start a Stripe Checkout for Docsify Pro ($5/mo) and redirect the user to it.
  * Reuses the company's Stripe customer if one exists; the resulting subscription
  * carries `company_id` in its metadata so the webhook can map it back.
  */
@@ -72,8 +72,8 @@ export async function startProCheckout(
       ],
       subscription_data: { metadata: { company_id: company.id } },
       allow_promotion_codes: true,
-      success_url: `${url}/profile?upgraded=1`,
-      cancel_url: `${url}/profile?canceled=1`,
+      success_url: `${url}/pricing?upgraded=1`,
+      cancel_url: `${url}/pricing?canceled=1`,
     });
     checkoutUrl = session.url;
   } catch (e) {
@@ -104,7 +104,7 @@ export async function openBillingPortal(
   try {
     const portal = await stripe.billingPortal.sessions.create({
       customer: sub.stripe_customer_id,
-      return_url: `${url}/profile`,
+      return_url: `${url}/pricing`,
     });
     portalUrl = portal.url;
   } catch (e) {

@@ -4,7 +4,7 @@ import { SubmitButton } from "@/components/loading";
 import { cn } from "@/lib/ui";
 import { BrandLogo } from "@/components/brand-logo";
 
-// The app's primary navbar. The docsify brand always returns to the main page
+// The app's primary navbar. The Docsify brand always returns to the main page
 // (/dashboard). Shared across the authenticated list pages so navigation is
 // identical everywhere.
 export function AppHeader({
@@ -22,7 +22,7 @@ export function AppHeader({
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/dashboard"
-            aria-label="docsify - на главную"
+            aria-label="Docsify - на главную"
             className="group flex items-center"
           >
             <BrandLogo className="size-8 transition-transform duration-200 group-hover:scale-105" />

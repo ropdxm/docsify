@@ -15,7 +15,7 @@ export function AuthShell({
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <Link href="/" aria-label="docsify" className="mb-6 flex items-center">
+        <Link href="/" aria-label="Docsify" className="mb-6 flex items-center">
           <BrandLogo className="size-9" />
         </Link>
         <div className="rounded-sheet border border-line bg-sheet p-6 shadow-sheet sm:p-8">

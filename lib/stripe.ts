@@ -11,7 +11,7 @@ export function getStripe(): Stripe {
   if (!client) {
     const key = process.env.STRIPE_SECRET_KEY;
     if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
-    client = new Stripe(key, { appInfo: { name: "docsify" } });
+    client = new Stripe(key, { appInfo: { name: "Docsify" } });
   }
   return client;
 }
@@ -20,11 +20,11 @@ export function stripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY);
 }
 
-// The one paid plan: docsify Pro, $5/month. Defined inline (price_data) so there's
+// The one paid plan: Docsify Pro, $5/month. Defined inline (price_data) so there's
 // no Stripe Dashboard price to create and keep in sync - the amount lives here.
 export const PRO_PRICE = {
   currency: "usd",
   unitAmount: 500, // $5.00, in cents
   interval: "month" as const,
-  productName: "docsify Pro",
+  productName: "Docsify Pro",
 } as const;

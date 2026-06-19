@@ -272,7 +272,7 @@ export function InvoiceDocument({ doc }: { doc: PdfDoc }) {
         </View>
 
         <Text style={s.footer} fixed>
-          Сформировано в «docsify» · {doc.number}
+          Сформировано в «Docsify» · {doc.number}
         </Text>
       </Page>
     </Document>

@@ -1,4 +1,4 @@
-# Project: docsify (Working Title)
+# Project: Docsify (Working Title)
 
 ## What This Is
 A B2B SaaS platform for small Kazakhstani businesses (sole proprietors / ТОО with 2–15 employees) 

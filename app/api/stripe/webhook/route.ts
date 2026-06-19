@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
-// Stripe → docsify sync. Stripe POSTs subscription lifecycle events here; we
+// Stripe → Docsify sync. Stripe POSTs subscription lifecycle events here; we
 // verify the signature and mirror the relevant fields into `subscriptions`.
 // Configure the endpoint URL + signing secret in the Stripe Dashboard (or via
 // `stripe listen --forward-to .../api/stripe/webhook` in development).

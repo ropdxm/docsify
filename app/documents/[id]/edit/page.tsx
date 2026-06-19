@@ -91,7 +91,7 @@ export default async function EditDocumentPage({
     <div className="min-h-full">
       <header className="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/dashboard" aria-label="docsify" className="flex items-center">
+          <Link href="/dashboard" aria-label="Docsify" className="flex items-center">
             <BrandLogo className="size-8" />
           </Link>
           <Link

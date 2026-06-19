@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "docsify - выставить счёт за 2 минуты",
+  title: "Docsify - выставить счёт за 2 минуты",
   description:
     "Создавайте счета и акты, отправляйте клиенту ссылкой и следите за оплатой.",
 };

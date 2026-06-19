@@ -79,7 +79,7 @@ export function LandingPage() {
 
 function Brand({ className }: { className?: string }) {
   return (
-    <Link href="/" aria-label="docsify" className={cn("flex items-center", className)}>
+    <Link href="/" aria-label="Docsify" className={cn("flex items-center", className)}>
       <BrandLogo className="size-8" />
     </Link>
   );
@@ -747,7 +747,7 @@ function Philosophy() {
             </h2>
             <p className="mt-3 text-lg text-muted">
               Вы занимаетесь делом, а не изучаете термины из госпорталов. Поэтому
-              в docsify всё названо так, как вы говорите сами.
+              в Docsify всё названо так, как вы говорите сами.
             </p>
             <div className="mt-6 inline-flex flex-wrap gap-2">
               <RoadmapPill>Скоро - электронная подпись</RoadmapPill>
@@ -860,7 +860,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-8 flex flex-col gap-2 border-t border-line-soft pt-6 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 docsify</span>
+          <span>© 2026 Docsify</span>
           <span>Формы по приказу Минфина РК № 562 · Сделано для бизнеса в Казахстане</span>
         </div>
       </div>

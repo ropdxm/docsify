@@ -10,7 +10,7 @@ export function AppFooter() {
       <div className="mx-auto max-w-4xl px-4 py-10 sm:py-12">
         <div className="flex flex-col justify-between gap-8 sm:flex-row">
           <div className="max-w-xs">
-            <Link href="/dashboard" aria-label="docsify" className="group inline-flex items-center">
+            <Link href="/dashboard" aria-label="Docsify" className="group inline-flex items-center">
               <BrandLogo className="size-8 transition-transform duration-200 group-hover:scale-105" />
             </Link>
             <p className="mt-3 text-sm text-muted">
@@ -28,12 +28,13 @@ export function AppFooter() {
             <FooterCol title="Аккаунт">
               <FooterLink href="/profile">Профиль</FooterLink>
               <FooterLink href="/profile">Реквизиты</FooterLink>
+              <FooterLink href="/pricing">Тарифы</FooterLink>
             </FooterCol>
           </div>
         </div>
 
         <div className="mt-9 flex flex-col gap-2 border-t border-line-soft pt-6 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 docsify</span>
+          <span>© 2026 Docsify</span>
           <span>Формы по приказу Минфина РК № 562 · Сделано для бизнеса в Казахстане</span>
         </div>
       </div>
