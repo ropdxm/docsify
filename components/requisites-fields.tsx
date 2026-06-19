@@ -192,9 +192,8 @@ export function BankFields({
           {err("kbe")}
         </div>
         <div>
-          <label className={label} htmlFor="knp">
-            КНП{" "}
-            <span className="font-normal text-faint">(необязательно)</span>
+          <label className={label} htmlFor="knp" title="Необязательно">
+            КНП <span className="font-normal text-faint">*</span>
           </label>
           <input
             id="knp"
