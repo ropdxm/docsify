@@ -166,18 +166,6 @@ export default async function ProfilePage({
             </div>
           )}
 
-          {otherProfiles.length > 0 && (
-            <div className="mt-5">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-faint">
-                Другие банковские профили
-              </h3>
-              <div className="space-y-3">
-                {otherProfiles.map((p) => (
-                  <BankProfileCard key={p.id} profile={p} deletable />
-                ))}
-              </div>
-            </div>
-          )}
 
           <div className="mt-4">
             <AddBankProfile />
