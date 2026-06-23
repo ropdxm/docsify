@@ -13,12 +13,16 @@ export type Subscription = {
   trial_ends_at: string | null;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  provider: string | null; // 'stripe' | 'kaspi' | null
 };
 
-/** Is there a live, paid Stripe subscription (not just the free trial)? */
+/** Is there a live, paid subscription (Stripe or Kaspi), not just the trial? */
 export function isPaidPro(sub: Subscription | null): boolean {
-  if (!sub?.stripe_subscription_id) return false;
+  if (!sub) return false;
   if (sub.status !== "active" && sub.status !== "trialing") return false;
+  // Paid access is keyed on a live billing period, set by either provider: the
+  // Stripe webhook or a paid Kaspi/ApiPay invoice. (The free trial leaves
+  // current_period_end null and is handled by effectivePlan via trial_ends_at.)
   return (
     sub.current_period_end != null &&
     new Date(sub.current_period_end).getTime() > Date.now()

@@ -6,11 +6,12 @@ import {
   isPaidPro,
   trialDaysLeft,
 } from "@/lib/subscription";
-import { formatDateRu } from "@/lib/format";
+import { formatDateRu, formatTenge } from "@/lib/format";
+import { PRO_PRICE_KZT } from "@/lib/apipay";
 import { cn } from "@/lib/ui";
 import { AppFooter } from "@/components/app-footer";
 import { BrandLogo } from "@/components/brand-logo";
-import { CheckoutButton, PortalButton } from "@/components/plan-actions";
+import { KaspiCheckout } from "@/components/kaspi-checkout";
 
 const FREE_FEATURES = [
   "Счета, акты, накладные и договоры",
@@ -50,19 +51,16 @@ export default async function PricingPage({
   const periodEnd = sub?.current_period_end
     ? new Date(sub.current_period_end)
     : null;
-  const cancelAtPeriodEnd = sub?.cancel_at_period_end ?? false;
 
   const justUpgraded = typeof sp.upgraded === "string";
   const justCanceled = typeof sp.canceled === "string";
 
   const proStatus = paid
-    ? cancelAtPeriodEnd && periodEnd
-      ? `Активна до ${formatDateRu(periodEnd)}, продление отключено.`
-      : periodEnd
-        ? `Активна. Следующее списание ${formatDateRu(periodEnd)}.`
-        : "Активна."
+    ? periodEnd
+      ? `Активна до ${formatDateRu(periodEnd)}. Продлите, чтобы не прерывать.`
+      : "Активна."
     : onTrial
-      ? `Бесплатный пробный Pro - осталось ${daysLeft} ${plural(daysLeft)}.`
+      ? `Бесплатный пробный Pro — осталось ${daysLeft} ${plural(daysLeft)}.`
       : null;
 
   return (
@@ -90,7 +88,7 @@ export default async function PricingPage({
             Тарифы Docsify
           </h1>
           <p className="mx-auto mt-3 max-w-md text-pretty text-muted">
-            Простая цена, без сюрпризов. Отменить можно в любой момент.
+            Простая цена, без сюрпризов. Без автосписаний — платите, когда нужно.
           </p>
         </div>
 
@@ -122,7 +120,7 @@ export default async function PricingPage({
               </div>
             ) : (
               <p className="text-center text-xs text-faint">
-                Доступен после отмены Pro
+                Доступен после окончания Pro
               </p>
             )}
           </PlanCard>
@@ -130,8 +128,8 @@ export default async function PricingPage({
           {/* Pro */}
           <PlanCard
             name="Pro"
-            price="$5"
-            period="в месяц"
+            price={formatTenge(PRO_PRICE_KZT)}
+            period="за 30 дней"
             tagline="Поддержите развитие и получите новые возможности первыми."
             features={PRO_FEATURES}
             featuresPrefix="Всё из Free, плюс:"
@@ -142,20 +140,22 @@ export default async function PricingPage({
             {proStatus && (
               <p className="mb-3 text-center text-xs text-muted">{proStatus}</p>
             )}
-            {paid ? (
-              <PortalButton className={btnGhost} />
-            ) : (
-              <CheckoutButton
-                className={btnPrimary}
-                label={onTrial ? "Подключить Pro" : "Подключить Pro - $5/мес"}
-              />
-            )}
+            <KaspiCheckout
+              className={paid ? btnGhost : btnPrimary}
+              label={
+                paid
+                  ? "Продлить на 30 дней"
+                  : onTrial
+                    ? "Подключить Pro"
+                    : `Подключить Pro — ${formatTenge(PRO_PRICE_KZT)}`
+              }
+            />
           </PlanCard>
         </div>
 
         <p className="mx-auto mt-8 max-w-md text-center text-xs text-faint">
-          Оплата картой через Stripe. Цена указана без НДС. Вопросы по тарифам -
-          напишите нам, поможем.
+          Оплата через Kaspi — подтвердите счёт в приложении. Без автосписаний:
+          продлеваете вручную. Вопросы по тарифам — напишите нам, поможем.
         </p>
       </main>
 
