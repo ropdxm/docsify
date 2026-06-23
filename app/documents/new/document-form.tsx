@@ -167,8 +167,9 @@ export function DocumentForm({
   // sent/paid doc shows a single "save changes" action.
   const isDraftDoc = !isEdit || initialStatus === "draft";
   const initialContract = parseContract(initial?.contract);
+  const initialDocType = initial?.type ?? (initialImportOpen ? "avr" : "invoice");
 
-  const [docType, setDocType] = useState<DocType>(initial?.type ?? "invoice");
+  const [docType, setDocType] = useState<DocType>(initialDocType);
   const [date, setDate] = useState<Date>(() =>
     initial ? parseIsoDate(initial.date) : new Date()
   );
@@ -199,6 +200,7 @@ export function DocumentForm({
   );
   const isAvr = docType === "avr";
   const isNakladnaja = docType === "nakladnaja";
+  const canUseGoszakupki = isAvr || isNakladnaja;
   // Both АВР and накладная carry a per-line unit of measure («ед. изм.»).
   const showUnit = isAvr || isNakladnaja;
 
@@ -220,11 +222,18 @@ export function DocumentForm({
   const [submitError, setSubmitError] = useState<string | null>(null);
   useGlobalPending(pending || importPending);
 
+  function changeDocType(next: DocType) {
+    setDocType(next);
+    if (next === "invoice") {
+      setImportOpen(false);
+      setImportError(null);
+      setImportNotice(null);
+    }
+  }
+
   function applyGoszakupkiImport(
     result: Extract<GoszakupkiImportResult, { found: true }>["draft"]
   ) {
-    const safeType = docType === "avr" ? "avr" : "invoice";
-    if (docType === "nakladnaja") setDocType(safeType);
     setClient(result.client);
     setItems(
       result.items.map((it, i) => ({
@@ -249,6 +258,10 @@ export function DocumentForm({
     const query = importQuery.trim();
     setImportError(null);
     setImportNotice(null);
+    if (!canUseGoszakupki) {
+      setImportError("Госзакупки доступны только для АВР и накладной.");
+      return;
+    }
     if (!query) {
       setImportError("Укажите ID или системный номер договора.");
       return;
@@ -330,7 +343,7 @@ export function DocumentForm({
                 {TYPE_LABELS[docType]}
               </span>
             ) : (
-              <Segmented value={docType} onChange={setDocType} />
+              <Segmented value={docType} onChange={changeDocType} />
             )}
             <StatusPill status={isEdit ? initialStatus : "draft"} />
           </div>
@@ -355,37 +368,51 @@ export function DocumentForm({
           </div>
         </div>
 
-        {!isEdit && (
+        {!isEdit && canUseGoszakupki && (
           <section className="border-b border-line-soft p-5 sm:p-7">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <SectionLabel>Госзакупки</SectionLabel>
-              <button
-                type="button"
-                onClick={() => setImportOpen((open) => !open)}
-                className="inline-flex items-center gap-2 rounded-field border border-line bg-sheet px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-sunken hover:text-ink"
-              >
-                <IconImport className="size-4" />
-                {importOpen ? "Скрыть" : "Импорт"}
-              </button>
-            </div>
+            {importOpen ? (
+              <div className="rounded-card border border-line bg-sunken/60 p-4 sm:p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-xs font-semibold uppercase tracking-wider text-faint">
+                      Госзакупки
+                    </h2>
+                    <p className="mt-1 text-sm text-muted">
+                      Реквизиты подставятся в документ автоматически
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImportOpen(false);
+                      setImportError(null);
+                      setImportNotice(null);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-field px-2.5 py-1.5 text-sm font-semibold text-muted transition-colors hover:bg-sheet hover:text-ink"
+                  >
+                    <IconClose className="size-4" />
+                    Убрать привязку
+                  </button>
+                </div>
 
-            {importOpen && (
-              <div className="mt-1 rounded-card border border-line bg-sunken/45 p-3 sm:p-4">
-                <label className="mb-1 block text-xs text-faint">
+                <label className="mt-6 mb-2 block text-sm font-semibold text-muted">
                   ID или системный номер договора
                 </label>
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <input
                     value={importQuery}
                     onChange={(e) => setImportQuery(e.target.value)}
                     placeholder="409548 или 000140001536/160089/00"
-                    className={cn(fieldCls, "font-mono")}
+                    className={cn(
+                      fieldCls,
+                      "min-h-12 flex-1 bg-sheet px-4 text-base font-mono"
+                    )}
                   />
                   <button
                     type="button"
                     onClick={importFromGoszakupki}
                     disabled={importPending}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-field bg-tenge px-4 py-2 text-sm font-semibold text-on-tenge transition-colors hover:bg-tenge-deep disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-field bg-tenge px-6 text-base font-semibold text-on-tenge transition-colors hover:bg-tenge-deep disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {importPending ? "Загружаем…" : "Загрузить"}
                     <IconArrowRight className="size-4" />
@@ -398,6 +425,28 @@ export function DocumentForm({
                   <p className="mt-2 text-sm text-tenge-ink">{importNotice}</p>
                 )}
               </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setImportOpen(true)}
+                className="group flex w-full items-center gap-4 rounded-card border border-dashed border-line-strong bg-sheet p-4 text-left transition-colors hover:border-tenge/45 hover:bg-tenge-tint/20 sm:p-5"
+              >
+                <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-card bg-tenge-tint text-tenge-ink">
+                  <IconLink className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-base font-semibold text-ink">
+                    Привязать к Госзакупкам
+                  </span>
+                  <span className="mt-0.5 block text-sm text-muted">
+                    Подтянуть реквизиты договора из портала автоматически
+                  </span>
+                </span>
+                <span className="hidden rounded-field bg-sunken px-3 py-1.5 text-xs font-semibold text-muted sm:inline-flex">
+                  необязательно
+                </span>
+                <IconPlus className="size-5 shrink-0 text-muted transition-colors group-hover:text-tenge-ink" />
+              </button>
             )}
           </section>
         )}
@@ -1279,12 +1328,18 @@ function IconPlus({ className }: IconProps) {
     </svg>
   );
 }
-function IconImport({ className }: IconProps) {
+function IconLink({ className }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3v11" />
-      <path d="m8 10 4 4 4-4" />
-      <path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1" />
+      <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1" />
+    </svg>
+  );
+}
+function IconClose({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">
+      <path d="M7 7l10 10M17 7 7 17" />
     </svg>
   );
 }

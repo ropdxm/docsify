@@ -153,12 +153,6 @@ export default async function DashboardPage({
               + Договор
             </Link>
             <Link
-              href="/documents/new?from=goszakupki"
-              className="inline-flex items-center gap-2 rounded-field border border-line bg-sheet px-4 py-2.5 text-sm font-semibold text-ink shadow-soft transition-colors hover:bg-sunken"
-            >
-              + Госзакупки
-            </Link>
-            <Link
               href="/documents/new"
               className="inline-flex items-center gap-2 rounded-field bg-tenge px-4 py-2.5 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep active:bg-tenge-press"
             >

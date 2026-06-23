@@ -12,7 +12,7 @@ Docsify is a document workspace for Kazakhstan businesses. It helps users create
 - Signs договоры through NCALayer / ЭЦП workflows.
 - Stores company requisites, bank requisites, and multiple bank profiles with one primary profile.
 - Looks up counterparties by БИН/ИИН through KGD integration when configured.
-- Imports Goszakupki contracts into invoice and AVR drafts when configured.
+- Imports Goszakupki contracts into AVR and nakladnaja drafts when configured.
 - Saves counterparties and reused document data for faster repeat work.
 - Supports email/password and Google login through Supabase Auth.
 - Includes Stripe subscription plumbing and Amplitude analytics hooks.
