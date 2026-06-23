@@ -20,7 +20,6 @@ Small businesses in Kazakhstan lose 7–14 days per invoice cycle because:
 - Automated payment reminders (SMS/email) - Month 2
 - Integrations (1C, Kaspi, bank APIs) - Month 3+
 - Multi-user / team accounts - Month 3+
-- Mobile app - Month 3+
 
 ## Key Pages / Routes
 ## BIN Auto-fill Logic
