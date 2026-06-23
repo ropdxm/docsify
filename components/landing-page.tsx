@@ -185,6 +185,7 @@ function Hero() {
             {[
               "Официальные формы РК",
               "Автозаполнение по БИН из КГД",
+              "Поиск договоров из портала ГосЗакупок",
               "Отправка ссылкой",
             ].map((t) => (
               <li key={t} className="inline-flex items-center gap-1.5">
@@ -221,10 +222,10 @@ function HeroVisual() {
           <div>
             <div className="text-xs text-faint">От кого</div>
             <div className="mt-0.5 flex items-center gap-1.5 text-sm font-medium">
-              ИП «ЖДМ»
+              ИП «Баха»
               <IconCheck className="size-3.5 text-tenge" />
             </div>
-            <div className="font-mono text-xs text-faint">БИН 050916501298</div>
+            <div className="font-mono text-xs text-faint">БИН 055516591298</div>
           </div>
           <div className="text-right">
             <div className="font-mono text-sm font-medium tracking-tight">
@@ -269,7 +270,7 @@ function HeroVisual() {
           </span>
           <div className="min-w-0">
             <div className="font-mono text-xs text-faint">110240013813</div>
-            <div className="truncate text-sm font-medium">ТОО «PHYTO-APIPHARM»</div>
+            <div className="truncate text-sm font-medium">ТОО «SeverStroy Kurylys»</div>
           </div>
         </div>
         <div className="mt-2 inline-flex items-center gap-1 rounded-pill bg-tenge-tint px-2 py-0.5 text-[11px] font-medium text-tenge-ink">
@@ -523,8 +524,8 @@ function KgdMini() {
         </div>
       </div>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-        <MiniField label="Название" value="ТОО «PHYTO-APIPHARM»" wide />
-        <MiniField label="Директор" value="Жаскалиева Г. И." />
+        <MiniField label="Название" value="ТОО «SeverStroy Kurylys»" wide />
+        <MiniField label="Директор" value="Жарылгасинов Г. И." />
       </div>
     </div>
   );
@@ -542,7 +543,7 @@ function MiniField({ label, value, wide }: { label: string; value: string; wide?
 function ClientsMini() {
   return (
     <div className="space-y-1.5">
-      {["ТОО «PHYTO-APIPHARM»", "ИП Ескендиров", "ТОО «Каратау Строй»"].map((n) => (
+      {["ТОО «SeverStroy Kurylys»", "ИП Ескендиров", "ТОО «Каратау Строй»"].map((n) => (
         <div
           key={n}
           className="flex items-center gap-2 rounded-field border border-line-soft bg-paper/60 px-2.5 py-1.5 text-sm"
@@ -626,7 +627,7 @@ type ShowDoc = {
 
 function DashboardShowcase() {
   const docs: ShowDoc[] = [
-    { client: "ТОО «PHYTO-APIPHARM»", type: "Счёт", number: "СФ-2026-014", date: "10.06.2026", amount: "600 000 ₸", status: "sent" },
+    { client: "ТОО «SeverStroy Kurylys»", type: "Счёт", number: "СФ-2026-014", date: "10.06.2026", amount: "600 000 ₸", status: "sent" },
     { client: "ИП Ескендиров", type: "Акт", number: "АВР-2026-007", date: "08.06.2026", amount: "320 000 ₸", status: "signed" },
     { client: "ТОО «Каратау Строй»", type: "Счёт", number: "СФ-2026-013", date: "01.06.2026", amount: "980 000 ₸", status: "paid" },
   ];

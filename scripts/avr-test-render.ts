@@ -21,7 +21,7 @@ const buffer = await renderAvrXlsx({
     address: "г. Шымкент, Каратауский район, мкр. Нурсат, д. 1",
   },
   counterparty: {
-    name: "ТОО «PHYTO-APIPHARM»",
+    name: "ТОО «SeverStroy Kurylys»",
     bin: "110040010813",
     director: "Аймуратов Г. И.",
     address: "г. Алматы, ул. Бауыржан М., зд. 5",
