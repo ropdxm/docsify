@@ -228,7 +228,7 @@ export async function updateDocument(
   redirect("/dashboard?updated=1");
 }
 
-export async function markDocumentPaid(id: string, _formData: FormData) {
+export async function markDocumentPaid(id: string) {
   const company = await requireCompany();
   const supabase = await createClient();
   await supabase

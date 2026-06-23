@@ -5,9 +5,15 @@ import { BrandLogo } from "@/components/brand-logo";
 import { DocumentForm, type SavedClient } from "./document-form";
 import { MissingRequisitesPrompt } from "./missing-requisites-prompt";
 
-export default async function NewDocumentPage() {
+export default async function NewDocumentPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   await requireUser();
   const company = await getCompany();
+  const sp = await searchParams;
+  const initialImportOpen = sp.from === "goszakupki";
 
   if (!company) return <MissingRequisitesPage />;
 
@@ -84,6 +90,7 @@ export default async function NewDocumentPage() {
           clients={clients}
           bankProfiles={bankProfiles}
           unitOptions={unitOptions}
+          initialImportOpen={initialImportOpen}
         />
       </main>
     </div>

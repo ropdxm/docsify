@@ -4,6 +4,10 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useGlobalPending } from "@/components/loading";
 import { formatDateRu, formatTenge, num } from "@/lib/format";
 import { createDocument, updateDocument } from "@/lib/actions/documents";
+import {
+  importGoszakupkiContractDraft,
+  type GoszakupkiImportResult,
+} from "@/lib/actions/goszakupki";
 import { STATUS } from "@/lib/status";
 import { useBinLookup } from "@/components/use-bin-lookup";
 
@@ -144,6 +148,7 @@ export function DocumentForm({
   clients,
   bankProfiles,
   unitOptions,
+  initialImportOpen = false,
   documentId,
   initial,
 }: {
@@ -151,6 +156,7 @@ export function DocumentForm({
   clients: SavedClient[];
   bankProfiles: BankOption[];
   unitOptions: string[];
+  initialImportOpen?: boolean;
   /** Present when editing an existing document. */
   documentId?: string;
   initial?: DocumentInitial;
@@ -206,8 +212,56 @@ export function DocumentForm({
   const canSend = client !== null && hasValidItem;
 
   const [pending, startTransition] = useTransition();
+  const [importPending, startImportTransition] = useTransition();
+  const [importOpen, setImportOpen] = useState(initialImportOpen);
+  const [importQuery, setImportQuery] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importNotice, setImportNotice] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  useGlobalPending(pending);
+  useGlobalPending(pending || importPending);
+
+  function applyGoszakupkiImport(
+    result: Extract<GoszakupkiImportResult, { found: true }>["draft"]
+  ) {
+    const safeType = docType === "avr" ? "avr" : "invoice";
+    if (docType === "nakladnaja") setDocType(safeType);
+    setClient(result.client);
+    setItems(
+      result.items.map((it, i) => ({
+        id: `goszakupki-${result.contractId}-${i}`,
+        description: it.description,
+        qty: String(it.quantity),
+        price: String(it.unitPrice),
+        unit: it.unit ?? "",
+      }))
+    );
+    setContractNo(
+      (result.contractNumber || result.contractNumberSys || String(result.contractId))
+        .replace(/^№\s*/, "")
+        .trim()
+    );
+    if (result.contractDate) setContractDate(parseIsoDate(result.contractDate));
+    const warning = result.warnings[0] ? ` ${result.warnings[0]}` : "";
+    setImportNotice(`Договор ${result.sourceLabel} загружен.${warning}`);
+  }
+
+  function importFromGoszakupki() {
+    const query = importQuery.trim();
+    setImportError(null);
+    setImportNotice(null);
+    if (!query) {
+      setImportError("Укажите ID или системный номер договора.");
+      return;
+    }
+    startImportTransition(async () => {
+      const res = await importGoszakupkiContractDraft(query);
+      if (res.found) {
+        applyGoszakupkiImport(res.draft);
+      } else {
+        setImportError(res.error);
+      }
+    });
+  }
 
   function submit(mode: "draft" | "send") {
     setSubmitError(null);
@@ -300,6 +354,53 @@ export function DocumentForm({
             </div>
           </div>
         </div>
+
+        {!isEdit && (
+          <section className="border-b border-line-soft p-5 sm:p-7">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <SectionLabel>Госзакупки</SectionLabel>
+              <button
+                type="button"
+                onClick={() => setImportOpen((open) => !open)}
+                className="inline-flex items-center gap-2 rounded-field border border-line bg-sheet px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-sunken hover:text-ink"
+              >
+                <IconImport className="size-4" />
+                {importOpen ? "Скрыть" : "Импорт"}
+              </button>
+            </div>
+
+            {importOpen && (
+              <div className="mt-1 rounded-card border border-line bg-sunken/45 p-3 sm:p-4">
+                <label className="mb-1 block text-xs text-faint">
+                  ID или системный номер договора
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <input
+                    value={importQuery}
+                    onChange={(e) => setImportQuery(e.target.value)}
+                    placeholder="409548 или 000140001536/160089/00"
+                    className={cn(fieldCls, "font-mono")}
+                  />
+                  <button
+                    type="button"
+                    onClick={importFromGoszakupki}
+                    disabled={importPending}
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-field bg-tenge px-4 py-2 text-sm font-semibold text-on-tenge transition-colors hover:bg-tenge-deep disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {importPending ? "Загружаем…" : "Загрузить"}
+                    <IconArrowRight className="size-4" />
+                  </button>
+                </div>
+                {importError && (
+                  <p className="mt-2 text-sm text-danger">{importError}</p>
+                )}
+                {importNotice && (
+                  <p className="mt-2 text-sm text-tenge-ink">{importNotice}</p>
+                )}
+              </div>
+            )}
+          </section>
+        )}
 
         {/* ---- client ---- */}
         <section className="border-b border-line-soft p-5 sm:p-7">
@@ -1175,6 +1276,15 @@ function IconPlus({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">
       <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+function IconImport({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v11" />
+      <path d="m8 10 4 4 4-4" />
+      <path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
     </svg>
   );
 }
