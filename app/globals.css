@@ -145,10 +145,19 @@ body {
     radial-gradient(45% 60% at 12% 8%, rgba(14, 150, 134, 0.08), transparent 70%);
 }
 
+/* Success "pop" - a confident scale-in for the payment confirmation check. */
+@keyframes docsify-pop {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.kp-pop { animation: docsify-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 @media (prefers-reduced-motion: reduce) {
   .lp-rise,
   .lp-float,
-  .lp-float-slow { animation: none !important; }
+  .lp-float-slow,
+  .kp-pop { animation: none !important; }
   .lp-reveal {
     opacity: 1 !important;
     transform: none !important;

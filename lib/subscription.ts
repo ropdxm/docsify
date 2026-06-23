@@ -4,6 +4,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export type Plan = "pro" | "free";
 
+/** Length of the complimentary Pro trial granted to a new company, in days. */
+export const FREE_TRIAL_DAYS = 7;
+
 export type Subscription = {
   company_id: string;
   plan: string;
@@ -31,7 +34,7 @@ export function isPaidPro(sub: Subscription | null): boolean {
 
 /**
  * The plan that's actually in effect right now. Pro while either a paid
- * subscription is live OR the 1-month free trial hasn't ended; Free otherwise.
+ * subscription is live OR the free trial hasn't ended; Free otherwise.
  * Single source of truth so feature gating can be added later in one place.
  */
 export function effectivePlan(sub: Subscription | null): Plan {
@@ -62,14 +65,14 @@ export const getSubscription = cache(
 );
 
 /**
- * Grant the 1-month free Pro trial for a freshly created company. Idempotent:
- * `ignoreDuplicates` means an existing subscription (e.g. a paid one) is never
- * reset. Runs with the service role (RLS exposes no insert policy).
+ * Grant the free Pro trial (FREE_TRIAL_DAYS) for a freshly created company.
+ * Idempotent: `ignoreDuplicates` means an existing subscription (e.g. a paid one)
+ * is never reset. Runs with the service role (RLS exposes no insert policy).
  */
 export async function ensureTrialSubscription(companyId: string): Promise<void> {
   const admin = createAdminClient();
   const trialEnds = new Date();
-  trialEnds.setMonth(trialEnds.getMonth() + 1);
+  trialEnds.setDate(trialEnds.getDate() + FREE_TRIAL_DAYS);
   await admin.from("subscriptions").upsert(
     {
       company_id: companyId,

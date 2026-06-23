@@ -11,7 +11,6 @@ import { PRO_PRICE_KZT } from "@/lib/apipay";
 import { cn } from "@/lib/ui";
 import { AppFooter } from "@/components/app-footer";
 import { BrandLogo } from "@/components/brand-logo";
-import { KaspiCheckout } from "@/components/kaspi-checkout";
 
 const FREE_FEATURES = [
   "Счета, акты, накладные и договоры",
@@ -140,16 +139,13 @@ export default async function PricingPage({
             {proStatus && (
               <p className="mb-3 text-center text-xs text-muted">{proStatus}</p>
             )}
-            <KaspiCheckout
-              className={paid ? btnGhost : btnPrimary}
-              label={
-                paid
-                  ? "Продлить на 30 дней"
-                  : onTrial
-                    ? "Подключить Pro"
-                    : `Подключить Pro — ${formatTenge(PRO_PRICE_KZT)}`
-              }
-            />
+            <Link href="/pricing/pay" className={paid ? btnGhost : btnPrimary}>
+              {paid
+                ? "Продлить на 30 дней"
+                : onTrial
+                  ? "Подключить Pro"
+                  : `Подключить Pro — ${formatTenge(PRO_PRICE_KZT)}`}
+            </Link>
           </PlanCard>
         </div>
 

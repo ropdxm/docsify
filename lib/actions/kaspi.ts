@@ -130,3 +130,21 @@ export async function getKaspiInvoiceStatus(orderId: string): Promise<string | n
   }
   return row.status;
 }
+
+/**
+ * The company's current Pro period end (ISO), or null. Used by the pay page's
+ * success screen to show the date access is granted until.
+ */
+export async function getProPeriodEnd(): Promise<string | null> {
+  const company = await requireCompany();
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("subscriptions")
+    .select("current_period_end")
+    .eq("company_id", company.id)
+    .maybeSingle();
+  return (
+    (data as { current_period_end: string | null } | null)?.current_period_end ??
+    null
+  );
+}

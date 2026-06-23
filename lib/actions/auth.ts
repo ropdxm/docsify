@@ -108,7 +108,7 @@ export async function createCompany(
   if (error && error.code !== "23505") return { error: error.message };
 
   if (companyRow) {
-    // New accounts get 1 month of Pro for free (DB-only trial, no card needed).
+    // New accounts get 7 days of Pro for free (DB-only trial, no card needed).
     await ensureTrialSubscription(companyRow.id);
 
     const { error: bankError } = await supabase.from("bank_profiles").insert({
