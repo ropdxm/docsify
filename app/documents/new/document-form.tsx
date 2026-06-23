@@ -130,7 +130,44 @@ export const fieldCls =
   "w-full rounded-field bg-sunken px-3 py-2 text-sm text-ink placeholder:text-ghost outline-none transition-colors focus-visible:bg-sheet focus-visible:ring-2 focus-visible:ring-ring";
 
 // Common KZ units of measure, offered alongside the ones the user typed before.
-const COMMON_UNITS = ["шт", "услуга", "упак", "кг", "л", "м", "м²", "час", "сутки", "мес"];
+const COMMON_UNITS = [
+  "шт",
+  "услуга",
+  "работа",
+  "ед",
+  "компл",
+  "набор",
+  "пара",
+  "упак",
+  "пачка",
+  "коробка",
+  "ящик",
+  "рулон",
+  "мешок",
+  "баллон",
+  "бутылка",
+  "лист",
+  "кг",
+  "г",
+  "т",
+  "л",
+  "мл",
+  "м",
+  "см",
+  "км",
+  "м²",
+  "см²",
+  "м³",
+  "га",
+  "кВт·ч",
+  "мин",
+  "час",
+  "день",
+  "сутки",
+  "мес",
+  "год",
+  "рейс",
+];
 
 function rowTotal(item: LineItem): number {
   return num(item.qty) * num(item.price);
