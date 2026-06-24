@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCompany, requireUser } from "@/lib/dal";
+import { getDocumentQuotaSnapshot } from "@/lib/document-quotas";
 import { createClient } from "@/lib/supabase/server";
 import { BrandLogo } from "@/components/brand-logo";
 import { MissingRequisitesPrompt } from "../missing-requisites-prompt";
@@ -19,6 +20,7 @@ export default async function NewDogovorPage() {
     .eq("company_id", company.id)
     .order("name");
   const clients = (data ?? []) as SavedClient[];
+  const quota = await getDocumentQuotaSnapshot(company.id);
 
   return (
     <div className="min-h-full">
@@ -52,6 +54,7 @@ export default async function NewDogovorPage() {
         <DogovorForm
           company={{ name: company.name, bin: company.bin }}
           clients={clients}
+          quota={quota}
         />
       </main>
     </div>

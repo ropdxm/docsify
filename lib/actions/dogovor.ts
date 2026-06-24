@@ -7,6 +7,10 @@ import { renderToBuffer, type DocumentProps } from "@react-pdf/renderer";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCompany } from "@/lib/dal";
+import {
+  documentQuotaMessageFromError,
+} from "@/lib/document-quota-shared";
+import { getDocumentQuotaError } from "@/lib/document-quotas";
 import { DogovorDocument } from "@/lib/pdf/dogovor";
 import { verifyCms, sameBin } from "@/lib/nca/verify";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -54,6 +58,8 @@ export async function createDogovor(
   if (!/^\d{12}$/.test(client.bin) || !client.name) {
     return { error: "Выберите клиента (нужны название и БИН/ИИН)." };
   }
+  const quotaError = await getDocumentQuotaError(company.id, "dogovor");
+  if (quotaError) return { error: quotaError };
 
   // Resolve the source PDF bytes up front so we don't insert a row we can't fill.
   let pdf: Buffer;
@@ -136,7 +142,10 @@ export async function createDogovor(
     })
     .select("id")
     .single();
-  if (error) return { error: `Не удалось создать договор: ${error.message}` };
+  if (error) {
+    const quotaMessage = documentQuotaMessageFromError(error.message);
+    return { error: quotaMessage ?? `Не удалось создать договор: ${error.message}` };
+  }
 
   // Store the signable PDF (service role - the bucket is private).
   const filePath = `${company.id}/${doc.id}/dogovor.pdf`;

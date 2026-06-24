@@ -15,7 +15,7 @@ Docsify is a document workspace for Kazakhstan businesses. It helps users create
 - Imports Goszakupki contracts into AVR and nakladnaja drafts when configured.
 - Saves counterparties and reused document data for faster repeat work.
 - Supports email/password and Google login through Supabase Auth.
-- Includes Stripe subscription plumbing and Amplitude analytics hooks.
+- Includes Kaspi Pro billing plumbing and Amplitude analytics hooks.
 
 ## Main Flows
 
@@ -33,7 +33,7 @@ Docsify is a document workspace for Kazakhstan businesses. It helps users create
 - ExcelJS for XLSX generation
 - React PDF for PDF generation
 - NCALayer integration for ЭЦП signing
-- Stripe for subscriptions
+- Kaspi POS Automation for Pro payments
 - Amplitude for analytics
 - Tailwind CSS
 
@@ -56,11 +56,20 @@ KGD_API_X_TOKEN=
 GOSZAKUPKI_API_TOKEN=
 NCANODE_URL=
 
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
+KASPI_POS_BASE_URL=
+KASPI_POS_TOKEN_SN=
+KASPI_POS_VTOKEN_SECRET=
+KASPI_POS_PROFILE_ID=
+KASPI_POS_WEBHOOK_SECRET=
 
 NEXT_PUBLIC_AMPLITUDE_API_KEY=
 ```
+
+For Pro payments, deploy/run
+[`tapter-dev/kaspi-pos-automation`](https://github.com/tapter-dev/kaspi-pos-automation)
+as a separate service. Its `webhooks.json` should point to
+`https://www.docsify.xyz/api/kaspi-pos/webhook` and use the same secret as
+`KASPI_POS_WEBHOOK_SECRET`.
 
 Start the app:
 

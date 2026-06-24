@@ -8,6 +8,11 @@ import {
   importGoszakupkiContractDraft,
   type GoszakupkiImportResult,
 } from "@/lib/actions/goszakupki";
+import {
+  documentQuotaHint,
+  documentQuotaViolation,
+  type DocumentQuotaSnapshot,
+} from "@/lib/document-quota-shared";
 import { STATUS } from "@/lib/status";
 import { useBinLookup } from "@/components/use-bin-lookup";
 
@@ -186,6 +191,7 @@ export function DocumentForm({
   bankProfiles,
   unitOptions,
   initialImportOpen = false,
+  quota,
   documentId,
   initial,
 }: {
@@ -194,6 +200,7 @@ export function DocumentForm({
   bankProfiles: BankOption[];
   unitOptions: string[];
   initialImportOpen?: boolean;
+  quota?: DocumentQuotaSnapshot | null;
   /** Present when editing an existing document. */
   documentId?: string;
   initial?: DocumentInitial;
@@ -246,9 +253,13 @@ export function DocumentForm({
   const unitChoices = [...new Set([...unitOptions, ...COMMON_UNITS])];
   const number = isEdit ? initial!.number : `${copy.prefix}-${date.getFullYear()}-001`;
   const total = items.reduce((sum, it) => sum + rowTotal(it), 0);
+  const quotaError =
+    !isEdit && quota ? documentQuotaViolation(quota, docType) : null;
+  const quotaHint = !isEdit && quota ? documentQuotaHint(quota, docType) : null;
 
   const hasValidItem = items.some((it) => rowTotal(it) > 0);
-  const canSend = client !== null && hasValidItem;
+  const canCreateDocument = quotaError === null;
+  const canSend = client !== null && hasValidItem && canCreateDocument;
 
   const [pending, startTransition] = useTransition();
   const [importPending, startImportTransition] = useTransition();
@@ -315,6 +326,10 @@ export function DocumentForm({
 
   function submit(mode: "draft" | "send") {
     setSubmitError(null);
+    if (quotaError) {
+      setSubmitError(quotaError);
+      return;
+    }
     if (!client) {
       setSubmitError("Выберите или добавьте клиента.");
       return;
@@ -403,6 +418,16 @@ export function DocumentForm({
               <DatePopover date={date} onChange={setDate} />
             </div>
           </div>
+          {quotaHint && (
+            <p
+              className={cn(
+                "mt-4 text-xs",
+                quotaError ? "text-danger" : "text-faint"
+              )}
+            >
+              {quotaError ?? quotaHint}
+            </p>
+          )}
         </div>
 
         {!isEdit && canUseGoszakupki && (
@@ -601,7 +626,7 @@ export function DocumentForm({
             <button
               type="button"
               onClick={() => submit("draft")}
-              disabled={pending}
+              disabled={pending || !canCreateDocument}
               className="rounded-field px-3.5 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-sunken hover:text-ink disabled:opacity-40"
             >
               Сохранить черновик
@@ -613,6 +638,8 @@ export function DocumentForm({
           <div className="flex items-center gap-3">
             {submitError ? (
               <span className="text-sm text-danger">{submitError}</span>
+            ) : quotaError ? (
+              <span className="text-sm text-danger">{quotaError}</span>
             ) : (
               isDraftDoc &&
               !canSend && (

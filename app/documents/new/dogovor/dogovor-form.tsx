@@ -5,6 +5,11 @@ import { cn } from "@/lib/ui";
 import { useGlobalPending } from "@/components/loading";
 import { createDogovor } from "@/lib/actions/dogovor";
 import {
+  documentQuotaHint,
+  documentQuotaViolation,
+  type DocumentQuotaSnapshot,
+} from "@/lib/document-quota-shared";
+import {
   ClientField,
   DatePopover,
   fieldCls,
@@ -23,9 +28,11 @@ function isoDate(d: Date): string {
 export function DogovorForm({
   company,
   clients,
+  quota,
 }: {
   company: { name: string; bin: string };
   clients: SavedClient[];
+  quota?: DocumentQuotaSnapshot | null;
 }) {
   const [date, setDate] = useState<Date>(() => new Date());
   const [client, setClient] = useState<Client | null>(null);
@@ -39,12 +46,19 @@ export function DogovorForm({
   const [error, setError] = useState<string | null>(null);
   useGlobalPending(pending);
 
+  const quotaError = quota ? documentQuotaViolation(quota, "dogovor") : null;
+  const quotaHint = quota ? documentQuotaHint(quota, "dogovor") : null;
   const canCreate =
     client !== null &&
-    (mode === "write" ? body.trim().length > 0 : file !== null);
+    (mode === "write" ? body.trim().length > 0 : file !== null) &&
+    quotaError === null;
 
   function submit() {
     setError(null);
+    if (quotaError) {
+      setError(quotaError);
+      return;
+    }
     if (!client) {
       setError("Выберите клиента.");
       return;
@@ -91,6 +105,16 @@ export function DogovorForm({
             <div className="mt-1 text-sm font-medium">{company.name}</div>
             <div className="font-mono text-xs text-faint">БИН {company.bin}</div>
           </div>
+          {quotaHint && (
+            <p
+              className={cn(
+                "mt-4 text-xs",
+                quotaError ? "text-danger" : "text-faint"
+              )}
+            >
+              {quotaError ?? quotaHint}
+            </p>
+          )}
         </div>
 
         {/* client */}
@@ -182,6 +206,8 @@ export function DogovorForm({
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-end gap-3 px-4 py-3">
           {error ? (
             <span className="text-sm text-danger">{error}</span>
+          ) : quotaError ? (
+            <span className="text-sm text-danger">{quotaError}</span>
           ) : (
             !canCreate && (
               <span className="hidden text-sm text-faint sm:inline">

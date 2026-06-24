@@ -24,7 +24,7 @@ export function isPaidPro(sub: Subscription | null): boolean {
   if (!sub) return false;
   if (sub.status !== "active" && sub.status !== "trialing") return false;
   // Paid access is keyed on a live billing period, set by either provider: the
-  // Stripe webhook or a paid Kaspi/ApiPay invoice. (The free trial leaves
+  // Stripe webhook or a paid Kaspi invoice. (The free trial leaves
   // current_period_end null and is handled by effectivePlan via trial_ends_at.)
   return (
     sub.current_period_end != null &&

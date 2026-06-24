@@ -1,11 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PRO_PERIOD_DAYS } from "@/lib/apipay";
-
-// Fulfillment for Kaspi (ApiPay) payments. Shared by the webhook and the polling
-// fallback so the "mark paid -> extend Pro" logic lives in exactly one place.
-// Runs with the service role (the kaspi_invoices / subscriptions tables expose no
-// write policy to the auth/anon roles).
+import { PRO_PERIOD_DAYS, type KaspiInvoiceStatus } from "@/lib/kaspi-pos";
 
 type InvoiceRow = {
   id: string;
@@ -13,15 +8,22 @@ type InvoiceRow = {
   status: string;
 };
 
+type InvoiceUpdateMeta = {
+  receiptUrl?: string | null;
+  orderNumber?: string | null;
+  errorMessage?: string | null;
+};
+
 /**
  * Apply a status update to a Kaspi invoice and, on the FIRST transition to
  * `paid`, extend the company's Pro subscription by PRO_PERIOD_DAYS. Idempotent:
- * a repeat `paid` (ApiPay retries webhooks up to ~11x) is a no-op for billing.
+ * a repeat `paid` is a no-op for billing.
  */
 export async function applyKaspiInvoiceStatus(
   orderId: string,
-  status: string,
-  paidAt?: string | null
+  status: KaspiInvoiceStatus,
+  paidAt?: string | null,
+  meta?: InvoiceUpdateMeta
 ): Promise<void> {
   const admin = createAdminClient();
 
@@ -33,18 +35,53 @@ export async function applyKaspiInvoiceStatus(
   const row = data as InvoiceRow | null;
   if (!row) return; // unknown invoice - ignore
 
-  if (row.status === status) return; // nothing changed
+  await applyKaspiInvoiceRowStatus(row, status, paidAt, meta);
+}
 
-  await admin
+export async function applyKaspiOperationStatus(
+  operationId: string,
+  status: KaspiInvoiceStatus,
+  paidAt?: string | null,
+  meta?: InvoiceUpdateMeta
+): Promise<void> {
+  const admin = createAdminClient();
+
+  const { data } = await admin
     .from("kaspi_invoices")
-    .update({
-      status,
-      paid_at: status === "paid" ? paidAt ?? new Date().toISOString() : null,
-    })
-    .eq("id", row.id);
+    .select("id, company_id, status")
+    .eq("kaspi_operation_id", operationId)
+    .maybeSingle();
+  const row = data as InvoiceRow | null;
+
+  if (!row) return; // unknown invoice - ignore
+
+  await applyKaspiInvoiceRowStatus(row, status, paidAt, meta);
+}
+
+async function applyKaspiInvoiceRowStatus(
+  row: InvoiceRow,
+  status: KaspiInvoiceStatus,
+  paidAt?: string | null,
+  meta?: InvoiceUpdateMeta
+): Promise<void> {
+  const admin = createAdminClient();
+  const hasMeta =
+    meta?.receiptUrl != null || meta?.orderNumber != null || meta?.errorMessage != null;
+
+  if (row.status === status && !hasMeta) return; // nothing changed
+
+  const update: Record<string, string | null> = { status };
+  if (status === "paid" && row.status !== "paid")
+    update.paid_at = paidAt ?? new Date().toISOString();
+  if (status !== "paid") update.paid_at = null;
+  if (meta?.receiptUrl != null) update.kaspi_receipt_url = meta.receiptUrl;
+  if (meta?.orderNumber != null) update.kaspi_order_number = meta.orderNumber;
+  if (meta?.errorMessage != null) update.error_message = meta.errorMessage;
+
+  await admin.from("kaspi_invoices").update(update).eq("id", row.id);
 
   // Only grant on the edge into `paid` (row.status was something else above).
-  if (status === "paid") await grantProPeriod(row.company_id);
+  if (status === "paid" && row.status !== "paid") await grantProPeriod(row.company_id);
 }
 
 /**

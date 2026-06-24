@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireCompany } from "@/lib/dal";
 import { getSubscription, isPaidPro } from "@/lib/subscription";
-import { PRO_PRICE_KZT, PRO_PERIOD_DAYS } from "@/lib/apipay";
+import { PRO_PRICE_KZT, PRO_PERIOD_DAYS } from "@/lib/kaspi-pos";
 import { formatTenge } from "@/lib/format";
 import { BrandLogo } from "@/components/brand-logo";
 import { AppFooter } from "@/components/app-footer";

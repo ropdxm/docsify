@@ -7,7 +7,7 @@ import {
   trialDaysLeft,
 } from "@/lib/subscription";
 import { formatDateRu, formatTenge } from "@/lib/format";
-import { PRO_PRICE_KZT } from "@/lib/apipay";
+import { PRO_PRICE_KZT } from "@/lib/kaspi-pos";
 import { cn } from "@/lib/ui";
 import { AppFooter } from "@/components/app-footer";
 import { BrandLogo } from "@/components/brand-logo";

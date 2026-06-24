@@ -12,7 +12,7 @@ import { useGlobalPending } from "@/components/loading";
 import { formatDateRu } from "@/lib/format";
 import { cn } from "@/lib/ui";
 
-// The full Kaspi (ApiPay) payment flow as a self-contained step machine:
+// The full Kaspi POS payment flow as a self-contained step machine:
 //   form  -> enter the Kaspi phone, create the invoice
 //   wait  -> poll while the customer confirms the charge in the Kaspi app
 //   done  -> Pro granted; offer the dashboard

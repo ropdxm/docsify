@@ -5,6 +5,10 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireCompany } from "@/lib/dal";
+import {
+  documentQuotaMessageFromError,
+} from "@/lib/document-quota-shared";
+import { getDocumentQuotaError } from "@/lib/document-quotas";
 
 const Item = z.object({
   description: z.string().default(""),
@@ -50,6 +54,8 @@ export async function createDocument(
   const { type, date, client, items } = parsed.data;
   // Contract reference only applies to АВР; drop it for invoices.
   const contract = type === "avr" ? parsed.data.contract?.trim() || null : null;
+  const quotaError = await getDocumentQuotaError(company.id, type);
+  if (quotaError) return { error: quotaError };
 
   const supabase = await createClient();
 
@@ -126,7 +132,10 @@ export async function createDocument(
     })
     .select("id")
     .single();
-  if (error) return { error: `Не удалось создать документ: ${error.message}` };
+  if (error) {
+    const quotaMessage = documentQuotaMessageFromError(error.message);
+    return { error: quotaMessage ?? `Не удалось создать документ: ${error.message}` };
+  }
 
   redirect(`/dashboard?created=${doc.id}`);
 }

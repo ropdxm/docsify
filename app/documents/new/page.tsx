@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getBankProfiles, getCompany, requireUser } from "@/lib/dal";
+import { getDocumentQuotaSnapshot } from "@/lib/document-quotas";
 import { createClient } from "@/lib/supabase/server";
 import { BrandLogo } from "@/components/brand-logo";
 import { DocumentForm, type SavedClient } from "./document-form";
@@ -47,7 +48,11 @@ export default async function NewDocumentPage({
     }
   }
 
-  const bankProfiles = (await getBankProfiles(company.id)).map((p) => ({
+  const [bankProfiles, quota] = await Promise.all([
+    getBankProfiles(company.id),
+    getDocumentQuotaSnapshot(company.id),
+  ]);
+  const bankProfileOptions = bankProfiles.map((p) => ({
     id: p.id,
     label: p.label,
     bank_name: p.bank_name,
@@ -88,9 +93,10 @@ export default async function NewDocumentPage({
         <DocumentForm
           company={{ name: company.name, bin: company.bin }}
           clients={clients}
-          bankProfiles={bankProfiles}
+          bankProfiles={bankProfileOptions}
           unitOptions={unitOptions}
           initialImportOpen={initialImportOpen}
+          quota={quota}
         />
       </main>
     </div>
