@@ -3,7 +3,7 @@ import "server-only";
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
 /** The one paid plan: Docsify Pro. Kaspi requires a whole-tenge integer amount. */
-export const PRO_PRICE_KZT = 2500;
+export const PRO_PRICE_KZT = 2990;
 export const PRO_PERIOD_DAYS = 30;
 
 export type KaspiInvoiceStatus =
@@ -62,6 +62,7 @@ export function normalizeKaspiStatus(
   const s = (status ?? "").trim().toLowerCase();
   switch (s) {
     case "processed":
+    case "remotepaymentpaid":
     case "paid":
     case "success":
       return "paid";
@@ -179,7 +180,16 @@ function invoiceFromResponse(
   fallbackId?: string
 ): KaspiPosInvoice {
   const data = dataOf(body);
-  const id = stringField(data, "Id") ?? stringField(data, "id") ?? fallbackId;
+  const id =
+    stringField(data, "Id") ??
+    stringField(data, "id") ??
+    stringField(data, "QrOperationId") ??
+    stringField(data, "qrOperationId") ??
+    stringField(data, "OperationId") ??
+    stringField(data, "operationId") ??
+    stringField(data, "PaymentId") ??
+    stringField(data, "paymentId") ??
+    fallbackId;
   if (!id)
     throw new KaspiPosError(
       "Kaspi POS response did not include an invoice id",
