@@ -71,8 +71,10 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Run on everything except API routes (they enforce their own auth),
-  // Next internals, and static assets.
+  // Next internals, and static assets. NOTE: static files in /public are matched
+  // by EXTENSION here - a missing extension (e.g. video) makes the proxy treat
+  // the file as a protected route and 307-redirect it to /login.
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|ttf|woff2?)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|ttf|woff2?|mp4|webm|mov|m4v|ogg|ogv|mp3|wav|m4a)$).*)",
   ],
 };

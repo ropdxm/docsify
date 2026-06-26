@@ -64,6 +64,7 @@ export function LandingPage() {
     <div className="min-h-full overflow-x-clip">
       <Nav />
       <Hero />
+      <DemoVideo />
       <Problem />
       <HowItWorks />
       <Features />
@@ -290,6 +291,63 @@ function HeroVisual() {
         </div>
       </div>
     </div>
+  );
+}
+
+/* --------------------------------------------------------------------- demo */
+
+function DemoVideo() {
+  return (
+    <section className="relative border-t border-line-soft">
+      {/* warm ambient wash - same family as the hero */}
+      <div className="lp-aurora pointer-events-none absolute inset-0 -z-10" />
+      <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-24">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <SectionEyebrow>Демо</SectionEyebrow>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            Посмотрите, как это работает
+          </h2>
+          <p className="mt-3 text-lg text-muted">
+            От «работа сделана» до «счёт отправлен» — меньше двух минут.
+          </p>
+        </Reveal>
+
+        <Reveal delay={120} className="relative mx-auto mt-10 max-w-md sm:mt-12">
+          {/* soft glow behind the frame for depth */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-x-6 -inset-y-5 -z-10 rounded-[2rem] bg-tenge/10 blur-2xl"
+          />
+          <div className="overflow-hidden rounded-sheet border border-line bg-sheet shadow-sheet">
+            {/* faux app chrome - frames the demo as the product itself */}
+            <div className="flex items-center border-b border-line-soft px-4 py-3">
+              <span className="flex gap-1.5">
+                <span className="size-2.5 rounded-full bg-ghost/70" />
+                <span className="size-2.5 rounded-full bg-ghost/50" />
+                <span className="size-2.5 rounded-full bg-ghost/40" />
+              </span>
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-pill bg-sunken px-3 py-1 text-xs text-faint">
+                <BrandLogo className="size-3.5" />
+                docsify.kz
+              </span>
+              {/* balances the traffic lights so the pill stays centred */}
+              <span className="w-[42px]" aria-hidden />
+            </div>
+            <video
+              className="block aspect-square w-full bg-sunken object-contain"
+              src="/docsifyDemo.mp4"
+              aria-label="Демо Docsify"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+            />
+          </div>
+        </Reveal>
+      </div>
+    </section>
   );
 }
 

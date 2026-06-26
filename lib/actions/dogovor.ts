@@ -1,9 +1,7 @@
 "use server";
 
-import React from "react";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { renderToBuffer, type DocumentProps } from "@react-pdf/renderer";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCompany } from "@/lib/dal";
@@ -11,7 +9,6 @@ import {
   documentQuotaMessageFromError,
 } from "@/lib/document-quota-shared";
 import { getDocumentQuotaError } from "@/lib/document-quotas";
-import { DogovorDocument } from "@/lib/pdf/dogovor";
 import { verifyCms, sameBin } from "@/lib/nca/verify";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -32,17 +29,15 @@ function str(form: FormData, key: string): string {
 }
 
 /**
- * Create a договор: either written in the app (rendered to an A4 PDF) or an
- * uploaded PDF. The signable PDF lands in the private 'documents' bucket; both
- * parties sign it later with ЭЦП. Returns an error, or redirects to the detail
- * page on success.
+ * Create a договор from an uploaded PDF. The signable PDF lands in the private
+ * 'documents' bucket; both parties sign it later with ЭЦП. Returns an error, or
+ * redirects to the detail page on success.
  */
 export async function createDogovor(
   form: FormData
 ): Promise<{ error: string } | void> {
   const company = await requireCompany();
 
-  const mode = str(form, "mode"); // "write" | "upload"
   const title = str(form, "title");
   const isoDate = str(form, "date");
   const date = /^\d{4}-\d{2}-\d{2}$/.test(isoDate)
@@ -61,41 +56,18 @@ export async function createDogovor(
   const quotaError = await getDocumentQuotaError(company.id, "dogovor");
   if (quotaError) return { error: quotaError };
 
-  // Resolve the source PDF bytes up front so we don't insert a row we can't fill.
-  let pdf: Buffer;
-  let body: string | null = null;
-  if (mode === "upload") {
-    const file = form.get("file");
-    if (!(file instanceof File) || file.size === 0) {
-      return { error: "Прикрепите PDF-файл договора." };
-    }
-    if (file.type && file.type !== PDF_MIME) {
-      return { error: "Поддерживается только PDF. Экспортируйте договор в PDF." };
-    }
-    if (file.size > MAX_PDF_BYTES) {
-      return { error: "Файл слишком большой (макс. 15 МБ)." };
-    }
-    pdf = Buffer.from(await file.arrayBuffer());
-  } else {
-    body = str(form, "body");
-    if (!body) return { error: "Напишите текст договора." };
-    const element = React.createElement(DogovorDocument, {
-      doc: {
-        number: "-",
-        title,
-        date,
-        body,
-        company: {
-          name: company.name,
-          bin: company.bin,
-          director: company.director,
-          address: company.address,
-        },
-        counterparty: client,
-      },
-    }) as unknown as React.ReactElement<DocumentProps>;
-    pdf = Buffer.from(await renderToBuffer(element));
+  // Resolve the uploaded PDF up front so we don't insert a row we can't fill.
+  const file = form.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Прикрепите PDF-файл договора." };
   }
+  if (file.type && file.type !== PDF_MIME) {
+    return { error: "Поддерживается только PDF. Экспортируйте договор в PDF." };
+  }
+  if (file.size > MAX_PDF_BYTES) {
+    return { error: "Файл слишком большой (макс. 15 МБ)." };
+  }
+  const pdf = Buffer.from(await file.arrayBuffer());
 
   const supabase = await createClient();
 
@@ -136,7 +108,7 @@ export async function createDogovor(
       number,
       date,
       title: title || null,
-      body,
+      body: null,
       status: "draft",
       share_token: shareToken(),
     })

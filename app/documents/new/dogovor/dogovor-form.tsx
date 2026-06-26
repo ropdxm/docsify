@@ -17,8 +17,6 @@ import {
   type SavedClient,
 } from "../document-form";
 
-type Mode = "write" | "upload";
-
 function isoDate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()
@@ -37,8 +35,6 @@ export function DogovorForm({
   const [date, setDate] = useState<Date>(() => new Date());
   const [client, setClient] = useState<Client | null>(null);
   const [title, setTitle] = useState("");
-  const [mode, setMode] = useState<Mode>("write");
-  const [body, setBody] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -48,10 +44,7 @@ export function DogovorForm({
 
   const quotaError = quota ? documentQuotaViolation(quota, "dogovor") : null;
   const quotaHint = quota ? documentQuotaHint(quota, "dogovor") : null;
-  const canCreate =
-    client !== null &&
-    (mode === "write" ? body.trim().length > 0 : file !== null) &&
-    quotaError === null;
+  const canCreate = client !== null && file !== null && quotaError === null;
 
   function submit() {
     setError(null);
@@ -63,25 +56,19 @@ export function DogovorForm({
       setError("Выберите клиента.");
       return;
     }
-    if (mode === "write" && !body.trim()) {
-      setError("Напишите текст договора.");
-      return;
-    }
-    if (mode === "upload" && !file) {
+    if (!file) {
       setError("Прикрепите PDF-файл договора.");
       return;
     }
 
     const fd = new FormData();
-    fd.set("mode", mode);
     fd.set("title", title.trim());
     fd.set("date", isoDate(date));
     fd.set("clientBin", client.bin);
     fd.set("clientName", client.name);
     fd.set("clientDirector", client.director);
     fd.set("clientAddress", client.address);
-    if (mode === "write") fd.set("body", body);
-    if (mode === "upload" && file) fd.set("file", file);
+    fd.set("file", file);
 
     startTransition(async () => {
       const res = await createDogovor(fd);
@@ -135,69 +122,31 @@ export function DogovorForm({
           />
         </section>
 
-        {/* content */}
+        {/* file */}
         <section className="p-5 sm:p-7">
-          <div className="mb-3 inline-flex rounded-field bg-sunken p-1">
-            {(
-              [
-                ["write", "Написать"],
-                ["upload", "Загрузить PDF"],
-              ] as Array<[Mode, string]>
-            ).map(([k, label]) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setMode(k)}
-                aria-pressed={mode === k}
-                className={cn(
-                  "rounded-[7px] px-3.5 py-1.5 text-sm font-medium transition-colors",
-                  mode === k
-                    ? "bg-sheet text-ink shadow-soft"
-                    : "text-muted hover:text-ink"
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {mode === "write" ? (
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder={
-                "Введите текст договора.\n\nСтороны, предмет, сумма, сроки, реквизиты - всё, как обычно. Пустая строка разделяет абзацы."
-              }
-              rows={14}
-              className={cn(fieldCls, "resize-y font-normal leading-relaxed")}
-              aria-label="Текст договора"
-            />
-          ) : (
-            <div>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="application/pdf"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                className="hidden"
-                aria-label="PDF-файл договора"
-              />
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="flex w-full items-center justify-center gap-2 rounded-card border border-dashed border-line-strong px-4 py-10 text-sm text-muted transition-colors hover:border-tenge/50 hover:text-tenge-ink"
-              >
-                {file ? (
-                  <span className="font-medium text-ink">{file.name}</span>
-                ) : (
-                  <>Нажмите, чтобы выбрать PDF-файл договора</>
-                )}
-              </button>
-              <p className="mt-1.5 text-xs text-faint">
-                Только PDF, до 15 МБ. Word - экспортируйте в PDF.
-              </p>
-            </div>
-          )}
+          <SectionLabel>Файл договора</SectionLabel>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            className="hidden"
+            aria-label="PDF-файл договора"
+          />
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="flex w-full items-center justify-center gap-2 rounded-card border border-dashed border-line-strong px-4 py-10 text-sm text-muted transition-colors hover:border-tenge/50 hover:text-tenge-ink"
+          >
+            {file ? (
+              <span className="font-medium text-ink">{file.name}</span>
+            ) : (
+              <>Нажмите, чтобы выбрать PDF-файл договора</>
+            )}
+          </button>
+          <p className="mt-1.5 text-xs text-faint">
+            Только PDF, до 15 МБ. Word - экспортируйте в PDF.
+          </p>
         </section>
       </div>
 
@@ -211,7 +160,7 @@ export function DogovorForm({
           ) : (
             !canCreate && (
               <span className="hidden text-sm text-faint sm:inline">
-                {!client ? "Выберите клиента" : "Добавьте текст или файл"}
+                {!client ? "Выберите клиента" : "Прикрепите PDF-файл"}
               </span>
             )
           )}
