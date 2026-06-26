@@ -328,7 +328,7 @@ function DemoVideo() {
               </span>
               <span className="mx-auto inline-flex items-center gap-1.5 rounded-pill bg-sunken px-3 py-1 text-xs text-faint">
                 <BrandLogo className="size-3.5" />
-                docsify.kz
+                docsify.xyz
               </span>
               {/* balances the traffic lights so the pill stays centred */}
               <span className="w-[42px]" aria-hidden />
@@ -522,7 +522,7 @@ function Features() {
             >
               <div className="flex items-center gap-2 rounded-field bg-sunken px-3 py-2 font-mono text-xs text-muted">
                 <IconLink className="size-3.5 shrink-0 text-faint" />
-                <span className="truncate">docsify.kz/p/7K2M…</span>
+                <span className="truncate">docsify.xyz/p/7K2M…</span>
               </div>
             </FeatureCard>
           </Reveal>
