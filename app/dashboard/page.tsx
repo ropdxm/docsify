@@ -9,9 +9,12 @@ import { STATUS, DOC_TYPE_LABEL } from "@/lib/status";
 import { cn } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { AppFooter } from "@/components/app-footer";
-import { IncomingList } from "@/components/incoming-list";
 import { SubmitButton } from "@/components/loading";
 import { DashboardNotice } from "@/components/dashboard-notice";
+import {
+  DocumentSort,
+  type DocumentSortValue,
+} from "@/components/document-sort";
 
 type DocRow = {
   id: string;
@@ -97,6 +100,8 @@ export default async function DashboardPage({
       : typeof sp.updated === "string"
         ? "updated"
         : null;
+  const sort: DocumentSortValue =
+    sp.sort === "oldest" || sp.sort === "type" ? sp.sort : "newest";
 
   const supabase = await createClient();
   const [{ data }, incoming] = company
@@ -112,7 +117,19 @@ export default async function DashboardPage({
       ])
     : [{ data: [] }, []];
 
-  const docs = (data ?? []) as DocRow[];
+  const docs = [...((data ?? []) as DocRow[])].sort((a, b) => {
+    const byDate = new Date(b.date).getTime() - new Date(a.date).getTime();
+
+    if (sort === "oldest") return -byDate;
+    if (sort === "type") {
+      const byType = (DOC_TYPE_LABEL[a.type] ?? a.type).localeCompare(
+        DOC_TYPE_LABEL[b.type] ?? b.type,
+        "ru"
+      );
+      return byType || byDate;
+    }
+    return byDate;
+  });
 
   // Summary - the "how much am I owed?" question.
   const now = new Date();
@@ -175,31 +192,16 @@ export default async function DashboardPage({
           <SummaryCard label="Оплачено в этом месяце" value={paidThisMonth} />
         </div>
 
-        {/* Documents sent to our БИН/ИИН by another company. */}
-        {incoming.length > 0 && (
-          <section className="mt-8">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-faint">
-                Входящие
-                <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-pill bg-tenge px-1.5 text-[11px] font-semibold text-on-tenge">
-                  {incoming.length}
-                </span>
-              </h2>
-              {incoming.length > 3 && (
-                <Link
-                  href="/incoming"
-                  className="text-sm font-medium text-tenge-ink transition-colors hover:text-tenge-deep"
-                >
-                  Все входящие →
-                </Link>
-              )}
-            </div>
-            <IncomingList items={incoming.slice(0, 3)} />
-          </section>
-        )}
-
         {/* List */}
         <div className="mt-8">
+          {docs.length > 0 ? (
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-faint">
+                Мои документы
+              </h2>
+              <DocumentSort value={sort} />
+            </div>
+          ) : null}
           {docs.length === 0 ? (
             <div className="rounded-sheet border border-dashed border-line-strong bg-sheet p-10 text-center">
               <p className="font-medium">Пока нет документов</p>

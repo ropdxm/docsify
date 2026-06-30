@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { bankForDocument } from "@/lib/bank";
 import { formatTenge, formatDateRu } from "@/lib/format";
@@ -92,9 +93,13 @@ export default async function SharePage({
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
       <div className="mb-5 flex items-center justify-between">
-        <div aria-label="Docsify" className="flex items-center">
+        <Link
+          href="/"
+          aria-label="Docsify — на главную"
+          className="flex items-center rounded-field outline-none focus-visible:ring-2 focus-visible:ring-tenge/30"
+        >
           <BrandLogo className="size-8" />
-        </div>
+        </Link>
         <span
           className={cn(
             "inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium",
@@ -182,20 +187,13 @@ export default async function SharePage({
         </div>
       </div>
 
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-5">
         <a
           href={`/api/documents/${doc.id}/xlsx?token=${token}`}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-field bg-tenge px-5 py-3 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-field bg-tenge px-5 py-3 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep"
         >
           Скачать {ui.download}
         </a>
-        <button
-          disabled
-          title="Подписание появится в следующей версии"
-          className="inline-flex flex-1 items-center justify-center rounded-field border border-line bg-sheet px-5 py-3 text-sm font-medium text-faint"
-        >
-          Подписать документ
-        </button>
       </div>
     </div>
   );
@@ -247,9 +245,13 @@ function DogovorShareView({
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-14">
       <div className="mb-5 flex items-center justify-between">
-        <div aria-label="Docsify" className="flex items-center">
+        <Link
+          href="/"
+          aria-label="Docsify — на главную"
+          className="flex items-center rounded-field outline-none focus-visible:ring-2 focus-visible:ring-tenge/30"
+        >
           <BrandLogo className="size-8" />
-        </div>
+        </Link>
         <span
           className={cn(
             "inline-flex items-center rounded-pill border px-2.5 py-1 text-xs font-medium",
