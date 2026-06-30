@@ -1,7 +1,7 @@
 import Link from "next/link";
-import type { IncomingDogovor } from "@/lib/incoming";
-import { formatDateRu } from "@/lib/format";
-import { STATUS } from "@/lib/status";
+import type { IncomingDocument } from "@/lib/incoming";
+import { formatDateRu, formatTenge } from "@/lib/format";
+import { DOC_TYPE_LABEL, STATUS } from "@/lib/status";
 import { cn } from "@/lib/ui";
 
 function IconContract({ className }: { className?: string }) {
@@ -15,16 +15,18 @@ function IconContract({ className }: { className?: string }) {
 }
 
 /**
- * The list of incoming договоры (contracts another business sent to us). Each
- * row opens the public document page where the user signs as the client.
+ * Documents another business sent to us. Each row opens the same public view
+ * the sender would otherwise have to share manually.
  */
-export function IncomingList({ items }: { items: IncomingDogovor[] }) {
+export function IncomingList({ items }: { items: IncomingDocument[] }) {
   return (
     <div className="overflow-hidden rounded-sheet border border-line bg-sheet shadow-sheet">
       {items.map((d, i) => {
         const st = STATUS[d.status] ?? STATUS.sent;
-        // 'sent' = the sender signed and it's awaiting OUR signature.
-        const awaitingMe = d.status === "sent";
+        const isDogovor = d.type === "dogovor";
+        // A sent contract awaits the recipient's signature. Other document
+        // types are delivered for viewing/downloading, not signing yet.
+        const awaitingMe = isDogovor && d.status === "sent";
         return (
           <div
             key={d.id}
@@ -36,7 +38,7 @@ export function IncomingList({ items }: { items: IncomingDogovor[] }) {
             <Link
               href={`/p/${d.share_token}`}
               className="absolute inset-0"
-              aria-label={`Открыть договор ${d.number} от ${d.from_name}`}
+              aria-label={`Открыть ${DOC_TYPE_LABEL[d.type] ?? "документ"} ${d.number} от ${d.from_name}`}
             />
             <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-4">
               <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -60,21 +62,30 @@ export function IncomingList({ items }: { items: IncomingDogovor[] }) {
                   </div>
                   <div className="mt-0.5 truncate text-xs text-faint">
                     <span className="font-medium text-muted">
-                      {d.title?.trim() || "Договор"}
+                      {d.title?.trim() || DOC_TYPE_LABEL[d.type] || "Документ"}
                     </span>{" "}
                     {d.number} · от {formatDateRu(new Date(d.date))}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end border-t border-line-soft pt-2.5 text-sm sm:border-0 sm:pt-0">
+              <div className="flex items-center justify-between gap-3 border-t border-line-soft pt-2.5 text-sm sm:justify-end sm:border-0 sm:pt-0">
+                {!isDogovor ? (
+                  <span className="font-medium tabular-nums text-ink">
+                    {formatTenge(d.total_amount)}
+                  </span>
+                ) : null}
                 {awaitingMe ? (
                   <span className="inline-flex items-center gap-1.5 rounded-field bg-tenge px-3.5 py-2 font-semibold text-on-tenge shadow-soft">
                     Подписать
                   </span>
-                ) : (
+                ) : isDogovor && d.status === "signed" ? (
                   <span className="inline-flex items-center gap-1.5 text-tenge-ink">
                     ✓ Подписан
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-tenge-ink">
+                    Открыть →
                   </span>
                 )}
               </div>
