@@ -297,8 +297,16 @@ export default async function DashboardPage({
                             }
                             className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
                           >
-                            Скачать
+                            PDF
                           </a>
+                          {!isDogovor && (
+                            <a
+                              href={`/api/documents/${d.id}/xlsx`}
+                              className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
+                            >
+                              Excel
+                            </a>
+                          )}
                           <a
                             href={`/p/${d.share_token}`}
                             target="_blank"

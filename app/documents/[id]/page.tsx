@@ -299,6 +299,12 @@ function StructuredView({
             Скачать PDF
           </a>
           <a
+            href={`/api/documents/${doc.id}/xlsx`}
+            className="rounded-field border border-line bg-sheet px-4 py-2.5 font-medium text-ink shadow-soft transition-colors hover:bg-sunken"
+          >
+            Скачать Excel
+          </a>
+          <a
             href={`/p/${doc.share_token}`}
             target="_blank"
             rel="noreferrer"

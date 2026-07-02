@@ -23,21 +23,18 @@ const TYPE_UI = {
     supplier: "Поставщик",
     buyer: "Покупатель",
     total: "Итого к оплате",
-    download: "счёт",
   },
   avr: {
     title: "Акт выполненных работ",
     supplier: "Исполнитель",
     buyer: "Заказчик",
     total: "Стоимость работ",
-    download: "акт",
   },
   nakladnaja: {
     title: "Накладная на отпуск запасов",
     supplier: "Отправитель",
     buyer: "Получатель",
     total: "Сумма к отпуску",
-    download: "накладную",
   },
 } as const;
 
@@ -187,12 +184,18 @@ export default async function SharePage({
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <a
           href={`/api/documents/${doc.id}/pdf?token=${token}`}
           className="inline-flex w-full items-center justify-center gap-2 rounded-field bg-tenge px-5 py-3 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep"
         >
-          Скачать {ui.download}
+          Скачать PDF
+        </a>
+        <a
+          href={`/api/documents/${doc.id}/xlsx?token=${token}`}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-field border border-line bg-sheet px-5 py-3 text-sm font-semibold text-ink shadow-soft transition-colors hover:bg-sunken"
+        >
+          Скачать Excel
         </a>
       </div>
     </div>
