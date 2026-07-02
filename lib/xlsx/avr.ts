@@ -47,6 +47,11 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.pageSetup.printTitlesRow = undefined;
   ws.pageSetup.horizontalDpi = 300;
   ws.pageSetup.verticalDpi = 300;
+  ws.pageSetup.paperSize = 9; // A4
+  ws.pageSetup.orientation = "landscape";
+  ws.pageSetup.fitToPage = true;
+  ws.pageSetup.fitToWidth = 1;
+  ws.pageSetup.fitToHeight = 0;
 
   const items = doc.items.length
     ? doc.items

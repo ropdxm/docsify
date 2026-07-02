@@ -5,7 +5,7 @@ Docsify is a document workspace for Kazakhstan businesses. It helps users create
 ## What It Does
 
 - Creates invoices, acts of completed work, накладные, and договоры.
-- Exports documents to XLSX and PDF using prepared templates.
+- Fills prepared XLSX templates and converts them to PDF locally with LibreOffice WASM.
 - Generates public client links for viewing and downloading documents.
 - Tracks document statuses: draft, sent, signed, and paid.
 - Supports incoming договоры that need the user's signature.
@@ -31,7 +31,7 @@ Docsify is a document workspace for Kazakhstan businesses. It helps users create
 - React 19
 - Supabase Auth and database
 - ExcelJS for XLSX generation
-- React PDF for PDF generation
+- LibreOffice WASM for API-free XLSX-to-PDF rendering
 - NCALayer integration for ЭЦП signing
 - Kaspi POS Automation for Pro payments
 - Amplitude for analytics
@@ -63,7 +63,15 @@ KASPI_POS_PROFILE_ID=
 KASPI_POS_WEBHOOK_SECRET=
 
 NEXT_PUBLIC_AMPLITUDE_API_KEY=
+
+VERCEL_SUPPORT_LARGE_FUNCTIONS=1
 ```
+
+XLSX-to-PDF conversion runs inside the Node.js function with LibreOffice WASM;
+it does not need Microsoft Graph, a Microsoft account, or another API. The
+runtime is larger than Vercel's standard function limit, so enable Fluid
+Compute and set `VERCEL_SUPPORT_LARGE_FUNCTIONS=1` in every Vercel deployment
+environment.
 
 For Pro payments, deploy/run
 [`tapter-dev/kaspi-pos-automation`](https://github.com/tapter-dev/kaspi-pos-automation)

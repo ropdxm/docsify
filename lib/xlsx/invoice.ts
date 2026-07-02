@@ -83,6 +83,15 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
   const ws = wb.getWorksheet("TDSheet");
   if (!ws) throw new Error("Лист TDSheet не найден в шаблоне");
 
+  // These settings are consumed by Microsoft Excel / Office when exporting the
+  // workbook to PDF. Keep every column on one A4 page; long item lists may flow
+  // onto additional pages vertically.
+  ws.pageSetup.paperSize = 9; // A4
+  ws.pageSetup.orientation = "portrait";
+  ws.pageSetup.fitToPage = true;
+  ws.pageSetup.fitToWidth = 1;
+  ws.pageSetup.fitToHeight = 0;
+
   const items = doc.items.length ? doc.items : [{ description: "", quantity: 0, unitPrice: 0 }];
   const n = items.length;
   const extra = n - 1;

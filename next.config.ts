@@ -2,13 +2,25 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Heavy Node-only libs: keep them as real modules instead of bundling.
-  serverExternalPackages: ["@react-pdf/renderer", "exceljs"],
+  serverExternalPackages: [
+    "@matbee/libreoffice-converter",
+    "@react-pdf/renderer",
+    "exceljs",
+  ],
   // Trace runtime asset files into the relevant serverless functions.
   outputFileTracingIncludes: {
-    "/api/documents/[id]/pdf": ["./lib/pdf/fonts/**"],
-    "/api/documents/[id]/xlsx": [
+    "/api/documents/*/pdf": [
       "./public/schet_na_oplatu_AkshatyrPHYTO.xlsx",
       "./public/aktofworks.xlsx",
+      "./public/nakladnaja.xlsx",
+      "./node_modules/@matbee/libreoffice-converter/dist/server.cjs",
+      "./node_modules/@matbee/libreoffice-converter/dist/subprocess.worker.cjs",
+      "./node_modules/@matbee/libreoffice-converter/wasm/**/*",
+    ],
+    "/api/documents/*/xlsx": [
+      "./public/schet_na_oplatu_AkshatyrPHYTO.xlsx",
+      "./public/aktofworks.xlsx",
+      "./public/nakladnaja.xlsx",
     ],
   },
 };

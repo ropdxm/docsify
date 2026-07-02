@@ -1,6 +1,5 @@
-import { renderInvoiceXlsx, type XlsxDoc } from "@/lib/xlsx/invoice";
-import { renderAvrXlsx } from "@/lib/xlsx/avr";
-import { renderNakladnajaXlsx } from "@/lib/xlsx/nakladnaja";
+import type { XlsxDoc } from "@/lib/xlsx/invoice";
+import { renderDocumentXlsx } from "@/lib/xlsx/render";
 import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -39,22 +38,13 @@ export async function GET(
 
   const bank = await bankForDocument(admin, doc);
   const payload = { ...doc, bank } as unknown as XlsxDoc;
-  const buffer =
-    doc.type === "avr"
-      ? await renderAvrXlsx(payload)
-      : doc.type === "nakladnaja"
-        ? await renderNakladnajaXlsx(payload)
-        : await renderInvoiceXlsx(payload);
+  const buffer = await renderDocumentXlsx(payload);
 
   // Store the filled form (best-effort).
   const filePath = `${doc.company_id}/${doc.id}.xlsx`;
   await admin.storage
     .from("documents")
     .upload(filePath, buffer, { contentType: XLSX_MIME, upsert: true });
-  if (doc.pdf_path !== filePath) {
-    await admin.from("documents").update({ pdf_path: filePath }).eq("id", doc.id);
-  }
-
   const filename = `${encodeURIComponent(doc.number)}.xlsx`;
   return new Response(new Uint8Array(buffer), {
     headers: {

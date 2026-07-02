@@ -189,7 +189,7 @@ export default async function SharePage({
 
       <div className="mt-5">
         <a
-          href={`/api/documents/${doc.id}/xlsx?token=${token}`}
+          href={`/api/documents/${doc.id}/pdf?token=${token}`}
           className="inline-flex w-full items-center justify-center gap-2 rounded-field bg-tenge px-5 py-3 text-sm font-semibold text-on-tenge shadow-soft transition-colors hover:bg-tenge-deep"
         >
           Скачать {ui.download}

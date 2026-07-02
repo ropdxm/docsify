@@ -290,7 +290,11 @@ export default async function DashboardPage({
                         </div>
                         <div className="relative z-10 flex items-center gap-0.5 text-sm">
                           <a
-                            href={`/api/documents/${d.id}/xlsx`}
+                            href={
+                              isDogovor
+                                ? `/api/documents/${d.id}/file`
+                                : `/api/documents/${d.id}/pdf`
+                            }
                             className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
                           >
                             Скачать

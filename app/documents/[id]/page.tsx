@@ -299,10 +299,10 @@ function StructuredView({
 
         <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
           <a
-            href={`/api/documents/${doc.id}/xlsx`}
+            href={`/api/documents/${doc.id}/pdf`}
             className="rounded-field border border-line bg-sheet px-4 py-2.5 font-medium text-ink shadow-soft transition-colors hover:bg-sunken"
           >
-            Скачать Excel
+            Скачать PDF
           </a>
           <a
             href={`/p/${doc.share_token}`}

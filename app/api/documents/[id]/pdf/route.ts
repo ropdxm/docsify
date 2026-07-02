@@ -1,11 +1,12 @@
-import React from "react";
-import { renderToBuffer, type DocumentProps } from "@react-pdf/renderer";
-import { InvoiceDocument, type PdfDoc } from "@/lib/pdf/invoice";
+import { convertExcelToPdf } from "@/lib/libreoffice/excel-to-pdf";
 import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { renderDocumentXlsx } from "@/lib/xlsx/render";
+import type { XlsxDoc } from "@/lib/xlsx/invoice";
 
 export const runtime = "nodejs";
+export const maxDuration = 300;
 
 export async function GET(
   request: Request,
@@ -34,12 +35,33 @@ export async function GET(
   }
   if (!allowed) return new Response("Нет доступа", { status: 403 });
 
-  const bank = await bankForDocument(admin, doc);
+  if (!["invoice", "avr", "nakladnaja"].includes(doc.type)) {
+    return new Response("Этот тип документа нельзя преобразовать из Excel", {
+      status: 400,
+    });
+  }
 
-  const element = React.createElement(InvoiceDocument, {
-    doc: { ...doc, bank } as unknown as PdfDoc,
-  }) as unknown as React.ReactElement<DocumentProps>;
-  const buffer = await renderToBuffer(element);
+  const bank = await bankForDocument(admin, doc);
+  const payload = { ...doc, bank } as unknown as XlsxDoc;
+
+  let buffer: Buffer;
+  try {
+    const xlsx = await renderDocumentXlsx(payload);
+    buffer = await convertExcelToPdf(xlsx);
+  } catch (error) {
+    console.error(
+      JSON.stringify({
+        level: "error",
+        message: "Excel-to-PDF conversion failed",
+        documentId: doc.id,
+        documentType: doc.type,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    );
+    return new Response("Не удалось преобразовать Excel в PDF", {
+      status: 500,
+    });
+  }
 
   // Store the PDF (best-effort) so it has a stable home in Storage.
   const pdfPath = `${doc.company_id}/${doc.id}.pdf`;
@@ -54,7 +76,7 @@ export async function GET(
   return new Response(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="document.pdf"; filename*=UTF-8''${filename}`,
+      "Content-Disposition": `attachment; filename="document.pdf"; filename*=UTF-8''${filename}`,
       "Cache-Control": "private, no-store",
     },
   });
