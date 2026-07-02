@@ -247,12 +247,6 @@ function StructuredView({
             {st.label}
           </span>
         </div>
-
-        <p className="mb-5 rounded-card border border-line-soft bg-sunken/50 px-4 py-3 text-sm text-muted">
-          Документ отправлен - доступен только для просмотра. Редактировать можно
-          только черновик.
-        </p>
-
         <div className="overflow-hidden rounded-sheet border border-line bg-sheet shadow-sheet">
           <table className="w-full text-sm">
             <thead>

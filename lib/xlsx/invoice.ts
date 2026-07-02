@@ -87,7 +87,7 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
   // workbook to PDF. Keep every column on one A4 page; long item lists may flow
   // onto additional pages vertically.
   ws.pageSetup.paperSize = 9; // A4
-  ws.pageSetup.orientation = "portrait";
+  ws.pageSetup.orientation = "landscape";
   ws.pageSetup.fitToPage = true;
   ws.pageSetup.fitToWidth = 1;
   ws.pageSetup.fitToHeight = 0;

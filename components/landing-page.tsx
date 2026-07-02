@@ -283,7 +283,7 @@ function HeroVisual() {
       <div className="lp-float-slow absolute -bottom-6 -right-3 hidden w-44 rounded-card border border-line bg-raised p-3.5 shadow-pop sm:block">
         <div className="text-xs text-faint">Ожидает оплаты</div>
         <div className="mt-0.5 text-lg font-bold tracking-tight tabular-nums text-tenge-ink">
-          1 250 000 ₸
+          125 000 ₸
         </div>
         <div className="mt-1.5 flex items-center gap-1 text-xs text-paid-ink">
           <IconCheck className="size-3.5" />
@@ -920,7 +920,7 @@ function Footer() {
         </div>
         <div className="mt-8 flex flex-col gap-2 border-t border-line-soft pt-6 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 Docsify</span>
-          <span>Формы по приказу Минфина РК № 562 · Сделано для бизнеса в Казахстане</span>
+          <span>Формы по приказу Минфина РК · Сделано для бизнеса в Казахстане</span>
         </div>
       </div>
     </footer>

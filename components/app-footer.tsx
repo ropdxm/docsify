@@ -35,7 +35,7 @@ export function AppFooter() {
 
         <div className="mt-9 flex flex-col gap-2 border-t border-line-soft pt-6 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 Docsify</span>
-          <span>Формы по приказу Минфина РК № 562 · Сделано для бизнеса в Казахстане</span>
+          <span>Формы по приказу Минфина РК · Сделано для бизнеса в Казахстане</span>
         </div>
       </div>
     </footer>
