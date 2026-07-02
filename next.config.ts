@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
       "./node_modules/@matbee/libreoffice-converter/dist/server.cjs",
       "./node_modules/@matbee/libreoffice-converter/dist/subprocess.worker.cjs",
       "./node_modules/@matbee/libreoffice-converter/wasm/**/*",
+      "./node_modules/zod/**/*",
     ],
     "/api/documents/*/xlsx": [
       "./public/schet_na_oplatu_AkshatyrPHYTO.xlsx",
