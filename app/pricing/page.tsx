@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireCompany } from "@/lib/dal";
+import { getBillingCompany, requireUser } from "@/lib/dal";
 import {
   getSubscription,
   effectivePlan,
@@ -37,9 +37,10 @@ export default async function PricingPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const company = await requireCompany();
+  await requireUser();
+  const company = await getBillingCompany();
   const [sub, sp] = await Promise.all([
-    getSubscription(company.id),
+    company ? getSubscription(company.id) : Promise.resolve(null),
     searchParams,
   ]);
 
@@ -70,13 +71,13 @@ export default async function PricingPage({
             <BrandLogo className="size-8 transition-transform duration-200 group-hover:scale-105" />
           </Link>
           <Link
-            href="/profile"
+            href="/dashboard"
             className="group inline-flex items-center gap-1.5 rounded-field px-2.5 py-1.5 text-sm text-muted transition-colors hover:bg-sunken hover:text-ink"
           >
             <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
               ←
             </span>
-            В профиль
+            В дашборд
           </Link>
         </div>
       </header>

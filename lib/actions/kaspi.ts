@@ -1,6 +1,6 @@
 "use server";
 
-import { requireCompany } from "@/lib/dal";
+import { ensureBillingCompany } from "@/lib/dal";
 import {
   kaspiPosConfigured,
   createKaspiInvoice,
@@ -65,7 +65,7 @@ export async function startKaspiCheckout(
       error: "Введите номер Kaspi в формате +7 700 000 00 00.",
     };
 
-  const company = await requireCompany();
+  const company = await ensureBillingCompany();
   const admin = createAdminClient();
   const orderId = `pro_${company.id}_${Date.now()}`;
 
@@ -117,7 +117,7 @@ export async function startKaspiCheckout(
  * (e.g. local dev without a tunnel).
  */
 export async function getKaspiInvoiceStatus(orderId: string): Promise<string | null> {
-  const company = await requireCompany();
+  const company = await ensureBillingCompany();
   const admin = createAdminClient();
 
   const { data } = await admin
@@ -155,7 +155,7 @@ export async function getKaspiInvoiceStatus(orderId: string): Promise<string | n
  * success screen to show the date access is granted until.
  */
 export async function getProPeriodEnd(): Promise<string | null> {
-  const company = await requireCompany();
+  const company = await ensureBillingCompany();
   const admin = createAdminClient();
   const { data } = await admin
     .from("subscriptions")

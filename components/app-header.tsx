@@ -55,6 +55,15 @@ export function AppHeader({
           </Link>
 
           <Link
+            href="/pricing"
+            aria-label="Подписка"
+            title="Подписка"
+            className="inline-flex size-9 items-center justify-center rounded-field bg-tenge-tint text-tenge-ink transition-colors hover:bg-tenge/15 hover:text-tenge-deep"
+          >
+            <SubscriptionIcon className="size-5" />
+          </Link>
+
+          <Link
             href="/profile"
             className="rounded-field px-2.5 py-1.5 text-muted transition-colors hover:bg-sunken hover:text-ink"
           >
@@ -112,5 +121,23 @@ function Badge({ count, floating }: { count: number; floating?: boolean }) {
     >
       {count > 99 ? "99+" : count}
     </span>
+  );
+}
+
+function SubscriptionIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M4 8l4 4 4-7 4 7 4-4-1.5 10h-13L4 8Z" />
+      <path d="M7 21h10" />
+    </svg>
   );
 }

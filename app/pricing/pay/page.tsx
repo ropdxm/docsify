@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireCompany } from "@/lib/dal";
+import { getBillingCompany, requireUser } from "@/lib/dal";
 import { getSubscription, isPaidPro } from "@/lib/subscription";
 import { PRO_PRICE_KZT, PRO_PERIOD_DAYS } from "@/lib/kaspi-pos";
 import { formatTenge } from "@/lib/format";
@@ -10,8 +10,9 @@ import { KaspiPayFlow } from "@/components/kaspi-pay-flow";
 // Focused, single-purpose checkout for Docsify Pro via Kaspi. Reached from the
 // "Подключить / Продлить Pro" button on /pricing.
 export default async function KaspiPayPage() {
-  const company = await requireCompany();
-  const sub = await getSubscription(company.id);
+  await requireUser();
+  const company = await getBillingCompany();
+  const sub = company ? await getSubscription(company.id) : null;
   const paid = isPaidPro(sub);
 
   return (

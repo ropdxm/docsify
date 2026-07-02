@@ -96,19 +96,20 @@ export async function createCompany(
   const supabase = await createClient();
   const { data: companyRow, error } = await supabase
     .from("companies")
-    .insert({
+    .upsert({
       owner_id: user.id,
       bin,
       name,
       director: director || null,
       address: address || null,
-    })
+      is_profile_complete: true,
+    }, { onConflict: "owner_id" })
     .select("id")
     .single();
-  if (error && error.code !== "23505") return { error: error.message };
+  if (error) return { error: error.message };
 
   if (companyRow) {
-    // New accounts get 7 days of Pro for free (DB-only trial, no card needed).
+    // Idempotent: a paid pre-onboarding subscription is never overwritten.
     await ensureTrialSubscription(companyRow.id);
 
     const { error: bankError } = await supabase.from("bank_profiles").insert({

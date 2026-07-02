@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { requireCompany, requireUser } from "@/lib/dal";
+import { ensureBillingCompany, requireUser } from "@/lib/dal";
 import { getStripe, stripeConfigured, PRO_PRICE } from "@/lib/stripe";
 import { getSubscription } from "@/lib/subscription";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -33,7 +33,7 @@ export async function startProCheckout(
   if (!stripeConfigured()) return { error: "Оплата временно недоступна." };
   const stripe = getStripe();
 
-  const company = await requireCompany();
+  const company = await ensureBillingCompany();
   const user = await requireUser();
 
   const sub = await getSubscription(company.id);
@@ -95,7 +95,7 @@ export async function openBillingPortal(
   if (!stripeConfigured()) return { error: "Оплата временно недоступна." };
   const stripe = getStripe();
 
-  const company = await requireCompany();
+  const company = await ensureBillingCompany();
   const sub = await getSubscription(company.id);
   if (!sub?.stripe_customer_id) return { error: "Активная подписка не найдена." };
 
