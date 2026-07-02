@@ -7,10 +7,12 @@ type ConvertDocument = (
   options: { outputFormat: "pdf" },
   converterOptions: { wasmPath: string }
 ) => Promise<{ data: Uint8Array }>;
-const packageJsonPath = Reflect.apply(nodeRequire.resolve, nodeRequire, [
-  "@matbee/libreoffice-converter/package.json",
-]) as string;
-const packageRoot = path.dirname(packageJsonPath);
+const packageRoot = path.join(
+  process.cwd(),
+  "node_modules",
+  "@matbee",
+  "libreoffice-converter"
+);
 const converterModulePath = path.join(packageRoot, "dist", "server.cjs");
 const { convertDocument } = Reflect.apply(nodeRequire, undefined, [
   converterModulePath,
