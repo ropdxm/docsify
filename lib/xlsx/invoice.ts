@@ -91,6 +91,9 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.pageSetup.fitToPage = true;
   ws.pageSetup.fitToWidth = 1;
   ws.pageSetup.fitToHeight = 0;
+  // Center the content within the configured page.
+  ws.pageSetup.horizontalCentered = true;
+  ws.pageSetup.verticalCentered = true;
 
   const items = doc.items.length ? doc.items : [{ description: "", quantity: 0, unitPrice: 0 }];
   const n = items.length;

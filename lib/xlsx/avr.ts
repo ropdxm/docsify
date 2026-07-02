@@ -52,6 +52,8 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.pageSetup.fitToPage = true;
   ws.pageSetup.fitToWidth = 1;
   ws.pageSetup.fitToHeight = 0;
+  ws.pageSetup.horizontalCentered = true;
+  ws.pageSetup.verticalCentered = true;
 
   const items = doc.items.length
     ? doc.items
