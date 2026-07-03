@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { after } from "next/server";
 import { convertExcelToPdf } from "@/lib/libreoffice/excel-to-pdf";
 import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -7,6 +9,22 @@ import type { XlsxDoc } from "@/lib/xlsx/invoice";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
+
+// Bump when the rendered layout changes (templates or lib/xlsx renderers) so
+// PDFs cached in Storage regenerate instead of being served stale.
+// v2: full-width print layout (phantom template columns hidden).
+const PDF_LAYOUT_VERSION = 2;
+
+function pdfResponse(pdf: Uint8Array<ArrayBuffer>, number: string): Response {
+  const filename = `${encodeURIComponent(number)}.pdf`;
+  return new Response(pdf, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="document.pdf"; filename*=UTF-8''${filename}`,
+      "Cache-Control": "private, no-store",
+    },
+  });
+}
 
 export async function GET(
   request: Request,
@@ -44,6 +62,46 @@ export async function GET(
   const bank = await bankForDocument(admin, doc);
   const payload = { ...doc, bank } as unknown as XlsxDoc;
 
+  // The Storage path is keyed by everything the PDF renders, so any content
+  // (or layout-version) change lands on a new path and a stale object can
+  // never be served. Conversion boots LibreOffice WASM - the cache makes
+  // repeat downloads instant and cold ones survivable.
+  const contentHash = createHash("sha256")
+    .update(
+      JSON.stringify({
+        v: PDF_LAYOUT_VERSION,
+        type: payload.type,
+        number: payload.number,
+        date: payload.date,
+        items: payload.items,
+        total_amount: payload.total_amount,
+        contract: payload.contract ?? null,
+        company: {
+          name: payload.company.name,
+          bin: payload.company.bin,
+          director: payload.company.director ?? null,
+          address: payload.company.address ?? null,
+        },
+        counterparty: payload.counterparty
+          ? {
+              name: payload.counterparty.name,
+              bin: payload.counterparty.bin,
+              director: payload.counterparty.director ?? null,
+              address: payload.counterparty.address ?? null,
+            }
+          : null,
+        bank,
+      })
+    )
+    .digest("hex")
+    .slice(0, 16);
+  const pdfPath = `${doc.company_id}/${doc.id}-${contentHash}.pdf`;
+
+  const cached = await admin.storage.from("documents").download(pdfPath);
+  if (cached.data) {
+    return pdfResponse(new Uint8Array(await cached.data.arrayBuffer()), doc.number);
+  }
+
   let buffer: Buffer;
   try {
     const xlsx = await renderDocumentXlsx(payload);
@@ -63,21 +121,28 @@ export async function GET(
     });
   }
 
-  // Store the PDF (best-effort) so it has a stable home in Storage.
-  const pdfPath = `${doc.company_id}/${doc.id}.pdf`;
-  await admin.storage
-    .from("documents")
-    .upload(pdfPath, buffer, { contentType: "application/pdf", upsert: true });
-  if (doc.pdf_path !== pdfPath) {
-    await admin.from("documents").update({ pdf_path: pdfPath }).eq("id", doc.id);
-  }
-
-  const filename = `${encodeURIComponent(doc.number)}.pdf`;
-  return new Response(new Uint8Array(buffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="document.pdf"; filename*=UTF-8''${filename}`,
-      "Cache-Control": "private, no-store",
-    },
+  // Persist the PDF for future downloads without making this one wait for it.
+  after(async () => {
+    try {
+      const { error } = await admin.storage
+        .from("documents")
+        .upload(pdfPath, buffer, { contentType: "application/pdf", upsert: true });
+      if (error) throw error;
+      if (doc.pdf_path !== pdfPath) {
+        await admin.from("documents").update({ pdf_path: pdfPath }).eq("id", doc.id);
+      }
+    } catch (error) {
+      console.error(
+        JSON.stringify({
+          level: "warn",
+          message: "PDF cache write failed - downloads will keep regenerating",
+          documentId: doc.id,
+          pdfPath,
+          error: error instanceof Error ? error.message : String(error),
+        })
+      );
+    }
   });
+
+  return pdfResponse(new Uint8Array(buffer), doc.number);
 }

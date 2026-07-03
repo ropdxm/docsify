@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { requireCompany } from "@/lib/dal";
 import {
@@ -34,6 +36,32 @@ const CreateSchema = z.object({
 });
 
 export type CreateDocumentInput = z.infer<typeof CreateSchema>;
+
+/**
+ * Kicks off PDF generation right after a document is created/edited, so by
+ * the time someone clicks «Скачать PDF» the file is already cached in Storage.
+ * Booting LibreOffice WASM in the pdf route takes minutes on a cold serverless
+ * instance - paying that cost here, after the response, keeps clicks instant.
+ * Goes over HTTP because only the pdf route's function has the converter and
+ * its WASM assets traced in (see next.config.ts).
+ */
+async function schedulePdfPrerender(docId: string, shareToken: string) {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (!host) return;
+  const isLocal = host.startsWith("localhost") || host.startsWith("127.");
+  const proto = h.get("x-forwarded-proto") ?? (isLocal ? "http" : "https");
+  const url = `${proto}://${host}/api/documents/${docId}/pdf?token=${shareToken}`;
+  after(async () => {
+    try {
+      // Best-effort with a wait cap: even if this caller gives up, the pdf
+      // route keeps converting and caches the result for the next download.
+      await fetch(url, { signal: AbortSignal.timeout(60_000), cache: "no-store" });
+    } catch {
+      /* pre-rendering is an optimisation - the download route still works */
+    }
+  });
+}
 
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 function shareToken(len = 16): string {
@@ -130,13 +158,14 @@ export async function createDocument(
       bank_profile_id: bankProfileId,
       contract,
     })
-    .select("id")
+    .select("id, share_token")
     .single();
   if (error) {
     const quotaMessage = documentQuotaMessageFromError(error.message);
     return { error: quotaMessage ?? `Не удалось создать документ: ${error.message}` };
   }
 
+  await schedulePdfPrerender(doc.id, doc.share_token);
   redirect(`/dashboard?created=${doc.id}`);
 }
 
@@ -162,7 +191,7 @@ export async function updateDocument(
   // The document must belong to this company.
   const { data: existing } = await supabase
     .from("documents")
-    .select("id, status")
+    .select("id, status, share_token")
     .eq("id", id)
     .eq("company_id", company.id)
     .maybeSingle();
@@ -233,6 +262,7 @@ export async function updateDocument(
     .eq("company_id", company.id);
   if (error) return { error: `Не удалось сохранить документ: ${error.message}` };
 
+  await schedulePdfPrerender(existing.id, existing.share_token);
   revalidatePath("/dashboard");
   redirect("/dashboard?updated=1");
 }
