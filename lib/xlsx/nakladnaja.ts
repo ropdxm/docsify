@@ -2,6 +2,7 @@ import path from "node:path";
 import ExcelJS from "exceljs";
 import { formatDateRu, formatTengeWords } from "@/lib/format";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
+import { configurePrintLayout } from "@/lib/xlsx/print";
 
 // Official «Накладная на отпуск запасов на сторону» - Форма З-2
 // (Приложение 26 к приказу Министра финансов РК от 20.12.2012 № 562).
@@ -9,6 +10,7 @@ const TEMPLATE = path.join(process.cwd(), "public", "nakladnaja.xlsx");
 const SHEET = "Накладная по форме 3-2";
 
 const ITEM_ROW = 24; // first item row in the template («Итого» sits at row 25)
+const LAST_FORM_COLUMN = 49; // AW - the form's right edge; junk cells beyond
 
 function partyName(name: string): string {
   return name;
@@ -40,19 +42,7 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
   const ws = wb.getWorksheet(SHEET) ?? wb.worksheets[0];
   if (!ws) throw new Error(`Лист «${SHEET}» не найден в шаблоне`);
 
-  // Defensive: drop the print metadata and normalise the DPI, same as the АВР
-  // renderer - otherwise ExcelJS emits a bogus DPI that Excel rejects as corrupt.
-  ws.pageSetup.printArea = undefined;
-  ws.pageSetup.printTitlesRow = undefined;
-  ws.pageSetup.horizontalDpi = 300;
-  ws.pageSetup.verticalDpi = 300;
-  ws.pageSetup.paperSize = 9; // A4
-  ws.pageSetup.orientation = "landscape";
-  ws.pageSetup.fitToPage = true;
-  ws.pageSetup.fitToWidth = 1;
-  ws.pageSetup.fitToHeight = 0;
-  ws.pageSetup.horizontalCentered = true;
-  ws.pageSetup.verticalCentered = true;
+  configurePrintLayout(ws, LAST_FORM_COLUMN);
 
   const items = doc.items.length
     ? doc.items

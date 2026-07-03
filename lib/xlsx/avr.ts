@@ -2,6 +2,7 @@ import path from "node:path";
 import ExcelJS from "exceljs";
 import { formatDateRu } from "@/lib/format";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
+import { configurePrintLayout } from "@/lib/xlsx/print";
 
 // Official «Акт выполненных работ (оказанных услуг)» - Форма Р-1
 // (Приложение 50 к приказу Министра финансов РК от 20.12.2012 № 562).
@@ -9,6 +10,7 @@ const TEMPLATE = path.join(process.cwd(), "public", "aktofworks.xlsx");
 const SHEET = "Акт выполненных работ";
 
 const ITEM_ROW = 20; // first item row in the template
+const LAST_FORM_COLUMN = 49; // AW - the form's right edge; junk cells beyond
 
 function partyLine(name: string, address?: string | null): string {
   return [name, address].filter(Boolean).join(", ");
@@ -39,31 +41,7 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
   const ws = wb.getWorksheet(SHEET) ?? wb.worksheets[0];
   if (!ws) throw new Error(`Лист «${SHEET}» не найден в шаблоне`);
 
-  // Defensive: a print area / print titles (defined names) plus a printer-driven
-  // page setup make ExcelJS emit a mangled print-area reference and a bogus DPI
-  // (4294967295), which Excel rejects as corrupt ("Replaced Part: sheet1.xml").
-  // None of this affects content - drop the print metadata, normalise the DPI.
-  ws.pageSetup.printArea = undefined;
-  ws.pageSetup.printTitlesRow = undefined;
-  ws.pageSetup.horizontalDpi = 300;
-  ws.pageSetup.verticalDpi = 300;
-  ws.pageSetup.paperSize = 9; // A4
-  ws.pageSetup.orientation = "landscape";
-  ws.pageSetup.fitToPage = true;
-  ws.pageSetup.fitToWidth = 1;
-  ws.pageSetup.fitToHeight = 0;
-  // The Форма Р-1 grid is a touch wider than a landscape A4 at 100%, so
-  // fit-to-width scales it down to fit one page across. The template's wide
-  // 0.7" margins ate into the usable width and forced an extra shrink, leaving
-  // the act as a small block floating in the middle of the page (with
-  // verticalCentered, half the sheet was blank). Narrow margins reclaim that
-  // width so the form prints at (near) full size; top-align it so a short act
-  // reads as a normal document rather than a shrunken island.
-  ws.pageSetup.margins = {
-    left: 0.3, right: 0.3, top: 0.3, bottom: 0.3, header: 0.2, footer: 0.2,
-  };
-  ws.pageSetup.horizontalCentered = true;
-  ws.pageSetup.verticalCentered = false;
+  configurePrintLayout(ws, LAST_FORM_COLUMN);
 
   const items = doc.items.length
     ? doc.items
