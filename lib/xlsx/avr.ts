@@ -52,8 +52,18 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.pageSetup.fitToPage = true;
   ws.pageSetup.fitToWidth = 1;
   ws.pageSetup.fitToHeight = 0;
+  // The Форма Р-1 grid is a touch wider than a landscape A4 at 100%, so
+  // fit-to-width scales it down to fit one page across. The template's wide
+  // 0.7" margins ate into the usable width and forced an extra shrink, leaving
+  // the act as a small block floating in the middle of the page (with
+  // verticalCentered, half the sheet was blank). Narrow margins reclaim that
+  // width so the form prints at (near) full size; top-align it so a short act
+  // reads as a normal document rather than a shrunken island.
+  ws.pageSetup.margins = {
+    left: 0.3, right: 0.3, top: 0.3, bottom: 0.3, header: 0.2, footer: 0.2,
+  };
   ws.pageSetup.horizontalCentered = true;
-  ws.pageSetup.verticalCentered = true;
+  ws.pageSetup.verticalCentered = false;
 
   const items = doc.items.length
     ? doc.items
