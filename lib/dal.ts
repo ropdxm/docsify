@@ -14,6 +14,8 @@ export type Company = {
   bank_account: string | null;
   bank_name: string | null;
   is_profile_complete: boolean;
+  /** Storage path of the uploaded signature image (documents bucket). */
+  signature_path: string | null;
   created_at: string;
 };
 

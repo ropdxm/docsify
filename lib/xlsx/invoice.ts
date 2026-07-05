@@ -1,6 +1,7 @@
 import path from "node:path";
 import ExcelJS from "exceljs";
 import { formatTenge, formatDateRu } from "@/lib/format";
+import { placeSignature } from "@/lib/xlsx/print";
 
 const TEMPLATE = path.join(
   process.cwd(),
@@ -14,6 +15,12 @@ export type XlsxBank = {
   bik: string;
   kbe: string;
   knp?: string | null;
+};
+
+/** Owner's signature image, placed on the «подпись» blanks. */
+export type XlsxSignature = {
+  data: Buffer;
+  extension: "png" | "jpeg";
 };
 
 export type XlsxDoc = {
@@ -44,6 +51,12 @@ export type XlsxDoc = {
   } | null;
   /** Реквизиты блока «Платежное поручение»; null - блок остаётся пустым. */
   bank: XlsxBank | null;
+  /**
+   * Owner's signature, rendered on the «подпись» blank(s). Only the PDF route
+   * sets this - the downloadable Excel must stay unsigned, so the xlsx route
+   * never passes it.
+   */
+  signature?: XlsxSignature | null;
 };
 
 const ITEM_ROW = 27; // first item row in the template
@@ -188,6 +201,12 @@ export async function renderInvoiceXlsx(doc: XlsxDoc): Promise<Buffer> {
   ws.getCell(`AG${sh(30)}`).value = doc.total_amount;
   ws.getCell(`B${sh(33)}`).value = `Всего к оплате: ${formatTenge(doc.total_amount)}`;
   ws.getCell(`G${sh(36)}`).value = c.director ?? "";
+
+  // «Исполнитель» line at the bottom: the signature sits on the underline to
+  // the right of the director's name.
+  if (doc.signature) {
+    placeSignature(wb, ws, doc.signature, { col: 13, row: sh(36) - 3 });
+  }
 
   const out = await wb.xlsx.writeBuffer();
   return Buffer.from(out);

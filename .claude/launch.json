@@ -6,6 +6,18 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "dev-e2e",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "3456"],
+      "port": 3456
+    },
+    {
+      "name": "start-e2e",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "start", "--port", "3456"],
+      "port": 3456
     }
   ]
 }

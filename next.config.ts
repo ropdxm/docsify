@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Above the signature upload's own 1 МБ cap: the friendly size error in
+      // lib/actions/signature.ts must run before the framework body limit.
+      bodySizeLimit: "3mb",
+    },
+  },
   // Heavy Node-only libs: keep them as real modules instead of bundling.
   serverExternalPackages: [
     "@matbee/libreoffice-converter",

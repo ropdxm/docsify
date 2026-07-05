@@ -15,7 +15,9 @@ import {
 import { AppFooter } from "@/components/app-footer";
 import { SubmitButton } from "@/components/loading";
 import { BrandLogo } from "@/components/brand-logo";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { AddBankProfile } from "./add-bank-profile";
+import { SignatureSection } from "./signature-section";
 
 // Subtle, warm gradient for the company monogram tile. Inline so it always uses
 // the live design tokens regardless of Tailwind's gradient utility naming.
@@ -32,6 +34,15 @@ export default async function ProfilePage() {
   const paid = isPaidPro(sub);
   const onTrial = plan === "pro" && !paid;
   const daysLeft = trialDaysLeft(sub);
+
+  // Short-lived preview link for the uploaded signature (private bucket).
+  let signaturePreviewUrl: string | null = null;
+  if (company.signature_path) {
+    const { data } = await createAdminClient()
+      .storage.from("documents")
+      .createSignedUrl(company.signature_path, 3600);
+    signaturePreviewUrl = data?.signedUrl ?? null;
+  }
 
   // Primary first, then the rest - so the default the client sees on every
   // invoice sits at the top of the list.
@@ -143,6 +154,17 @@ export default async function ProfilePage() {
             </div>
             <IconArrow className="size-4 shrink-0 text-faint transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
+        </section>
+
+        {/* Signature - prints on the подпись blanks of generated PDFs.
+            Keyed by the storage path so client action state (stale errors)
+            resets whenever the signature actually changes. */}
+        <section className="lp-rise mt-8" style={{ animationDelay: "120ms" }}>
+          <SectionLabel>Подпись</SectionLabel>
+          <SignatureSection
+            key={company.signature_path ?? "none"}
+            previewUrl={signaturePreviewUrl}
+          />
         </section>
 
         {/* Bank requisite profiles */}

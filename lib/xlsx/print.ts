@@ -1,4 +1,30 @@
 import type ExcelJS from "exceljs";
+import type { XlsxSignature } from "@/lib/xlsx/invoice";
+
+/**
+ * Floats the signature image over a «подпись» blank. `tl` is the zero-based
+ * anchor of the image's top-left corner in cell coordinates (fractions allowed);
+ * the image is sized so the ink sits on the signature line like a real
+ * signature - slightly taller than the row, overflowing upward.
+ */
+export function placeSignature(
+  wb: ExcelJS.Workbook,
+  ws: ExcelJS.Worksheet,
+  signature: XlsxSignature,
+  tl: { col: number; row: number }
+): void {
+  const imageId = wb.addImage({
+    buffer: signature.data as unknown as ExcelJS.Buffer,
+    extension: signature.extension,
+  });
+  ws.addImage(imageId, {
+    tl,
+    ext: { width: 110, height: 42 },
+    // Anchor to the cell so the image follows the row when item rows above
+    // shift the signature block down.
+    editAs: "oneCell",
+  });
+}
 
 /**
  * Print layout shared by the structured-document renderers (АВР, накладная).

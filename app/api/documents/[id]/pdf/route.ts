@@ -60,7 +60,45 @@ export async function GET(
   }
 
   const bank = await bankForDocument(admin, doc);
-  const payload = { ...doc, bank } as unknown as XlsxDoc;
+
+  // Owner's signature (PDF only - the downloadable Excel stays unsigned).
+  // The versioned storage path doubles as the cache-invalidation key: a
+  // re-uploaded signature gets a new path, a deleted one goes null.
+  const signaturePath: string | null = doc.company?.signature_path ?? null;
+  let signature: XlsxDoc["signature"] = null;
+  if (signaturePath) {
+    const file = await admin.storage.from("documents").download(signaturePath);
+    if (file.data) {
+      signature = {
+        data: Buffer.from(await file.data.arrayBuffer()),
+        extension: signaturePath.endsWith(".png") ? "png" : "jpeg",
+      };
+    } else {
+      // A configured signature must not silently vanish from a business
+      // document. A dangling path (object gone) degrades to unsigned - that
+      // matches what the profile shows - but a transient storage error fails
+      // the request so the client can retry and get the signed PDF.
+      const message = file.error?.message ?? "unknown storage error";
+      const missing = /not[ _-]?found/i.test(message);
+      console.error(
+        JSON.stringify({
+          level: missing ? "warn" : "error",
+          message: "signature download failed",
+          documentId: doc.id,
+          signaturePath,
+          missing,
+          error: message,
+        })
+      );
+      if (!missing) {
+        return new Response("Не удалось получить подпись - попробуйте ещё раз", {
+          status: 500,
+        });
+      }
+    }
+  }
+
+  const payload = { ...doc, bank, signature } as unknown as XlsxDoc;
 
   // The Storage path is keyed by everything the PDF renders, so any content
   // (or layout-version) change lands on a new path and a stale object can
@@ -70,6 +108,7 @@ export async function GET(
     .update(
       JSON.stringify({
         v: PDF_LAYOUT_VERSION,
+        signature: signature ? signaturePath : null,
         type: payload.type,
         number: payload.number,
         date: payload.date,

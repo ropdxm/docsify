@@ -2,7 +2,7 @@ import path from "node:path";
 import ExcelJS from "exceljs";
 import { formatDateRu, formatTengeWords } from "@/lib/format";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
-import { configurePrintLayout } from "@/lib/xlsx/print";
+import { configurePrintLayout, placeSignature } from "@/lib/xlsx/print";
 
 // Official «Накладная на отпуск запасов на сторону» - Форма З-2
 // (Приложение 26 к приказу Министра финансов РК от 20.12.2012 № 562).
@@ -161,6 +161,12 @@ export async function renderNakladnajaXlsx(doc: XlsxDoc): Promise<Buffer> {
   // «Отпуск разрешил»: руководитель отправителя.
   ws.getCell(`F${s29}`).value = "Руководитель";
   ws.getCell(`R${s29}`).value = c.director ?? "";
+
+  // «Отпуск разрешил» подпись blank (columns L..P). Only this slot is signed;
+  // «Главный бухгалтер» and «Отпустил» may be different people.
+  if (doc.signature) {
+    placeSignature(wb, ws, doc.signature, { col: 11.2, row: s29 - 2.3 });
+  }
 
   const out = await wb.xlsx.writeBuffer();
   return Buffer.from(out);
