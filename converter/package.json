@@ -1,0 +1,16 @@
+{
+  "name": "docsify-pdf-converter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Warm LibreOffice (WASM) HTTP conversion service for Docsify PDFs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@matbee/libreoffice-converter": "2.6.0"
+  }
+}
