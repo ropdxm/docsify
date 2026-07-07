@@ -1,0 +1,1595 @@
+{
+  "sha": "c8db6b2a90b616d8f29484ccca385d65aee3ac9b",
+  "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/c8db6b2a90b616d8f29484ccca385d65aee3ac9b",
+  "tree": [
+    {
+      "path": ".eslintrc.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a6ece74bcb4990b7445207315a8508d87b2af09",
+      "size": 1460,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6a6ece74bcb4990b7445207315a8508d87b2af09"
+    },
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a9b9e59393417a8d59ca8eba5734ad95c3c90299",
+      "size": 96,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/a9b9e59393417a8d59ca8eba5734ad95c3c90299"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4872a936801ce2f1f385f2c32bdb24746556b8a4",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/4872a936801ce2f1f385f2c32bdb24746556b8a4"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "436681f653c56d6151c89e47732bccf9dc13659f",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/436681f653c56d6151c89e47732bccf9dc13659f"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55fe6177e7598f7ff199c7616b440b63c4844b91",
+      "size": 649,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/55fe6177e7598f7ff199c7616b440b63c4844b91"
+    },
+    {
+      "path": ".github/workflows/font-bundles.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eef16a2804ed592c58a57c257e9627034b3c1397",
+      "size": 1443,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/eef16a2804ed592c58a57c257e9627034b3c1397"
+    },
+    {
+      "path": ".github/workflows/pages.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73d4a5182ccc3301791fe26c997a352a2548f6cd",
+      "size": 3343,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/73d4a5182ccc3301791fe26c997a352a2548f6cd"
+    },
+    {
+      "path": ".github/workflows/publish.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5cd9c1653fccb82102e9697a63bf084062826029",
+      "size": 1186,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/5cd9c1653fccb82102e9697a63bf084062826029"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67d30638dfbc1a12e21afa0cead5c49492a12767",
+      "size": 812,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/67d30638dfbc1a12e21afa0cead5c49492a12767"
+    },
+    {
+      "path": ".npmignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fcb08b73eaf37dad2b0345c55c71dabb2694fad9",
+      "size": 565,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/fcb08b73eaf37dad2b0345c55c71dabb2694fad9"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebe59ff9e0e2c1496ed3acffb44434c3b6b1db3c",
+      "size": 7707,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/ebe59ff9e0e2c1496ed3acffb44434c3b6b1db3c"
+    },
+    {
+      "path": "Dockerfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bb2f0c1179079b6673346f03a2e49cc338f48af",
+      "size": 3324,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/5bb2f0c1179079b6673346f03a2e49cc338f48af"
+    },
+    {
+      "path": "Makefile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f043c775d5e53b7fe263eb86277ef1c7d4942be0",
+      "size": 2510,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f043c775d5e53b7fe263eb86277ef1c7d4942be0"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54097aad764d0ec002741a0cb7411203d4251760",
+      "size": 5907,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/54097aad764d0ec002741a0cb7411203d4251760"
+    },
+    {
+      "path": "benchmark.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b0b8f83fb0a302f8e94bcd7bdc3b0d06b0727b5",
+      "size": 6629,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6b0b8f83fb0a302f8e94bcd7bdc3b0d06b0727b5"
+    },
+    {
+      "path": "build",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9a5e0598541bc6e878ef84719b8fb1c5cc28c898",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/9a5e0598541bc6e878ef84719b8fb1c5cc28c898"
+    },
+    {
+      "path": "build/Dockerfile.build",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5dd7bab916c56939c29b7ac6f08838f0e7831f0a",
+      "size": 3345,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/5dd7bab916c56939c29b7ac6f08838f0e7831f0a"
+    },
+    {
+      "path": "build/archive",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b970590585546dd1f5a905626093961190b6324d",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/b970590585546dd1f5a905626093961190b6324d"
+    },
+    {
+      "path": "build/archive/autogen.input",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "883bd37c1a5c942af6fb4245859f5c776269e0cd",
+      "size": 2677,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/883bd37c1a5c942af6fb4245859f5c776269e0cd"
+    },
+    {
+      "path": "build/archive/autogen.minimal.input",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53d1395a28cbd9ad6ce00732c5e06256e17f9970",
+      "size": 1696,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/53d1395a28cbd9ad6ce00732c5e06256e17f9970"
+    },
+    {
+      "path": "build/archive/build-native.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "f684d26973b38e532c4aac23b238d732d5615296",
+      "size": 7168,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f684d26973b38e532c4aac23b238d732d5615296"
+    },
+    {
+      "path": "build/archive/bundle-lo-data.mjs",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "8b894e7e92cf23d08169f2fb61ebb1bcbc61ab6a",
+      "size": 6396,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8b894e7e92cf23d08169f2fb61ebb1bcbc61ab6a"
+    },
+    {
+      "path": "build/archive/optimize-fonts.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "9da85be1a7eadb9e215bd87b2a9f10085de4f2b9",
+      "size": 2495,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/9da85be1a7eadb9e215bd87b2a9f10085de4f2b9"
+    },
+    {
+      "path": "build/archive/rebuild-minimal.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a05418311553263f40e6ae8c9df731d5f81c295b",
+      "size": 5462,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/a05418311553263f40e6ae8c9df731d5f81c295b"
+    },
+    {
+      "path": "build/archive/repack-wasm-data.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "6223353da840738b124e367154c693611473bf9a",
+      "size": 1147,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6223353da840738b124e367154c693611473bf9a"
+    },
+    {
+      "path": "build/archive/update-wasm-files.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ce9b1551436dbd7ec519b919a00beb4cb570798c",
+      "size": 4677,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/ce9b1551436dbd7ec519b919a00beb4cb570798c"
+    },
+    {
+      "path": "build/autogen.input",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7aa6ef851974d22ad7689a7a5b7db03a5aaf2c1",
+      "size": 2655,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c7aa6ef851974d22ad7689a7a5b7db03a5aaf2c1"
+    },
+    {
+      "path": "build/build-wasm.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3b98fe3b7056ab9b3eb506b9b5f602f10d1a8107",
+      "size": 15806,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/3b98fe3b7056ab9b3eb506b9b5f602f10d1a8107"
+    },
+    {
+      "path": "build/docker-compose.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6067d0ae0052382974a6e04c9da64022fb2f2a14",
+      "size": 444,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6067d0ae0052382974a6e04c9da64022fb2f2a14"
+    },
+    {
+      "path": "build/patches",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d9acd404aa4fdf93fde600b1a5f0ffb91eb304a6",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/d9acd404aa4fdf93fde600b1a5f0ffb91eb304a6"
+    },
+    {
+      "path": "build/patches/.gitkeep",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4eb4cb48c484ed9bc7522349a7d565e6bef287b0",
+      "size": 288,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4eb4cb48c484ed9bc7522349a7d565e6bef287b0"
+    },
+    {
+      "path": "build/patches/archive",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5feff5f00d24830c7fa13fe0acd9ccb197feead7",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/5feff5f00d24830c7fa13fe0acd9ccb197feead7"
+    },
+    {
+      "path": "build/patches/archive/001-fix-xmlsecurity-headless.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e17835187ecfdaefc77464fada048c7e2a4cc336",
+      "size": 722,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/e17835187ecfdaefc77464fada048c7e2a4cc336"
+    },
+    {
+      "path": "build/patches/archive/002-emscripten-exports.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35f294ee1438eed3931866134ff6882ee1136a95",
+      "size": 1881,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/35f294ee1438eed3931866134ff6882ee1136a95"
+    },
+    {
+      "path": "build/patches/archive/003-skip-preload-option.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e9df276408d7f728db052bb3d8669dd8f1afbfa",
+      "size": 740,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4e9df276408d7f728db052bb3d8669dd8f1afbfa"
+    },
+    {
+      "path": "build/patches/archive/004-remove-xmlsec-ui-from-fs-image.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24d2c5a7967b41ae2ccb461dc3257a7366bd2641",
+      "size": 1445,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/24d2c5a7967b41ae2ccb461dc3257a7366bd2641"
+    },
+    {
+      "path": "build/patches/archive/005-fix-math-accessibility.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e60761575720ea253a0638cddb9af8cabfa3b41",
+      "size": 471,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/3e60761575720ea253a0638cddb9af8cabfa3b41"
+    },
+    {
+      "path": "build/patches/archive/006-add-impress-draw-math-fs-image.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0149442129047652b70992d16743ca8587bb6dc1",
+      "size": 29870,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0149442129047652b70992d16743ca8587bb6dc1"
+    },
+    {
+      "path": "build/patches/archive/007-fix-sd-annotationwindow-accessibility.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df4bf3a35f2552d38335248398e1f35354f01bf9",
+      "size": 704,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/df4bf3a35f2552d38335248398e1f35354f01bf9"
+    },
+    {
+      "path": "build/patches/archive/008-fix-slidesorter-accessibility.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c97bdf019788dc7f84987c65aecc68a09f2e9a46",
+      "size": 492,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c97bdf019788dc7f84987c65aecc68a09f2e9a46"
+    },
+    {
+      "path": "build/patches/archive/009-fix-repository.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa33a06fbb8dffdee5b298ea7071928373d44d85",
+      "size": 631,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/fa33a06fbb8dffdee5b298ea7071928373d44d85"
+    },
+    {
+      "path": "build/patches/archive/010-emscripten-fs-image-ui-files.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dc7c42ceb6237ab36425abaca847b6bb5db173e",
+      "size": 41995,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7dc7c42ceb6237ab36425abaca847b6bb5db173e"
+    },
+    {
+      "path": "build/patches/archive/010-fix-writerperfect.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb9d886922ef7228a921b3592fbe338b381d5cf2",
+      "size": 593,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cb9d886922ef7228a921b3592fbe338b381d5cf2"
+    },
+    {
+      "path": "build/patches/archive/012-lok-shim-exports.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9294cf86166d028113ea1318c52ed789e349cd5",
+      "size": 1203,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f9294cf86166d028113ea1318c52ed789e349cd5"
+    },
+    {
+      "path": "build/patches/archive/013-lok-shim-functions.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21151ca667e9bc8358ed141613a7eec83a2d2302",
+      "size": 1887,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/21151ca667e9bc8358ed141613a7eec83a2d2302"
+    },
+    {
+      "path": "build/patches/archive/014-emscripten-unipoll-fix.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c127562d412f6cdbe3903dc408f75ef2b11a015f",
+      "size": 1630,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c127562d412f6cdbe3903dc408f75ef2b11a015f"
+    },
+    {
+      "path": "build/patches/archive/014-lok-exported-functions.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f374e5b18c6e8b6f450f9515ff1d255f8e9b6c4",
+      "size": 2432,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8f374e5b18c6e8b6f450f9515ff1d255f8e9b6c4"
+    },
+    {
+      "path": "build/patches/archive/015-lok-shim-functions-extended.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1818b65db8d64165d847e5d70f8f8d783bb95e2a",
+      "size": 18145,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/1818b65db8d64165d847e5d70f8f8d783bb95e2a"
+    },
+    {
+      "path": "build/patches/archive/016-emscripten-platform.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbd95e9fb8b65642ac6c097c96d15e6f262bb973",
+      "size": 978,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cbd95e9fb8b65642ac6c097c96d15e6f262bb973"
+    },
+    {
+      "path": "build/patches/archive/017-emscripten-fs-image.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c569958a9502fa7568d1aa04711f481670e32ffd",
+      "size": 86591,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c569958a9502fa7568d1aa04711f481670e32ffd"
+    },
+    {
+      "path": "build/patches/archive/018-graphicexportfilter-fix.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85501f898b5f23dca3de24985706962f8e041de0",
+      "size": 1030,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/85501f898b5f23dca3de24985706962f8e041de0"
+    },
+    {
+      "path": "build/patches/archive/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e3b758510d5d232d98f7d8699583e0b8b40f034",
+      "size": 3694,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/5e3b758510d5d232d98f7d8699583e0b8b40f034"
+    },
+    {
+      "path": "build/patches/archive/pdfium-emscripten.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56177b2547e88e04c8c08ee14ab32473878d9a14",
+      "size": 382,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/56177b2547e88e04c8c08ee14ab32473878d9a14"
+    },
+    {
+      "path": "build/patches/wasm-build-fixes.patch",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "446b0f23283a3b62a083aaa123f1aee5fa83c8e4",
+      "size": 223311,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/446b0f23283a3b62a083aaa123f1aee5fa83c8e4"
+    },
+    {
+      "path": "dev-server.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f150ab6dc22a896313de3e7391d8ebd3a8327f9d",
+      "size": 1863,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f150ab6dc22a896313de3e7391d8ebd3a8327f9d"
+    },
+    {
+      "path": "docker-compose.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa9739b8ca3be9ece3cb253e25b37b1ff19592ae",
+      "size": 1060,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/aa9739b8ca3be9ece3cb253e25b37b1ff19592ae"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "28602aacda482ec938226f8deb54573f843aa981",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/28602aacda482ec938226f8deb54573f843aa981"
+    },
+    {
+      "path": "docs/API.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0fca4e2217ed725fd33fdf3735396ba5439ef4c8",
+      "size": 27612,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0fca4e2217ed725fd33fdf3735396ba5439ef4c8"
+    },
+    {
+      "path": "docs/BUILDING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fd82bbf6217b743b4b67462b1e1f9785e014741",
+      "size": 12284,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8fd82bbf6217b743b4b67462b1e1f9785e014741"
+    },
+    {
+      "path": "docs/EXAMPLES.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f30bec94f09711b4698cd384afd37500b7d68c7",
+      "size": 20775,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7f30bec94f09711b4698cd384afd37500b7d68c7"
+    },
+    {
+      "path": "docs/OPTIMIZATION.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e62a18f0d2d5386609eca075fab291f86a3e06da",
+      "size": 9819,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/e62a18f0d2d5386609eca075fab291f86a3e06da"
+    },
+    {
+      "path": "examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f864e354f527463149441a7a984b732de8993f04",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/f864e354f527463149441a7a984b732de8993f04"
+    },
+    {
+      "path": "examples/browser-demo.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca9c362649c20b423c6527d80446dec1221c25db",
+      "size": 36053,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/ca9c362649c20b423c6527d80446dec1221c25db"
+    },
+    {
+      "path": "examples/browser-test.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be3147c6eee4a74e8575b81a1b1fbde094f16ef9",
+      "size": 10972,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/be3147c6eee4a74e8575b81a1b1fbde094f16ef9"
+    },
+    {
+      "path": "examples/editor-test.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99b0e1e3e659dd72bb9876717f6cf39269196cb9",
+      "size": 14320,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/99b0e1e3e659dd72bb9876717f6cf39269196cb9"
+    },
+    {
+      "path": "examples/main-thread-test.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3caa9388be07fae9d4b017e39b397a07c832fb8",
+      "size": 6449,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c3caa9388be07fae9d4b017e39b397a07c832fb8"
+    },
+    {
+      "path": "examples/measure-memory-browser.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c580ab90f97a68fdf4d42a9253a64914f7f619b6",
+      "size": 9804,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c580ab90f97a68fdf4d42a9253a64914f7f619b6"
+    },
+    {
+      "path": "examples/node-conversion.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42f48f3f310b8a827293792fb1471e13b9d92a30",
+      "size": 3952,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/42f48f3f310b8a827293792fb1471e13b9d92a30"
+    },
+    {
+      "path": "examples/node-convert.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6a405a4e5f85527b178bd31feef4b11a6c03c09",
+      "size": 2861,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c6a405a4e5f85527b178bd31feef4b11a6c03c09"
+    },
+    {
+      "path": "examples/node-example",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "de6dec531fc4cb7a2a2467e298f5c563f2753ae1",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/de6dec531fc4cb7a2a2467e298f5c563f2753ae1"
+    },
+    {
+      "path": "examples/node-example/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ad7c41ba1ab0e88883f54d5d0f7d00e19596a00",
+      "size": 3343,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6ad7c41ba1ab0e88883f54d5d0f7d00e19596a00"
+    },
+    {
+      "path": "examples/node-example/batch-convert.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f636649383ac2d308a4109eb3b651c92b984e1a0",
+      "size": 8563,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f636649383ac2d308a4109eb3b651c92b984e1a0"
+    },
+    {
+      "path": "examples/node-example/conversion-server.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2885cfa111c4361070ef2907468fb95abaaa81e2",
+      "size": 7131,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2885cfa111c4361070ef2907468fb95abaaa81e2"
+    },
+    {
+      "path": "examples/node-example/convert.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a40769027fdd7a4e7ffdee490d79bec62006edec",
+      "size": 2171,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/a40769027fdd7a4e7ffdee490d79bec62006edec"
+    },
+    {
+      "path": "examples/node-example/generate-previews.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef0a2e0e53d989d25ed829f1832fe7d9b446a10d",
+      "size": 3513,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/ef0a2e0e53d989d25ed829f1832fe7d9b446a10d"
+    },
+    {
+      "path": "examples/node-example/inspect-document.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0165a27104d52fb2450feb7887d11fd47cd0fd87",
+      "size": 2701,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0165a27104d52fb2450feb7887d11fd47cd0fd87"
+    },
+    {
+      "path": "examples/node-example/package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20d51f9047ceee4c5302001af150e1d1711f14b2",
+      "size": 35016,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/20d51f9047ceee4c5302001af150e1d1711f14b2"
+    },
+    {
+      "path": "examples/node-example/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02fa414749302cf99e05ffe96ff8fa9263d78a7b",
+      "size": 444,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/02fa414749302cf99e05ffe96ff8fa9263d78a7b"
+    },
+    {
+      "path": "examples/node-example/sample_2_page.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf440876f23e2ecf736b35c746e579d46d78dc66",
+      "size": 32751,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cf440876f23e2ecf736b35c746e579d46d78dc66"
+    },
+    {
+      "path": "examples/react-app",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "19d458ef38d169d8a26bede6ac83f45f5584fa27",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/19d458ef38d169d8a26bede6ac83f45f5584fa27"
+    },
+    {
+      "path": "examples/react-app/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b7a6c8e2fad4217697fd8ed3007ddfc26a357ce",
+      "size": 2392,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7b7a6c8e2fad4217697fd8ed3007ddfc26a357ce"
+    },
+    {
+      "path": "examples/react-app/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e18ce0d0a6e722bf2524f4493c681bef622cf5d9",
+      "size": 311,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/e18ce0d0a6e722bf2524f4493c681bef622cf5d9"
+    },
+    {
+      "path": "examples/react-app/package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8027c86a4a064e597656908e0c526ffd216f030",
+      "size": 75834,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/d8027c86a4a064e597656908e0c526ffd216f030"
+    },
+    {
+      "path": "examples/react-app/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ab37302b13f05c9e9b3fa0a05bc198c08b6fd3b",
+      "size": 539,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7ab37302b13f05c9e9b3fa0a05bc198c08b6fd3b"
+    },
+    {
+      "path": "examples/react-app/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "af83785ee42e47cf6e014a4ca1095840880c639b",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/af83785ee42e47cf6e014a4ca1095840880c639b"
+    },
+    {
+      "path": "examples/react-app/src/App.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1fb3a1399760c292c08cd8c2d9d639b1b55af362",
+      "size": 15858,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/1fb3a1399760c292c08cd8c2d9d639b1b55af362"
+    },
+    {
+      "path": "examples/react-app/src/index.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5be9658a9dc4826e25c99d1d69472411acf5ee47",
+      "size": 10173,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/5be9658a9dc4826e25c99d1d69472411acf5ee47"
+    },
+    {
+      "path": "examples/react-app/src/main.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2339d59cf67910c2bd93c28509f754e71476374e",
+      "size": 236,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2339d59cf67910c2bd93c28509f754e71476374e"
+    },
+    {
+      "path": "examples/react-app/tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3934b8f6d676d599058af5529521ad710c03121d",
+      "size": 562,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/3934b8f6d676d599058af5529521ad710c03121d"
+    },
+    {
+      "path": "examples/react-app/tsconfig.node.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42872c59f5b01c9155864572bc2fbd5833a7406c",
+      "size": 213,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/42872c59f5b01c9155864572bc2fbd5833a7406c"
+    },
+    {
+      "path": "examples/react-app/vite.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "806066229f993ec281296a5ee99fc0632faba4d2",
+      "size": 2189,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/806066229f993ec281296a5ee99fc0632faba4d2"
+    },
+    {
+      "path": "examples/stress-test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09123f78a9c54cde067dc62344698d71c7846e52",
+      "size": 2597,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/09123f78a9c54cde067dc62344698d71c7846e52"
+    },
+    {
+      "path": "examples/test-csv-direct.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b6acc728a9396e7a046b8a168119dc8713aad9d",
+      "size": 3204,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2b6acc728a9396e7a046b8a168119dc8713aad9d"
+    },
+    {
+      "path": "examples/test-lazy-loading.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd0b9a7f41fd1faf61eeabf10f5cdd35f4c0aa3b",
+      "size": 5048,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/fd0b9a7f41fd1faf61eeabf10f5cdd35f4c0aa3b"
+    },
+    {
+      "path": "examples/test-pdf-convert.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fb31367293cb488a6b93e33587ac238715b3c12",
+      "size": 2456,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4fb31367293cb488a6b93e33587ac238715b3c12"
+    },
+    {
+      "path": "examples/test-pdf-firefox.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6779502d28c11e4b63e799a3d0175a3a512a3d5f",
+      "size": 2108,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6779502d28c11e4b63e799a3d0175a3a512a3d5f"
+    },
+    {
+      "path": "examples/test-pdf-node.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fee25edda4c8c2b136434e81669db9c7fe0d3231",
+      "size": 1419,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/fee25edda4c8c2b136434e81669db9c7fe0d3231"
+    },
+    {
+      "path": "examples/test-preview.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc963a74ad3260aa265bc9ef8c9e2a06c54c0730",
+      "size": 1755,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/dc963a74ad3260aa265bc9ef8c9e2a06c54c0730"
+    },
+    {
+      "path": "examples/test-reverse-order.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b071fd754ff4a8eda85f25f811656e040707a1e",
+      "size": 2734,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7b071fd754ff4a8eda85f25f811656e040707a1e"
+    },
+    {
+      "path": "examples/test-samples.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d54c8e9eb4a9f04a18e3dacd34442fd6ceeae9f",
+      "size": 6562,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4d54c8e9eb4a9f04a18e3dacd34442fd6ceeae9f"
+    },
+    {
+      "path": "examples/test-subprocess.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7f1d23f6a55cba42cbb14621324c9d1ca459be3",
+      "size": 2792,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/e7f1d23f6a55cba42cbb14621324c9d1ca459be3"
+    },
+    {
+      "path": "examples/test-worker-thread.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3ddda1a2eddbf83e6e64c73831b6aec55422fe1",
+      "size": 4303,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f3ddda1a2eddbf83e6e64c73831b6aec55422fe1"
+    },
+    {
+      "path": "examples/test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "015d293e6a80f762477a2a093673b15810555576",
+      "size": 2375,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/015d293e6a80f762477a2a093673b15810555576"
+    },
+    {
+      "path": "package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cfe1b057e4867627e4cdd0ff9124f6d5d6843003",
+      "size": 356288,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cfe1b057e4867627e4cdd0ff9124f6d5d6843003"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "530565d0147b0654ffe56fcb1d08761ef0243df5",
+      "size": 4091,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/530565d0147b0654ffe56fcb1d08761ef0243df5"
+    },
+    {
+      "path": "pages",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "46dac9c11c4053a881fd78909141a9c6db98746e",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/46dac9c11c4053a881fd78909141a9c6db98746e"
+    },
+    {
+      "path": "pages/coi-serviceworker.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0fc37135bce46dd84dd64b66c779ea2d3d070a49",
+      "size": 5045,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0fc37135bce46dd84dd64b66c779ea2d3d070a49"
+    },
+    {
+      "path": "pages/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9c7794500b4222e26173c775f7f10111521b4918",
+      "size": 15406,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/9c7794500b4222e26173c775f7f10111521b4918"
+    },
+    {
+      "path": "playwright.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20ba0d77f4b1c59112237d0218b9a5a003165ddd",
+      "size": 1028,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/20ba0d77f4b1c59112237d0218b9a5a003165ddd"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a20e53b593f780e9d053d4f815e3d11759c9d90",
+      "size": 159599,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8a20e53b593f780e9d053d4f815e3d11759c9d90"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "43e4a95588625d4afabfefde81f49e33c60558b4",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/43e4a95588625d4afabfefde81f49e33c60558b4"
+    },
+    {
+      "path": "scripts/compress-wasm.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "60791992fbeeb8327ab15a4de2e7beff0639121c",
+      "size": 1967,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/60791992fbeeb8327ab15a4de2e7beff0639121c"
+    },
+    {
+      "path": "scripts/measure-memory.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b96b8f4d8ca6ecc4c6b18fd4904456ade024640a",
+      "size": 3357,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/b96b8f4d8ca6ecc4c6b18fd4904456ade024640a"
+    },
+    {
+      "path": "scripts/package-fonts.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ccf1c651ed35663ebbe628e4a80c39f3b9eefcaf",
+      "size": 7077,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/ccf1c651ed35663ebbe628e4a80c39f3b9eefcaf"
+    },
+    {
+      "path": "serve.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "035b9138cb154b2b50eaf639d2ef0b378cf95f6f",
+      "size": 234,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/035b9138cb154b2b50eaf639d2ef0b378cf95f6f"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9f9f4ee45ed327cb44dd39657da60b97df16d95c",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/9f9f4ee45ed327cb44dd39657da60b97df16d95c"
+    },
+    {
+      "path": "src/browser.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e7df9ed77c8dcfbe55fc5823c071b1c304a6820",
+      "size": 53107,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/9e7df9ed77c8dcfbe55fc5823c071b1c304a6820"
+    },
+    {
+      "path": "src/browser.worker.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "385ced0df585aecc287ba25bdbc5a14bba33b2c6",
+      "size": 92592,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/385ced0df585aecc287ba25bdbc5a14bba33b2c6"
+    },
+    {
+      "path": "src/converter-node.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22ec931b95e9bf734f955784fd9b686a330a143e",
+      "size": 42445,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/22ec931b95e9bf734f955784fd9b686a330a143e"
+    },
+    {
+      "path": "src/converter.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bfc283884068780631f8dbc37fbe3b2f88d7fb74",
+      "size": 44791,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/bfc283884068780631f8dbc37fbe3b2f88d7fb74"
+    },
+    {
+      "path": "src/editor",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4f4c740d88ce13489d0c35e114e58166164ff4bb",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/4f4c740d88ce13489d0c35e114e58166164ff4bb"
+    },
+    {
+      "path": "src/editor/base.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8f5fbf245ee18f59a30d565a07a35688a2195b0",
+      "size": 12995,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c8f5fbf245ee18f59a30d565a07a35688a2195b0"
+    },
+    {
+      "path": "src/editor/calc.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60785378123d7221c9a772a22259dc1e8f728448",
+      "size": 15751,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/60785378123d7221c9a772a22259dc1e8f728448"
+    },
+    {
+      "path": "src/editor/draw.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1a7c3aaef1f3ad2c82f457c500f04e07e40f5a1",
+      "size": 12248,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/b1a7c3aaef1f3ad2c82f457c500f04e07e40f5a1"
+    },
+    {
+      "path": "src/editor/impress.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76cc57529a8688c4c9cff6d481deca7ca14f5b79",
+      "size": 11605,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/76cc57529a8688c4c9cff6d481deca7ca14f5b79"
+    },
+    {
+      "path": "src/editor/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "74c9d8762e3cd68a9bd589b8314645ef6fecc2ef",
+      "size": 4066,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/74c9d8762e3cd68a9bd589b8314645ef6fecc2ef"
+    },
+    {
+      "path": "src/editor/tools.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "23867d4ab0812be36e55f7d8f075b88eebee4e6a",
+      "size": 32043,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/23867d4ab0812be36e55f7d8f075b88eebee4e6a"
+    },
+    {
+      "path": "src/editor/types.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe12a0b20a23bcf29682c87953c0c1520f1483ef",
+      "size": 4481,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/fe12a0b20a23bcf29682c87953c0c1520f1483ef"
+    },
+    {
+      "path": "src/editor/writer.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "488754e94c16b3b360638ba2dd9c73a17a41408a",
+      "size": 14193,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/488754e94c16b3b360638ba2dd9c73a17a41408a"
+    },
+    {
+      "path": "src/font-loader.browser.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c7855f353aa771f6b5f7d92b8f59b117a2b87ed",
+      "size": 2534,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0c7855f353aa771f6b5f7d92b8f59b117a2b87ed"
+    },
+    {
+      "path": "src/font-loader.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a079677a5f49fb325638078cc063e9eda6aa7525",
+      "size": 9258,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/a079677a5f49fb325638078cc063e9eda6aa7525"
+    },
+    {
+      "path": "src/fork-worker.cts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8aafc271a7ad585cb5c4d8eaea1340bd0fae11d1",
+      "size": 7060,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8aafc271a7ad585cb5c4d8eaea1340bd0fae11d1"
+    },
+    {
+      "path": "src/image-utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c8fbaf3e5591169c10aacf95d32d2512d60fbb4",
+      "size": 7643,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2c8fbaf3e5591169c10aacf95d32d2512d60fbb4"
+    },
+    {
+      "path": "src/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f37146ec6bda585cf64be98e9dc4f2b7239200a",
+      "size": 9967,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/1f37146ec6bda585cf64be98e9dc4f2b7239200a"
+    },
+    {
+      "path": "src/lok-bindings.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f95a53abd5242c48b1640868dee704c385f6c1fd",
+      "size": 60088,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f95a53abd5242c48b1640868dee704c385f6c1fd"
+    },
+    {
+      "path": "src/node.worker-converter.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fca8b59baa2cbe73d3662c035e95fb9b269f4503",
+      "size": 16663,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/fca8b59baa2cbe73d3662c035e95fb9b269f4503"
+    },
+    {
+      "path": "src/node.worker.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c339d5b1674d690b6993a754aced4a23593eab79",
+      "size": 14195,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c339d5b1674d690b6993a754aced4a23593eab79"
+    },
+    {
+      "path": "src/server-demo.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7cb0ff0738a13f33f044652e3a3e107a4f51e10",
+      "size": 13750,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/d7cb0ff0738a13f33f044652e3a3e107a4f51e10"
+    },
+    {
+      "path": "src/server.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d1335404accb4562420d6eecc180b5d58c20663",
+      "size": 5460,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0d1335404accb4562420d6eecc180b5d58c20663"
+    },
+    {
+      "path": "src/subprocess.cts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2af13ab0e7cef7e2693e5a3305b7c2d6762f0535",
+      "size": 6746,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2af13ab0e7cef7e2693e5a3305b7c2d6762f0535"
+    },
+    {
+      "path": "src/subprocess.worker-converter.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ea5835683d939a0cb790a23353a9458a0d9dfbe",
+      "size": 19061,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6ea5835683d939a0cb790a23353a9458a0d9dfbe"
+    },
+    {
+      "path": "src/subprocess.worker.cts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f2730e53a6e816ba65f4a24f29f884d2cc4b94a",
+      "size": 17711,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2f2730e53a6e816ba65f4a24f29f884d2cc4b94a"
+    },
+    {
+      "path": "src/types-entry.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e0af9f4bbb455107eac2694f2d233d5030d34aa",
+      "size": 3748,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4e0af9f4bbb455107eac2694f2d233d5030d34aa"
+    },
+    {
+      "path": "src/types.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c865e231153f33d8717c0ed35e86e2bd508292e",
+      "size": 31415,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2c865e231153f33d8717c0ed35e86e2bd508292e"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d28bc23e170712c547b2a0b11249da8e008dcf4f",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/d28bc23e170712c547b2a0b11249da8e008dcf4f"
+    },
+    {
+      "path": "tests/browser",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eafc5c43beaf3f84794c3e9caeb47cdeec6b8b9d",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/eafc5c43beaf3f84794c3e9caeb47cdeec6b8b9d"
+    },
+    {
+      "path": "tests/browser/benchmark.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ebf0cba72b35561513b960d9da6ab2b815afbaf",
+      "size": 4869,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4ebf0cba72b35561513b960d9da6ab2b815afbaf"
+    },
+    {
+      "path": "tests/browser/conversion.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64d405b49ea01828adc5cf734841096c343bef25",
+      "size": 8192,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/64d405b49ea01828adc5cf734841096c343bef25"
+    },
+    {
+      "path": "tests/browser/editor-api.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c360871cd6583deb8dd65293db5b9617b0ae4fa",
+      "size": 32030,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2c360871cd6583deb8dd65293db5b9617b0ae4fa"
+    },
+    {
+      "path": "tests/browser/editor.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1db1c703c06f34c9a613bbf6ec218fa385b53a6",
+      "size": 13127,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/b1db1c703c06f34c9a613bbf6ec218fa385b53a6"
+    },
+    {
+      "path": "tests/browser/memory.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3797b37cefb1d8bf216bf4de1e57e90f9ead257b",
+      "size": 2852,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/3797b37cefb1d8bf216bf4de1e57e90f9ead257b"
+    },
+    {
+      "path": "tests/browser/wasm-progress.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "787043c80a04a768980105e234dd9e56534b4e61",
+      "size": 6569,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/787043c80a04a768980105e234dd9e56534b4e61"
+    },
+    {
+      "path": "tests/browser/worker-restart.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "443b42f879989234253a4fe402256b3c9c6ca5ba",
+      "size": 6932,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/443b42f879989234253a4fe402256b3c9c6ca5ba"
+    },
+    {
+      "path": "tests/converter.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b4fd70e068933955a805c99c2ec16df325a3597",
+      "size": 5836,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2b4fd70e068933955a805c99c2ec16df325a3597"
+    },
+    {
+      "path": "tests/editor",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bc4979ef19f4e0d982ec356ff41bf19fda775e4e",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/bc4979ef19f4e0d982ec356ff41bf19fda775e4e"
+    },
+    {
+      "path": "tests/editor/base.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d08573976ddb9e5ecb8c853c2667dd786ba50a21",
+      "size": 2874,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/d08573976ddb9e5ecb8c853c2667dd786ba50a21"
+    },
+    {
+      "path": "tests/editor/calc.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98a0ef6908604b7405f3db8b39b52b0f3a506cea",
+      "size": 2905,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/98a0ef6908604b7405f3db8b39b52b0f3a506cea"
+    },
+    {
+      "path": "tests/editor/draw.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97aae08d4667a15e16afecd0ce4a98151819b85d",
+      "size": 4781,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/97aae08d4667a15e16afecd0ce4a98151819b85d"
+    },
+    {
+      "path": "tests/editor/impress.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b29f668c74916ee518d64d75057bd0e45e06b14e",
+      "size": 4360,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/b29f668c74916ee518d64d75057bd0e45e06b14e"
+    },
+    {
+      "path": "tests/editor/index.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d768d846c4067448993e8354341d55a9e95d9b4",
+      "size": 5094,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8d768d846c4067448993e8354341d55a9e95d9b4"
+    },
+    {
+      "path": "tests/editor/integration.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d88811a7516f017c864aaf440479dba9c4120f79",
+      "size": 9557,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/d88811a7516f017c864aaf440479dba9c4120f79"
+    },
+    {
+      "path": "tests/editor/types.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d763bbffd3a2ee57b9d470cf33e481bd485d901f",
+      "size": 1839,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/d763bbffd3a2ee57b9d470cf33e481bd485d901f"
+    },
+    {
+      "path": "tests/editor/writer.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67df7f1a05da505d8d5db33b1180b7d0d30d1b79",
+      "size": 2943,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/67df7f1a05da505d8d5db33b1180b7d0d30d1b79"
+    },
+    {
+      "path": "tests/font-injection-poc.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "707548e6d355eceefda84fde81f9801034bbe52f",
+      "size": 2341,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/707548e6d355eceefda84fde81f9801034bbe52f"
+    },
+    {
+      "path": "tests/font-injection-verify.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35900b402bf419fea39da812ce5b265998f752bd",
+      "size": 5013,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/35900b402bf419fea39da812ce5b265998f752bd"
+    },
+    {
+      "path": "tests/force-failure.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd3e4a004edd9f42c83263a2e52ff1af9133fba2",
+      "size": 5427,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cd3e4a004edd9f42c83263a2e52ff1af9133fba2"
+    },
+    {
+      "path": "tests/output",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2803bcf0266f2e1a1cfdb839013a0e73657c5f1d",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/2803bcf0266f2e1a1cfdb839013a0e73657c5f1d"
+    },
+    {
+      "path": "tests/output/ods_test.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "193e1d919b9b5bdd3503d1c221eace169025b49e",
+      "size": 5017,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/193e1d919b9b5bdd3503d1c221eace169025b49e"
+    },
+    {
+      "path": "tests/output/ods_test.xlsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7fe0e342cacbde72f907c3c33ae3bb7c8e950f89",
+      "size": 5478,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7fe0e342cacbde72f907c3c33ae3bb7c8e950f89"
+    },
+    {
+      "path": "tests/output/sample_test_2.odt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8facef0cb79df183d1eac9774cd3f1e2e384be7",
+      "size": 303257,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/d8facef0cb79df183d1eac9774cd3f1e2e384be7"
+    },
+    {
+      "path": "tests/output/sample_test_2.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6dd4dead816fc71da4fa026fd9d49bc745cff645",
+      "size": 59838,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6dd4dead816fc71da4fa026fd9d49bc745cff645"
+    },
+    {
+      "path": "tests/output/sample_test_2.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "836ea52200772ced4f730c9aa7a031d78f4c154c",
+      "size": 1574,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/836ea52200772ced4f730c9aa7a031d78f4c154c"
+    },
+    {
+      "path": "tests/output/sample_test_3.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbd04a265dc46d21915fa1e97bb80d5f842915b2",
+      "size": 29233,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cbd04a265dc46d21915fa1e97bb80d5f842915b2"
+    },
+    {
+      "path": "tests/output/sample_test_4.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4cb688f0b3d0d0f64bf82739830f0a8bf5673b9",
+      "size": 9099,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/c4cb688f0b3d0d0f64bf82739830f0a8bf5673b9"
+    },
+    {
+      "path": "tests/output/sample_test_4.xlsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81bad3a5fd68021ddc1337eeaeeaa83793b3e836",
+      "size": 5499,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/81bad3a5fd68021ddc1337eeaeeaa83793b3e836"
+    },
+    {
+      "path": "tests/output/sample_test_5.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55f47bcbff795e3ac1d59d77c3fc23d8fe0f4195",
+      "size": 14759,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/55f47bcbff795e3ac1d59d77c3fc23d8fe0f4195"
+    },
+    {
+      "path": "tests/sample-broken.odp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32dc677ebb0d0ee62c52895133fb7a10d8078a58",
+      "size": 12399,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/32dc677ebb0d0ee62c52895133fb7a10d8078a58"
+    },
+    {
+      "path": "tests/sample.odp",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ae3607394b95ce7c6af74085743b17dfe92270f",
+      "size": 24973,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/4ae3607394b95ce7c6af74085743b17dfe92270f"
+    },
+    {
+      "path": "tests/sample.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbd04a265dc46d21915fa1e97bb80d5f842915b2",
+      "size": 29233,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cbd04a265dc46d21915fa1e97bb80d5f842915b2"
+    },
+    {
+      "path": "tests/sample_2_page.docx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d63b907fd12ecd752e7038152731c9a8019a04d",
+      "size": 17986,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/8d63b907fd12ecd752e7038152731c9a8019a04d"
+    },
+    {
+      "path": "tests/sample_2_page.odt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b2a0047f1773e9bd653fd70bc407cb8496170f2",
+      "size": 30321,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0b2a0047f1773e9bd653fd70bc407cb8496170f2"
+    },
+    {
+      "path": "tests/sample_large.docx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7179e036017ac1a8ba291e2a1af73b85e25e8a46",
+      "size": 32197,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7179e036017ac1a8ba291e2a1af73b85e25e8a46"
+    },
+    {
+      "path": "tests/sample_test_1.pptx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df3463ee6ac2ae83b21c599a6999afda41688e04",
+      "size": 1670629,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/df3463ee6ac2ae83b21c599a6999afda41688e04"
+    },
+    {
+      "path": "tests/sample_test_4.ods",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f930dba44a28e4aa8ba1ef68e8e6d453d5665bde",
+      "size": 1033,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/f930dba44a28e4aa8ba1ef68e8e6d453d5665bde"
+    },
+    {
+      "path": "tests/sample_test_5.xlsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30074a78c6f750dd45e62f64dbee7b7dea02a0db",
+      "size": 5498,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/30074a78c6f750dd45e62f64dbee7b7dea02a0db"
+    },
+    {
+      "path": "tests/simple.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffc082906b429986038a0c3ee3750af99f92bf02",
+      "size": 28,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/ffc082906b429986038a0c3ee3750af99f92bf02"
+    },
+    {
+      "path": "tests/subprocess.worker-converter.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6aaf80f2cb799cee1dbf4910845fd05bb6a34ed0",
+      "size": 29003,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/6aaf80f2cb799cee1dbf4910845fd05bb6a34ed0"
+    },
+    {
+      "path": "tests/test-xlsx-to-pdf.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3d2e52c54760ab5b6bfcc88f8adf5142f8a1d66",
+      "size": 3440,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/b3d2e52c54760ab5b6bfcc88f8adf5142f8a1d66"
+    },
+    {
+      "path": "tests/worker-converter.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1923063802dd7b86a8a3eb55beb0bc52d2ab686",
+      "size": 38369,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/b1923063802dd7b86a8a3eb55beb0bc52d2ab686"
+    },
+    {
+      "path": "tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f516aedc6ec298c22a8f43c6f521faee9c8f7d6",
+      "size": 1025,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/5f516aedc6ec298c22a8f43c6f521faee9c8f7d6"
+    },
+    {
+      "path": "tsup.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "078a8da4dddbc000ed66ca2b3f642b3748ab9576",
+      "size": 2296,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/078a8da4dddbc000ed66ca2b3f642b3748ab9576"
+    },
+    {
+      "path": "vitest.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43ac159fe97c2b203d8a82e75bf97a66f6598713",
+      "size": 411,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/43ac159fe97c2b203d8a82e75bf97a66f6598713"
+    },
+    {
+      "path": "wasm",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "409e2e2c09c5d53bb93f22a6289946fc96f05b67",
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/trees/409e2e2c09c5d53bb93f22a6289946fc96f05b67"
+    },
+    {
+      "path": "wasm/.gitkeep",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bbd5466cf3fe4b257a393797a862a3ad3ce05fae",
+      "size": 275,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/bbd5466cf3fe4b257a393797a862a3ad3ce05fae"
+    },
+    {
+      "path": "wasm/loader.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc2e8dfdd218cf8473d25aa010a2f3796d3444cc",
+      "size": 10513,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/cc2e8dfdd218cf8473d25aa010a2f3796d3444cc"
+    },
+    {
+      "path": "wasm/soffice.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c82d3f4a40324227e4377f8c6054dad0816de05",
+      "size": 444153,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7c82d3f4a40324227e4377f8c6054dad0816de05"
+    },
+    {
+      "path": "wasm/soffice.data",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9da55bf3379c788bcef3c8228959a3aed74984c",
+      "size": 133,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/e9da55bf3379c788bcef3c8228959a3aed74984c"
+    },
+    {
+      "path": "wasm/soffice.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c82d3f4a40324227e4377f8c6054dad0816de05",
+      "size": 444153,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/7c82d3f4a40324227e4377f8c6054dad0816de05"
+    },
+    {
+      "path": "wasm/soffice.wasm",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "2548334ade040bfd024c721b12c3210b7e7b308e",
+      "size": 134,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/2548334ade040bfd024c721b12c3210b7e7b308e"
+    },
+    {
+      "path": "wasm/soffice.worker.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0bd99a5f11615cb1692c111131f7bad820e94cbb",
+      "size": 3221,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0bd99a5f11615cb1692c111131f7bad820e94cbb"
+    },
+    {
+      "path": "wasm/soffice.worker.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0bd99a5f11615cb1692c111131f7bad820e94cbb",
+      "size": 3221,
+      "url": "https://api.github.com/repos/matbeedotcom/libreoffice-document-converter/git/blobs/0bd99a5f11615cb1692c111131f7bad820e94cbb"
+    }
+  ],
+  "truncated": false
+}

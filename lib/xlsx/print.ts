@@ -62,14 +62,14 @@ export function configurePrintLayout(
   ws.pageSetup.fitToHeight = 0;
   // The form grids are a touch wider than a landscape A4 at 100%, and the
   // templates' wide 0.7" margins forced an extra shrink on top. Narrow
-  // margins keep the fitted form at (near) full size; top-anchor it so a
-  // short act reads as a normal document rather than a block floating in
-  // the middle of the page.
+  // margins keep the fitted form at (near) full size. Center the form both
+  // ways on the page so it sits balanced within the margins (matching the
+  // invoice renderer) rather than clinging to the top-left corner.
   ws.pageSetup.margins = {
     left: 0.3, right: 0.3, top: 0.3, bottom: 0.3, header: 0.2, footer: 0.2,
   };
   ws.pageSetup.horizontalCentered = true;
-  ws.pageSetup.verticalCentered = false;
+  ws.pageSetup.verticalCentered = true;
 
   // Hide the phantom columns (see above). The bound is generous on purpose:
   // ws.columnCount only counts explicitly defined columns, while stray styled

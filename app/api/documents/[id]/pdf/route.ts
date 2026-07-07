@@ -13,7 +13,8 @@ export const maxDuration = 300;
 // Bump when the rendered layout changes (templates or lib/xlsx renderers) so
 // PDFs cached in Storage regenerate instead of being served stale.
 // v2: full-width print layout (phantom template columns hidden).
-const PDF_LAYOUT_VERSION = 2;
+// v3: АВР/накладная centered vertically as well as horizontally.
+const PDF_LAYOUT_VERSION = 3;
 
 function pdfResponse(pdf: Uint8Array<ArrayBuffer>, number: string): Response {
   const filename = `${encodeURIComponent(number)}.pdf`;
