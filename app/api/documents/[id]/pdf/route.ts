@@ -5,6 +5,7 @@ import { bankForDocument } from "@/lib/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { renderDocumentXlsx } from "@/lib/xlsx/render";
+import { generateStampPng } from "@/lib/xlsx/stamp";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
 
 export const runtime = "nodejs";
@@ -14,7 +15,8 @@ export const maxDuration = 300;
 // PDFs cached in Storage regenerate instead of being served stale.
 // v2: full-width print layout (phantom template columns hidden).
 // v3: АВР/накладная centered vertically as well as horizontally.
-const PDF_LAYOUT_VERSION = 3;
+// v4: auto company seal on the left М.П. of АВР/накладная.
+const PDF_LAYOUT_VERSION = 4;
 
 function pdfResponse(pdf: Uint8Array<ArrayBuffer>, number: string): Response {
   const filename = `${encodeURIComponent(number)}.pdf`;
@@ -99,7 +101,30 @@ export async function GET(
     }
   }
 
-  const payload = { ...doc, bank, signature } as unknown as XlsxDoc;
+  // Auto round seal on the left М.П. of АВР/накладная (PDF only, never the
+  // xlsx route). Derived entirely from the company's own requisites, so the
+  // hashed company fields already cover its content. Fail-soft: if the canvas
+  // binary or font is unavailable, generation returns null and the PDF is
+  // simply produced without a seal rather than failing.
+  let stamp: XlsxDoc["stamp"] = null;
+  if ((doc.type === "avr" || doc.type === "nakladnaja") && doc.company) {
+    stamp = generateStampPng({
+      name: doc.company.name,
+      bin: doc.company.bin,
+      address: doc.company.address ?? null,
+    });
+    if (!stamp) {
+      console.error(
+        JSON.stringify({
+          level: "warn",
+          message: "seal generation unavailable - PDF served without stamp",
+          documentId: doc.id,
+        })
+      );
+    }
+  }
+
+  const payload = { ...doc, bank, signature, stamp } as unknown as XlsxDoc;
 
   // The Storage path is keyed by everything the PDF renders, so any content
   // (or layout-version) change lands on a new path and a stale object can
@@ -110,6 +135,7 @@ export async function GET(
       JSON.stringify({
         v: PDF_LAYOUT_VERSION,
         signature: signature ? signaturePath : null,
+        stamp: !!stamp,
         type: payload.type,
         number: payload.number,
         date: payload.date,

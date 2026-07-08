@@ -57,6 +57,11 @@ export type XlsxDoc = {
    * never passes it.
    */
   signature?: XlsxSignature | null;
+  /**
+   * Auto-generated round company seal, stamped on the left М.П. of АВР and
+   * накладная. PDF route only (never the xlsx route); ignored for invoices.
+   */
+  stamp?: XlsxSignature | null;
 };
 
 const ITEM_ROW = 27; // first item row in the template

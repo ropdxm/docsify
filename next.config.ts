@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     "@matbee/libreoffice-converter",
     "@react-pdf/renderer",
     "exceljs",
+    "@napi-rs/canvas",
   ],
   // Trace runtime asset files into the relevant serverless functions.
   outputFileTracingIncludes: {
@@ -24,6 +25,15 @@ const nextConfig: NextConfig = {
       "./node_modules/@matbee/libreoffice-converter/dist/subprocess.worker.cjs",
       "./node_modules/@matbee/libreoffice-converter/wasm/**/*",
       "./node_modules/zod/**/*",
+      // Seal renderer: the canvas JS loader (lazily required, so trace it
+      // explicitly), its native binary, and the PT Sans subsets it reads at
+      // runtime (Latin = digits/punctuation, Cyrillic = letters).
+      "./node_modules/@napi-rs/canvas/**/*",
+      "./node_modules/@napi-rs/canvas-linux-x64-gnu/**/*",
+      "./node_modules/@fontsource/pt-sans/files/pt-sans-latin-400-normal.woff2",
+      "./node_modules/@fontsource/pt-sans/files/pt-sans-cyrillic-400-normal.woff2",
+      "./node_modules/@fontsource/pt-sans/files/pt-sans-latin-700-normal.woff2",
+      "./node_modules/@fontsource/pt-sans/files/pt-sans-cyrillic-700-normal.woff2",
     ],
     "/api/documents/*/xlsx": [
       "./public/schet_na_oplatu_AkshatyrPHYTO.xlsx",

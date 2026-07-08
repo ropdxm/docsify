@@ -27,6 +27,29 @@ export function placeSignature(
 }
 
 /**
+ * Floats the square company seal over the owner's «М.П.» (место печати). Like
+ * a real stamp it overlaps the signature/М.П. area; `tl` is the zero-based
+ * cell anchor of its top-left corner and `size` its side in pixels.
+ */
+export function placeStamp(
+  wb: ExcelJS.Workbook,
+  ws: ExcelJS.Worksheet,
+  stamp: XlsxSignature,
+  tl: { col: number; row: number },
+  size: number
+): void {
+  const imageId = wb.addImage({
+    buffer: stamp.data as unknown as ExcelJS.Buffer,
+    extension: stamp.extension,
+  });
+  ws.addImage(imageId, {
+    tl,
+    ext: { width: size, height: size },
+    editAs: "oneCell",
+  });
+}
+
+/**
  * Print layout shared by the structured-document renderers (АВР, накладная).
  *
  * Why hiding the columns right of the form matters: the official Минфин

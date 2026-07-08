@@ -2,7 +2,7 @@ import path from "node:path";
 import ExcelJS from "exceljs";
 import { formatDateRu } from "@/lib/format";
 import type { XlsxDoc } from "@/lib/xlsx/invoice";
-import { configurePrintLayout, placeSignature } from "@/lib/xlsx/print";
+import { configurePrintLayout, placeSignature, placeStamp } from "@/lib/xlsx/print";
 
 // Official «Акт выполненных работ (оказанных услуг)» - Форма Р-1
 // (Приложение 50 к приказу Министра финансов РК от 20.12.2012 № 562).
@@ -152,6 +152,13 @@ export async function renderAvrXlsx(doc: XlsxDoc): Promise<Buffer> {
   // (columns L..P of the signature row). Заказчик's side stays empty.
   if (doc.signature) {
     placeSignature(wb, ws, doc.signature, { col: 11.2, row: s28 - 2.3 });
+  }
+
+  // Round seal over the left «М.П.» (Исполнитель side; the template's М.П. is
+  // at A${sh(31)}). Overlaps the подпись/М.П. area like a real stamp; the
+  // Заказчик side stays empty.
+  if (doc.stamp) {
+    placeStamp(wb, ws, doc.stamp, { col: 5, row: s28 - 0.2 }, 142);
   }
 
   const out = await wb.xlsx.writeBuffer();

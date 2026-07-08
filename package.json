@@ -11,7 +11,9 @@
   "dependencies": {
     "@amplitude/analytics-node": "^1.5.60",
     "@amplitude/unified": "^1.1.16",
+    "@fontsource/pt-sans": "^5.2.8",
     "@matbee/libreoffice-converter": "2.6.0",
+    "@napi-rs/canvas": "^1.0.2",
     "@react-pdf/renderer": "^4.5.1",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.0",
