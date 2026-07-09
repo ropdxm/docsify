@@ -882,9 +882,17 @@ function NewClient({
   const [director, setDirector] = useState("");
   const [address, setAddress] = useState("");
 
-  // 12 digits typed → look the client up in the KGD registry, fill the name.
-  const { state: lookup, onBinChange } = useBinLookup(setName);
+  // 12 digits typed → look the client up: name/status from КГД, director +
+  // address from ГБД ЮЛ (eGov). КГД не отдаёт руководителя и адрес.
+  const { state: lookup, onBinChange } = useBinLookup((data) => {
+    setName(data.name);
+    if (data.director) setDirector(data.director);
+    if (data.address) setAddress(data.address);
+  });
   const verified = lookup.status === "found" && name === lookup.name;
+  const autofilled =
+    lookup.status === "found" &&
+    (Boolean(lookup.director) || Boolean(lookup.address));
 
   const valid = name.trim().length > 0 && /^\d{12}$/.test(bin);
 
@@ -950,6 +958,11 @@ function NewClient({
             />
           </div>
         </div>
+        {autofilled && (
+          <p className="text-xs text-faint">
+            Заполнено из реестра - проверьте перед сохранением.
+          </p>
+        )}
       </div>
       <div className="mt-4 flex items-center gap-2">
         <button

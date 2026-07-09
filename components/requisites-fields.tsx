@@ -16,8 +16,17 @@ export function RequisitesFields({
 }) {
   const [bin, setBin] = useState("");
   const [name, setName] = useState("");
-  const { state: lookup, onBinChange } = useBinLookup(setName);
+  const [director, setDirector] = useState("");
+  const [address, setAddress] = useState("");
+  const { state: lookup, onBinChange } = useBinLookup((data) => {
+    setName(data.name);
+    if (data.director) setDirector(data.director);
+    if (data.address) setAddress(data.address);
+  });
   const verified = lookup.status === "found" && name === lookup.name;
+  const autofilled =
+    lookup.status === "found" &&
+    (Boolean(lookup.director) || Boolean(lookup.address));
 
   return (
     <div className="space-y-4">
@@ -77,19 +86,38 @@ export function RequisitesFields({
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className={label} htmlFor="director">
-            Руководитель
-          </label>
-          <input id="director" name="director" className={field} />
+      <div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className={label} htmlFor="director">
+              Руководитель
+            </label>
+            <input
+              id="director"
+              name="director"
+              value={director}
+              onChange={(e) => setDirector(e.target.value)}
+              className={field}
+            />
+          </div>
+          <div>
+            <label className={label} htmlFor="address">
+              Адрес
+            </label>
+            <input
+              id="address"
+              name="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className={field}
+            />
+          </div>
         </div>
-        <div>
-          <label className={label} htmlFor="address">
-            Адрес
-          </label>
-          <input id="address" name="address" className={field} />
-        </div>
+        {autofilled && (
+          <p className="mt-2 text-xs text-faint">
+            Заполнено из реестра - проверьте перед сохранением.
+          </p>
+        )}
       </div>
 
       <div className="border-t border-line-soft pt-4">
