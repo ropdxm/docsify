@@ -267,8 +267,13 @@ export function DocumentForm({
   const [importQuery, setImportQuery] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
   const [importNotice, setImportNotice] = useState<string | null>(null);
+  // Загрузка договора (ИИ-распознавание) - состояния отдельно от Госзакупок.
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploadPending, setUploadPending] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadNotice, setUploadNotice] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  useGlobalPending(pending || importPending);
+  useGlobalPending(pending || importPending || uploadPending);
 
   function changeDocType(next: DocType) {
     setDocType(next);
@@ -279,13 +284,16 @@ export function DocumentForm({
     }
   }
 
-  function applyGoszakupkiImport(
+  // Общая подстановка черновика (из Госзакупок или из распознанного договора) в
+  // форму. Возвращает суффикс с первым предупреждением - вызывающий сам решает,
+  // в каком блоке показать уведомление.
+  function applyImportedDraft(
     result: Extract<GoszakupkiImportResult, { found: true }>["draft"]
-  ) {
+  ): string {
     setClient(result.client);
     setItems(
       result.items.map((it, i) => ({
-        id: `goszakupki-${result.contractId}-${i}`,
+        id: `import-${result.contractId}-${i}`,
         description: it.description,
         qty: String(it.quantity),
         price: String(it.unitPrice),
@@ -298,8 +306,7 @@ export function DocumentForm({
         .trim()
     );
     if (result.contractDate) setContractDate(parseIsoDate(result.contractDate));
-    const warning = result.warnings[0] ? ` ${result.warnings[0]}` : "";
-    setImportNotice(`Договор ${result.sourceLabel} загружен.${warning}`);
+    return result.warnings[0] ? ` ${result.warnings[0]}` : "";
   }
 
   function importFromGoszakupki() {
@@ -317,11 +324,52 @@ export function DocumentForm({
     startImportTransition(async () => {
       const res = await importGoszakupkiContractDraft(query);
       if (res.found) {
-        applyGoszakupkiImport(res.draft);
+        const warning = applyImportedDraft(res.draft);
+        setImportNotice(`Договор ${res.draft.sourceLabel} загружен.${warning}`);
       } else {
         setImportError(res.error);
       }
     });
+  }
+
+  // Загрузка договора (PDF/Word) -> /api/contract-extract -> модель извлекает
+  // клиента и позиции; тот же черновик подставляется в форму, что и Госзакупки.
+  async function uploadContract(file: File) {
+    setUploadError(null);
+    setUploadNotice(null);
+    if (!canUseGoszakupki) {
+      setUploadError("Загрузка договора доступна для АВР и накладной.");
+      return;
+    }
+    setUploadPending(true);
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      const res = await fetch("/api/contract-extract", {
+        method: "POST",
+        body: fd,
+      });
+      const data = (await res.json().catch(() => null)) as
+        | {
+            found: true;
+            draft: Extract<GoszakupkiImportResult, { found: true }>["draft"];
+          }
+        | { found: false; error: string }
+        | null;
+      if (!res.ok || !data || !data.found) {
+        setUploadError(
+          (data && !data.found && data.error) || "Не удалось обработать договор."
+        );
+        return;
+      }
+      const warning = applyImportedDraft(data.draft);
+      setUploadNotice(`Договор распознан - проверьте поля.${warning}`);
+    } catch {
+      setUploadError("Не удалось загрузить файл. Попробуйте ещё раз.");
+    } finally {
+      setUploadPending(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
   }
 
   function submit(mode: "draft" | "send") {
@@ -431,7 +479,48 @@ export function DocumentForm({
         </div>
 
         {!isEdit && canUseGoszakupki && (
-          <section className="border-b border-line-soft p-5 sm:p-7">
+          <section className="space-y-3 border-b border-line-soft p-5 sm:p-7">
+            {/* Загрузить договор: ИИ извлекает клиента и позиции из PDF/Word. */}
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              className="hidden"
+              aria-label="Файл договора (PDF или Word)"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) uploadContract(f);
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploadPending}
+              className="group flex w-full items-center gap-4 rounded-card border border-dashed border-line-strong bg-sheet p-4 text-left transition-colors hover:border-tenge/45 hover:bg-tenge-tint/20 disabled:cursor-not-allowed disabled:opacity-60 sm:p-5"
+            >
+              <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-card bg-tenge-tint text-tenge-ink">
+                <IconUpload className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-base font-semibold text-ink">
+                  Загрузить договор
+                </span>
+                <span className="mt-0.5 block text-sm text-muted">
+                  {uploadPending
+                    ? "Распознаём договор, это может занять минуту-две…"
+                    : "PDF или Word - ИИ заполнит клиента и позиции"}
+                </span>
+              </span>
+              <span className="hidden rounded-field bg-tenge-tint px-3 py-1.5 text-xs font-semibold text-tenge-ink sm:inline-flex">
+                ИИ
+              </span>
+              <IconPlus className="size-5 shrink-0 text-muted transition-colors group-hover:text-tenge-ink" />
+            </button>
+            {uploadError && <p className="text-sm text-danger">{uploadError}</p>}
+            {uploadNotice && (
+              <p className="text-sm text-tenge-ink">{uploadNotice}</p>
+            )}
+
             {importOpen ? (
               <div className="rounded-card border border-line bg-sunken/60 p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -1446,6 +1535,14 @@ function IconChevron({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+function IconUpload({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 15V4M8 8l4-4 4 4" />
+      <path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
     </svg>
   );
 }

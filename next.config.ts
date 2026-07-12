@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
     "@react-pdf/renderer",
     "exceljs",
     "@napi-rs/canvas",
+    // Contract text extraction (server-only, /api/contract-extract).
+    "unpdf",
+    "mammoth",
   ],
   // Trace runtime asset files into the relevant serverless functions.
   outputFileTracingIncludes: {
