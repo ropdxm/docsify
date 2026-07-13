@@ -34,6 +34,37 @@ function send(res, status, body) {
   res.end(typeof body === "string" ? body : JSON.stringify(body));
 }
 
+// Ollama's /api/tags reports a *canonical* model name that can differ cosmetically
+// from what we pulled: a registry host and/or the default "library/" namespace may
+// be prepended, and a tag-less name gains an explicit ":latest". The old strict
+// `name === MODEL_NAME` never matched on Ollama v0.31.2, so /healthz stayed 503 for
+// the whole window even though the model had pulled in ~28s and every other route
+// worked. Normalize both sides before comparing.
+function canonicalModel(name) {
+  let s = String(name || "").trim().toLowerCase();
+  // drop a leading registry host (a dotted segment before the first "/")
+  s = s.replace(/^[a-z0-9][a-z0-9.-]*\.[a-z0-9.-]+\//, "");
+  // drop the implicit default "library/" namespace
+  s = s.replace(/^library\//, "");
+  // Ollama treats a tag-less name as ":latest"
+  if (s && !s.includes(":")) s += ":latest";
+  return s;
+}
+
+function modelReady(models, want) {
+  if (!Array.isArray(models)) return false;
+  const target = canonicalModel(want);
+  if (!target) return false;
+  const repo = target.split(":")[0];
+  return models.some((m) => {
+    const got = canonicalModel(m && (m.name || m.model));
+    // Exact canonical match, or same model repo: this service only ever pulls the
+    // one MODEL_NAME, so a repo match means our model is present regardless of any
+    // tag canonicalization we didn't anticipate.
+    return got === target || got.split(":")[0] === repo;
+  });
+}
+
 // Ready only when Ollama is up AND the required model has been pulled.
 function checkReady(res) {
   const req = http.get(`${OLLAMA}/api/tags`, (r) => {
@@ -43,9 +74,7 @@ function checkReady(res) {
       let ready = false;
       try {
         const tags = JSON.parse(body);
-        ready =
-          Array.isArray(tags.models) &&
-          tags.models.some((m) => (m.name || m.model || "") === MODEL_NAME);
+        ready = modelReady(tags.models, MODEL_NAME);
       } catch {
         /* not ready */
       }
