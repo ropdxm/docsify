@@ -128,32 +128,63 @@ function buildPrompt(text: string, company: { bin: string; name: string }) {
   return { system, user };
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function callModel(system: string, user: string): Promise<string> {
-  const res = await fetch(`${MODEL_URL}/v1/chat/completions`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${MODEL_TOKEN}`,
-    },
-    body: JSON.stringify({
-      model: MODEL_NAME,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-      temperature: 0.1,
-      stream: false,
-      max_tokens: MAX_OUTPUT_TOKENS,
-      response_format: { type: "json_object" },
-    }),
-    signal: AbortSignal.timeout(MODEL_TIMEOUT_MS),
-    cache: "no-store",
+  const body = JSON.stringify({
+    model: MODEL_NAME,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
+    temperature: 0.1,
+    stream: false,
+    max_tokens: MAX_OUTPUT_TOKENS,
+    response_format: { type: "json_object" },
   });
-  if (!res.ok) throw new Error(`model ${res.status}`);
-  const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  return data.choices?.[0]?.message?.content ?? "";
+  // Serverless GPU (Modal) scales to zero: the first request after an idle
+  // period is answered with 503 while a container cold-starts. Retry through
+  // those (and transient network blips) until our overall deadline, instead of
+  // failing the upload. Once a container is warm the request goes straight through.
+  const deadline = Date.now() + MODEL_TIMEOUT_MS;
+  let lastErr = "no response";
+  while (Date.now() < deadline) {
+    let res: Response;
+    try {
+      res = await fetch(`${MODEL_URL}/v1/chat/completions`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${MODEL_TOKEN}`,
+        },
+        body,
+        signal: AbortSignal.timeout(Math.min(deadline - Date.now(), 120_000)),
+        cache: "no-store",
+      });
+    } catch {
+      lastErr = "network/timeout";
+      if (Date.now() + 7_000 < deadline) {
+        await sleep(7_000);
+        continue;
+      }
+      break;
+    }
+    if (res.status === 503) {
+      // container still cold-starting - wait and retry
+      lastErr = "503 cold start";
+      if (Date.now() + 7_000 < deadline) {
+        await sleep(7_000);
+        continue;
+      }
+      break;
+    }
+    if (!res.ok) throw new Error(`model ${res.status}`);
+    const data = (await res.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    return data.choices?.[0]?.message?.content ?? "";
+  }
+  throw new Error(`model unavailable: ${lastErr}`);
 }
 
 /**
